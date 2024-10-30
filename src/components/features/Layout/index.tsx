@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Outlet } from "react-router-dom";
 
-import Header, { HEADER_HEIGHT } from "./Header";
+import Header, { HEADER_HEIGHT } from "../Header";
 
 export const Layout = () => (
   <Wrapper>
