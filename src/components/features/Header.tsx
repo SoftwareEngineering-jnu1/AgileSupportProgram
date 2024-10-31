@@ -22,6 +22,9 @@ const HeaderCantainer = styled.div`
   align-items: center;
   border-bottom: 1px solid #7e7e7e;
   padding: 0 25px;
+  position: fixed;
+  background-color: #fff;
+  z-index: 1000;
 `;
 
 const Logo = styled.img`
