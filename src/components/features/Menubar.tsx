@@ -16,10 +16,10 @@ const Menubar = () => {
           to={RouterPath.timelinePage}
           style={{
             textDecoration: "none",
-            color: "#AEBDCA",
+            color: "#999",
             fontWeight: "bold",
             textAlign: "start",
-            fontSize: "40px",
+            fontSize: "38px",
           }}
         >
           <div style={{ display: "flex", alignItems: "center" }}>
@@ -31,10 +31,10 @@ const Menubar = () => {
           to={RouterPath.boardPage}
           style={{
             textDecoration: "none",
-            color: "#AEBDCA",
+            color: "#999",
             fontWeight: "bold",
             textAlign: "start",
-            fontSize: "40px",
+            fontSize: "38px",
           }}
         >
           <Space>
@@ -49,10 +49,10 @@ const Menubar = () => {
           to={RouterPath.memoPage}
           style={{
             textDecoration: "none",
-            color: "#AEBDCA",
+            color: "#999",
             fontWeight: "bold",
             textAlign: "start",
-            fontSize: "40px",
+            fontSize: "38px",
           }}
         >
           <Space>
@@ -66,7 +66,7 @@ const Menubar = () => {
       </Container>
       <GitLinkWrapper>
         <GitLink onClick={() => window.open("https://github.com/")}>
-          <IoLogoGithub size={50} />
+          <IoLogoGithub size={40} />
           Git
         </GitLink>
       </GitLinkWrapper>
@@ -78,12 +78,10 @@ export default Menubar;
 
 const Wrapper = styled.div`
   width: 300px;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  background-color: #f5efe6;
 `;
 
 const Container = styled.div`
@@ -110,7 +108,7 @@ const GitLink = styled.a`
   align-items: center;
   color: #aebdca;
   fontweight: bold;
-  font-size: 40px;
+  font-size: 33px;
   &:hover {
     cursor: pointer;
   }
