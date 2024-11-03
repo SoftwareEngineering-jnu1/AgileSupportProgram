@@ -1,11 +1,15 @@
 import styled from "styled-components";
 import { FaUserCircle } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { RouterPath } from "@routes/path";
 
 export const HEADER_HEIGHT = "100px";
 const Header = () => {
   return (
     <HeaderCantainer>
-      <Logo src="/images/로고.png"></Logo>
+      <Link to={RouterPath.projectList}>
+        <Logo src="/images/로고.png"></Logo>
+      </Link>
       <ProjectTitle>프로젝트 이름</ProjectTitle>
       <FaUserCircle size={40} />
     </HeaderCantainer>
