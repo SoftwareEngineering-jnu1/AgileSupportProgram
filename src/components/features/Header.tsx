@@ -11,7 +11,9 @@ const Header = () => {
         <Logo src="/images/로고.png"></Logo>
       </Link>
       <ProjectTitle>프로젝트 이름</ProjectTitle>
-      <FaUserCircle size={40} />
+      <Link to={RouterPath.myPage} style={{ color: "#000" }}>
+        <FaUserCircle size={40} />
+      </Link>
     </HeaderCantainer>
   );
 };
