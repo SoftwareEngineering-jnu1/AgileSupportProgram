@@ -35,5 +35,5 @@ const InnerWrapper = styled.div`
 `;
 
 const Content = styled.div`
-  width: calc(100vw - 300px);
+  width: calc(100vw - 250px);
 `;

@@ -19,7 +19,7 @@ const Menubar = () => {
             color: "#999",
             fontWeight: "bold",
             textAlign: "start",
-            fontSize: "38px",
+            fontSize: "30px",
           }}
         >
           <div style={{ display: "flex", alignItems: "center" }}>
@@ -34,7 +34,7 @@ const Menubar = () => {
             color: "#999",
             fontWeight: "bold",
             textAlign: "start",
-            fontSize: "38px",
+            fontSize: "30px",
           }}
         >
           <Space>
@@ -52,7 +52,7 @@ const Menubar = () => {
             color: "#999",
             fontWeight: "bold",
             textAlign: "start",
-            fontSize: "38px",
+            fontSize: "30px",
           }}
         >
           <Space>
@@ -66,7 +66,7 @@ const Menubar = () => {
       </Container>
       <GitLinkWrapper>
         <GitLink onClick={() => window.open("https://github.com/")}>
-          <IoLogoGithub size={40} />
+          <IoLogoGithub size={30} />
           Git
         </GitLink>
       </GitLinkWrapper>
@@ -77,11 +77,12 @@ const Menubar = () => {
 export default Menubar;
 
 const Wrapper = styled.div`
-  width: 300px;
+  width: 250px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  background-color: #efefef;
 `;
 
 const Container = styled.div`
@@ -108,7 +109,7 @@ const GitLink = styled.a`
   align-items: center;
   color: #aebdca;
   fontweight: bold;
-  font-size: 33px;
+  font-size: 26px;
   &:hover {
     cursor: pointer;
   }
