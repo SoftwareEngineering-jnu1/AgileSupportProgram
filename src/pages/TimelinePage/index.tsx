@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import './Timeline.css'; // CSS 파일을 별도로 작성
+import React, { useEffect, useRef, useState } from 'react';
+import { DataSet, Timeline as VisTimeline } from 'vis-timeline/standalone';
+import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 
 // 에픽 타입 정의
 type Epic = {
@@ -7,76 +8,86 @@ type Epic = {
   sprints: string[];
 };
 
+// Item 타입 정의
+type Item = {
+  id: string;
+  content: string;
+  start: Date;
+  end: Date;
+  group: number;
+};
+
 const Timeline = () => {
-  // 에픽 상태와 스프린트 상태의 타입을 명시적으로 지정
   const [epics, setEpics] = useState<Epic[]>([]);
   const [newEpic, setNewEpic] = useState('');
-  const [newSprint, setNewSprint] = useState('');
-  const [selectedEpicIndex, setSelectedEpicIndex] = useState<number | null>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (timelineRef.current) {
+      // 데이터셋 초기화
+      const items = new DataSet<Item>([]);
+      const groups = new DataSet<{ id: number; content: string }>();
+
+      // 타임라인 옵션 설정
+      const options = {
+        start: new Date(new Date().setFullYear(new Date().getFullYear() - 2)),
+        end: new Date(new Date().setFullYear(new Date().getFullYear() + 2)),
+        editable: true,
+        margin: { item: 10 },
+        orientation: 'top',
+      };
+
+      const timeline = new VisTimeline(timelineRef.current, items, groups, options);
+
+      // 에픽마다 그룹 추가
+      epics.forEach((epic, epicIndex) => {
+        // 그룹 생성 (에픽 제목이 왼쪽에 표시됨)
+        groups.add({ id: epicIndex, content: epic.title });
+
+        // 각 스프린트를 그룹에 추가
+        epic.sprints.forEach((sprint, sprintIndex) => {
+          const startDate = new Date();
+          const endDate = new Date(startDate);
+          endDate.setDate(startDate.getDate() + 7 * (sprintIndex + 1));
+
+          items.add({
+            id: `${epicIndex}-${sprintIndex}`,
+            content: sprint,
+            start: startDate,
+            end: endDate,
+            group: epicIndex, // 에픽의 인덱스에 해당하는 그룹 ID로 지정
+          });
+        });
+      });
+
+      return () => timeline.destroy();
+    }
+  }, [epics]);
+
+  // 에픽 추가
   const addEpic = () => {
     if (newEpic) {
-      setEpics([...epics, { title: newEpic, sprints: [] }]);
+      setEpics([...epics, { title: newEpic, sprints: ['Sprint 1'] }]);
       setNewEpic('');
     }
   };
 
-  const addSprint = () => {
-    if (newSprint && selectedEpicIndex !== null) {
-      const updatedEpics = [...epics];
-      updatedEpics[selectedEpicIndex].sprints.push(newSprint);
-      setEpics(updatedEpics);
-      setNewSprint('');
-    }
-  };
-
-  const today = new Date();
-  const startDate = new Date(today.getFullYear() - 2, today.getMonth(), today.getDate()); // 2년 전
-  const endDate = new Date(today.getFullYear() + 2, today.getMonth(), today.getDate()); // 2년 후
-
-  // 날짜 생성 함수
-  const generateDates = (startDate: Date, endDate: Date) => {
-    const dates = [];
-    const currentDate = new Date(startDate);
-
-    while (currentDate <= endDate) {
-      dates.push(new Date(currentDate)); // 날짜 추가
-      currentDate.setDate(currentDate.getDate() + 1); // 다음 날로 이동
-    }
-
-    return dates;
-  };
-
-  // 날짜 목록 생성
-  const allDates = generateDates(startDate, endDate);
-
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
-      {/* 왼쪽 사이드바 */}
-      <div style={{ width: '250px', padding: '20px', backgroundColor: '#f2f2f2', overflowY: 'auto' }}>
-        <h4>에픽 목록</h4>
-
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+      {/* 에픽 추가 입력란 및 버튼 */}
+      <div style={{ padding: '10px', backgroundColor: '#f2f2f2', display: 'flex', alignItems: 'center' }}>
+        <input
+          value={newEpic}
+          onChange={(e) => setNewEpic(e.target.value)}
+          placeholder="새 에픽 제목 입력"
+          style={{ marginRight: '10px', padding: '5px' }}
+        />
+        <button onClick={addEpic} style={{ padding: '5px 10px' }}>에픽 추가</button>
       </div>
 
-      {/* 오른쪽 타임라인 */}
+      {/* 타임라인 */}
       <div style={{ flex: 1, overflow: 'hidden' }}>
-        <div className="timeline">
-          <div className="timeline-header">
-          {allDates.map((date, index) => (
-              <div className="timeline-date" key={index}>{date.getDate()}</div>
-            ))}
-          </div>
-          {epics.map((epic, epicIndex) => (
-            <div className="timeline-row" key={epicIndex}>
-              <div className="timeline-epic">{epic.title}</div>
-              {epic.sprints.map((sprint, sprintIndex) => (
-                <div className="timeline-sprint" key={sprintIndex}>
-                  {sprint}
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
+        <div ref={timelineRef} style={{ height: '100%' }} />
       </div>
     </div>
   );
