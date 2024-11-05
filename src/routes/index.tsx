@@ -10,12 +10,14 @@ import LoginPage from "@pages/LoginPage";
 import Home from "@pages/Home";
 import SignUpPage from "@pages/SignUpPage";
 import MyPage from "@pages/MyPage";
+import ProjectListPage from "@pages/ProjectListPage";
 
 const router = createBrowserRouter([
-  { path: "/", element: <Home /> },
-  { path: "signup", element: <SignUpPage /> },
-  { path: "/login", element: <LoginPage /> },
-  { path: "/mypage", element: <MyPage /> },
+  { path: RouterPath.root, element: <Home /> },
+  { path: RouterPath.projectList, element: <ProjectListPage /> },
+  { path: RouterPath.signup, element: <SignUpPage /> },
+  { path: RouterPath.login, element: <LoginPage /> },
+  { path: RouterPath.myPage, element: <MyPage /> },
   {
     element: <Layout />,
     children: [
