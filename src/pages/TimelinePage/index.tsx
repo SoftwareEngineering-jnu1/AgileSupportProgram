@@ -1,11 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { DataSet, Timeline as VisTimeline } from 'vis-timeline/standalone';
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
+import './Timeline.css';
 
 // 에픽 타입 정의
 type Epic = {
   title: string;
   sprints: string[];
+};
+
+// 스프린트 타입 정의
+type Sprint = {
+  title: string;
+  epics: string[];
 };
 
 // Item 타입 정의
@@ -18,9 +25,10 @@ type Item = {
 };
 
 const Timeline = () => {
+  const [sprint, setSprint] = useState<Sprint[]>([]);
   const [epics, setEpics] = useState<Epic[]>([]);
   const [newEpic, setNewEpic] = useState('');
-  const timelineRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef(null);
 
   useEffect(() => {
     if (timelineRef.current) {
@@ -28,15 +36,21 @@ const Timeline = () => {
       const items = new DataSet<Item>([]);
       const groups = new DataSet<{ id: number; content: string }>();
 
+      //날짜 설정
+      const today = new Date();
+      const startdate = new Date(today.getFullYear()-2, today.getMonth(), today.getDate());
+      const enddate = new Date(today.getFullYear()+2, today.getMonth(), today.getDate());
+      
       // 타임라인 옵션 설정
       const options = {
-        start: new Date(new Date().setFullYear(new Date().getFullYear() - 2)),
-        end: new Date(new Date().setFullYear(new Date().getFullYear() + 2)),
+        start: startdate,
+        end: enddate,
         editable: true,
         margin: { item: 10 },
         orientation: 'top',
+        zoomMin : 1000 * 60 * 60 * 24 * 30,  //최소 줌 1개월
+        zoomMax : 1000 * 60 * 60 * 24 * 365 * 4 //최대 줌 4년
       };
-
       const timeline = new VisTimeline(timelineRef.current, items, groups, options);
 
       // 에픽마다 그룹 추가
@@ -86,8 +100,8 @@ const Timeline = () => {
       </div>
 
       {/* 타임라인 */}
-      <div style={{ flex: 1, overflow: 'hidden' }}>
-        <div ref={timelineRef} style={{ height: '100%' }} />
+      <div className='timeline-area'>타임라인
+        <div id='timeline' className='timeline' ref={timelineRef}/>
       </div>
     </div>
   );
