@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { RouterPath } from "@routes/path";
 
 import { MdViewTimeline } from "react-icons/md";
@@ -9,33 +9,23 @@ import { FaNoteSticky } from "react-icons/fa6";
 import { IoLogoGithub } from "react-icons/io5";
 
 const Menubar = () => {
+  const location = useLocation();
+  const pagePath = location.pathname;
   return (
     <Wrapper>
       <Container>
-        <Link
+        <MenuLink
           to={RouterPath.timelinePage}
-          style={{
-            textDecoration: "none",
-            color: "#999",
-            fontWeight: "bold",
-            textAlign: "start",
-            fontSize: "30px",
-          }}
+          active={pagePath === RouterPath.timelinePage}
         >
           <div style={{ display: "flex", alignItems: "center" }}>
             <MdViewTimeline />
             타임라인
           </div>
-        </Link>
-        <Link
+        </MenuLink>
+        <MenuLink
           to={RouterPath.boardPage}
-          style={{
-            textDecoration: "none",
-            color: "#999",
-            fontWeight: "bold",
-            textAlign: "start",
-            fontSize: "30px",
-          }}
+          active={pagePath === RouterPath.boardPage}
         >
           <Space>
             <hr />
@@ -44,16 +34,10 @@ const Menubar = () => {
             <MdDashboard />
             칸반보드
           </div>
-        </Link>
-        <Link
+        </MenuLink>
+        <MenuLink
           to={RouterPath.memoPage}
-          style={{
-            textDecoration: "none",
-            color: "#999",
-            fontWeight: "bold",
-            textAlign: "start",
-            fontSize: "30px",
-          }}
+          active={pagePath === RouterPath.memoPage}
         >
           <Space>
             <hr />
@@ -62,7 +46,7 @@ const Menubar = () => {
             <FaNoteSticky />
             메모
           </div>
-        </Link>
+        </MenuLink>
       </Container>
       <GitLinkWrapper>
         <GitLink onClick={() => window.open("https://github.com/")}>
@@ -90,6 +74,18 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   padding-top: 30px;
+`;
+
+const MenuLink = styled(Link)<{ active: boolean }>`
+  text-decoration: none;
+  color: ${(props) => (props.active ? "#000" : "#999")};
+  font-weight: bold;
+  text-align: start;
+  font-size: 30px;
+  transition: color 0.3s ease;
+  &:hover {
+    color: #000;
+  }
 `;
 
 const Space = styled.div`
