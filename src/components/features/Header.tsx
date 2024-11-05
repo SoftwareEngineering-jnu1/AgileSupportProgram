@@ -8,7 +8,7 @@ const Header = () => {
   return (
     <HeaderCantainer>
       <Link to={RouterPath.projectList}>
-        <Logo src="/images/로고.png"></Logo>
+        <Logo src="/로고.png"></Logo>
       </Link>
       <ProjectTitle>프로젝트 이름</ProjectTitle>
       <Link to={RouterPath.myPage} style={{ color: "#000" }}>
@@ -40,5 +40,6 @@ const Logo = styled.img`
 
 const ProjectTitle = styled.span`
   font-size: 30px;
+  font-family: "NanumSquareEB", sans-serif;
   font-weight: bold;
 `;
