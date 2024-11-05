@@ -1,8 +1,12 @@
 import styled from "styled-components";
 
 import Button from "@components/common/Button";
+import NonSprintPage from "@components/Board/NonSprintPage";
+import { useState } from "react";
+import SprintPage from "@components/Board/SprintPage";
 
 const BoardPage = () => {
+  const [hasSprint, setHasSprint] = useState<boolean>(false);
   return (
     <Wrapper>
       <TopCantainer>
@@ -10,12 +14,11 @@ const BoardPage = () => {
           title="스프린트 만들기"
           padding="5px 15px"
           style={{ fontWeight: "bold" }}
+          onClick={(e) => setHasSprint(!hasSprint)}
         />
       </TopCantainer>
       <MiddleCantainer>
-        <img src="/images/NonSprint.png" alt="스프린트 없을때 이미지" />
-        <DesBig>설정된 스프린트가 없습니다.</DesBig>
-        <DesSmall>스프린트를 만들어 프로젝트를 활성화 해주세요.</DesSmall>
+        {hasSprint ? <SprintPage /> : <NonSprintPage />}
       </MiddleCantainer>
     </Wrapper>
   );
@@ -43,16 +46,4 @@ const MiddleCantainer = styled.div`
   justify-content: center;
   align-items: center;
   padding: 20px 10px;
-`;
-
-const DesBig = styled.span`
-  font-size: 26px;
-  font-weight: bold;
-  margin: 10px 0 5px;
-  color: #8a8a8a;
-`;
-const DesSmall = styled.span`
-  font-size: 14px;
-  font-weight: bold;
-  color: #8a8a8a;
 `;
