@@ -6,13 +6,8 @@ import './Timeline.css';
 // 에픽 타입 정의
 type Epic = {
   title: string;
-  sprints: string[];
-};
-
-// 스프린트 타입 정의
-type Sprint = {
-  title: string;
-  epics: string[];
+  sprints: string[]
+//  progress:number; //진행률
 };
 
 // Item 타입 정의
@@ -25,7 +20,6 @@ type Item = {
 };
 
 const Timeline = () => {
-  const [sprint, setSprint] = useState<Sprint[]>([]);
   const [epics, setEpics] = useState<Epic[]>([]);
   const [newEpic, setNewEpic] = useState('');
   const timelineRef = useRef(null);
@@ -51,8 +45,10 @@ const Timeline = () => {
         zoomMin : 1000 * 60 * 60 * 24 * 30,  //최소 줌 1개월
         zoomMax : 1000 * 60 * 60 * 24 * 365 * 4 //최대 줌 4년
       };
+      //타임라인 생성
       const timeline = new VisTimeline(timelineRef.current, items, groups, options);
 
+      /*
       // 에픽마다 그룹 추가
       epics.forEach((epic, epicIndex) => {
         // 그룹 생성 (에픽 제목이 왼쪽에 표시됨)
@@ -74,7 +70,7 @@ const Timeline = () => {
         });
       });
 
-      return () => timeline.destroy();
+      return () => timeline.destroy();*/
     }
   }, [epics]);
 
