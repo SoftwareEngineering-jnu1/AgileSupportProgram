@@ -17,8 +17,8 @@
     "react-timelines": "^2.6.1",
     "react-timelines2": "^2.7.6",
     "styled-components": "^6.1.13",
-    "vis-timeline": "^7.7.3",
     "typescript-plugin-css-modules": "^5.1.0",
+    "vis-timeline": "^7.7.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
