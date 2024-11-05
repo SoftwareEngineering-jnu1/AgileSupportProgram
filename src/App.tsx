@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import "./App.css";
 import { Routes } from "./routes";
 import { HEADER_HEIGHT } from "@components/features/Header";
+import { GlobalStyle } from "@styles/globalStyle";
 
 function App() {
   useEffect(() => {
@@ -12,6 +13,7 @@ function App() {
   }, []);
   return (
     <div className="App">
+      <GlobalStyle />
       <Routes />
     </div>
   );
