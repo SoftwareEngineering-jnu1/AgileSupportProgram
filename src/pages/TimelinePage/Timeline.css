@@ -1,9 +1,11 @@
 .timeline-area{
-    display: flex;
     overflow-x: auto;
+    width: '100%';
+    height: '100%';
 
     .timeline{
         width: '100%';
         height: '100%';
     }
+
 }
