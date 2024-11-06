@@ -12,20 +12,27 @@
 }
 
 .topbar {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    display: flex;
     height:50px;
+    justify-content: space-between;
 }
 
-.users{
-    
+.userIcon {
+    position: relative;
+    margin-left: -15px;
+    background-color: #fff;
+    border-radius: 50%;
 }
 
 .sidebar {
+    position: relative;
     display:flex;
     width: 250px; 
     padding: 30px;
     background-color: #C9CCD2;
-    overflow-x:hidden;
-    overflow-y:auto;
     height:100%;
     flex-direction: column;
     justify-content: space-between;
@@ -35,6 +42,16 @@
     margin-top:25px;
     margin-bottom:25px;
     border-bottom:1px solid #000;
+}
+.sideEpic {
+    padding-bottom: 50px; 
+    overflow-y: auto;
+  }
+
+.sideButton {
+    position: sticky;
+    bottom: 0;
+    padding-top:10px;
 }
 
 .epic-item {
