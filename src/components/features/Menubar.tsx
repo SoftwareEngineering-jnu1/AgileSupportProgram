@@ -18,32 +18,32 @@ const Menubar = () => {
           to={RouterPath.timelinePage}
           active={pagePath === RouterPath.timelinePage}
         >
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <MdViewTimeline />
+          <div style={{ display: "flex" }}>
+            <MdViewTimeline style={{ marginRight: "8px", fontSize: "1.2em" }} />
             타임라인
           </div>
         </MenuLink>
+        <Space>
+          <hr />
+        </Space>
         <MenuLink
           to={RouterPath.boardPage}
           active={pagePath === RouterPath.boardPage}
         >
-          <Space>
-            <hr />
-          </Space>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <MdDashboard />
+          <div style={{ display: "flex" }}>
+            <MdDashboard style={{ marginRight: "8px", fontSize: "1.2em" }} />
             칸반보드
           </div>
         </MenuLink>
+        <Space>
+          <hr />
+        </Space>
         <MenuLink
           to={RouterPath.memoPage}
           active={pagePath === RouterPath.memoPage}
         >
-          <Space>
-            <hr />
-          </Space>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <FaNoteSticky />
+          <div style={{ display: "flex" }}>
+            <FaNoteSticky style={{ marginRight: "8px", fontSize: "1.2em" }} />
             메모
           </div>
         </MenuLink>
@@ -79,8 +79,6 @@ const Container = styled.div`
 const MenuLink = styled(Link)<{ active: boolean }>`
   text-decoration: none;
   color: ${(props) => (props.active ? "#000" : "#999")};
-  font-weight: bold;
-  text-align: start;
   font-size: 30px;
   transition: color 0.3s ease;
   &:hover {
@@ -89,6 +87,7 @@ const MenuLink = styled(Link)<{ active: boolean }>`
 `;
 
 const Space = styled.div`
+  padding: 5px 0;
   width: 100%;
   height: 20px;
 `;
