@@ -1,6 +1,6 @@
 .timeline-all{
     padding:20px;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 140px);
 }
 
 .timeline-container {
@@ -9,6 +9,14 @@
     overflow:hidden;
     border: 1px solid #000; /* 바깥선 추가 (두께: 2px, 색상: 검정) */
     border-radius: 8px; /* 테두리를 둥글게 하고 싶다면 추가 */
+}
+
+.topbar {
+    height:50px;
+}
+
+.users{
+    
 }
 
 .sidebar {
@@ -63,6 +71,11 @@
 }
 
 .timeline {
+    align-items: stretch;
     width: 100%;
     height: 100%;
+}
+
+.epicModaltitle {
+    align-items: 'flex-start';
 }

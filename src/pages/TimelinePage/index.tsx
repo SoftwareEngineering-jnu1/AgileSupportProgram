@@ -3,7 +3,7 @@ import { DataSet, Timeline as VisTimeline } from 'vis-timeline/standalone';
 import Button from '@components/common/Button';
 import styled from "styled-components";
 import { FaUserCircle } from "react-icons/fa";
-import { IoIosAdd } from "react-icons/io";
+import { IoAddCircleSharp } from "react-icons/io5"
 
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 import './Timeline.css';
@@ -96,7 +96,19 @@ const Timeline = () => {
 
   return (
       <div className="timeline-all">
-        {/*사용자 그룹 */}
+        
+        <div className="topbar">
+          {/*사용자 그룹 */}
+          <div className="userGrop">
+            <FaUserCircle size={35}/>
+          </div>
+
+          <div className="selectButton">
+
+            
+          </div> 
+        </div>
+
         <div className="timeline-container">
           {/* 왼쪽 사이드바 */}
           <div className="sidebar">
@@ -121,9 +133,7 @@ const Timeline = () => {
               fontSize="15px"
               style={{ fontWeight: "bold", marginTop: 'auto' }}
               onClick ={() => setEpicModal(true)}
-            >
-              <IoIosAdd/>
-            </Button>
+            />
           </div>
 
           {/* 타임라인 */}
@@ -136,22 +146,24 @@ const Timeline = () => {
         {epicModal && (
           <Modalepic onClick={() => setEpicModal(false)}>
             <ModalepicContent ref={epicModalRef} onClick={e => e.stopPropagation()}>
-              <h3 style={{ fontWeight: "bold", alignSelf: 'flex-start'}}>에픽 만들기</h3>
-              <br/>
-              <h4>할일</h4>
-              <input
-                value={newEpic}
-                onChange={(e) => setNewEpic(e.target.value)}
-                placeholder="무엇을 완료해야 하나요?"
-              />
-              <br/>
-              <Button
-                title="만들기"
-                bgColor="#AEBDCA"
-                padding="20"
-                style={{ alignSelf: 'flex-end' }}
-                onClick={addEpic} // 에픽 추가
-              />
+              <div className="epicModalposition">
+                <p style={{fontWeight:'bold', alignItems:'flex-start'}}>에픽만들기</p>
+                <p>할 일</p>
+                <input
+                  value={newEpic}
+                  onChange={(e) => setNewEpic(e.target.value)}
+                  placeholder="무엇을 완료해야 하나요?"
+                />
+                <br/>
+                <Button
+                  title="만들기"
+                  bgColor="#AEBDCA"
+                  padding="20"
+                  fontSize="15px"
+                  onClick={addEpic} // 에픽 추가
+                />
+              </div>
+              
             </ModalepicContent>
           </Modalepic>
         )}
