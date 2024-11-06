@@ -40,6 +40,6 @@ const Logo = styled.img`
 
 const ProjectTitle = styled.span`
   font-size: 30px;
-  font-family: "NanumSquareEB", sans-serif;
+  font-family: "GmarketSansMedium";
   font-weight: bold;
 `;
