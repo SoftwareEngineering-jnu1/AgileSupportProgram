@@ -36,4 +36,8 @@ const InnerWrapper = styled.div`
 
 const Content = styled.div`
   width: calc(100vw - 250px);
+  overflow: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
