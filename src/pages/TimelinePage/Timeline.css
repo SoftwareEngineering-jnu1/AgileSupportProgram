@@ -28,14 +28,12 @@
 }
 
 .sidebar {
-    position: relative;
     display:flex;
-    width: 250px; 
+    width: 25%; 
     padding: 30px;
     background-color: #C9CCD2;
     height:100%;
     flex-direction: column;
-    justify-content: space-between;
 }
 
 .blank{
@@ -43,14 +41,17 @@
     margin-bottom:25px;
     border-bottom:1px solid #000;
 }
+
 .sideEpic {
     padding-bottom: 50px; 
+    overflow-x:hidden;
     overflow-y: auto;
+    margin-top: 0;
+    flex-grow: 1;
   }
 
 .sideButton {
-    position: sticky;
-    bottom: 0;
+    margin-top: auto;
     padding-top:10px;
 }
 
@@ -82,17 +83,22 @@
   
 .timeline-area {
     flex-grow: 1;
-    overflow-x: auto;
     width: 100%;
     height: 100%;
 }
 
 .timeline {
-    align-items: stretch;
+    min-width: 1200px;
     width: 100%;
     height: 100%;
 }
 
 .epicModaltitle {
     align-items: 'flex-start';
+}
+
+.add {
+    position: relative;
+    left: 30px;
+    
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { DataSet, TimelineTimeAxisScaleType, Timeline as VisTimeline } from 'vis-timeline/standalone';
 import Button from '@components/common/Button';
 import styled from "styled-components";
+import { IoIosAdd } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 import './Timeline.css';
@@ -21,8 +22,6 @@ type Item = {
   group: number;
 };
 
-
-
 const Timeline = () => {
   const [epics, setEpics] = useState<Epic[]>([]);
   const [newEpic, setNewEpic] = useState('');
@@ -39,60 +38,51 @@ const Timeline = () => {
 
       //날짜 설정
       const today = new Date();
-      const startdate = new Date(today.getFullYear()-2, today.getMonth(), today.getDate());
-      const enddate = new Date(today.getFullYear()+2, today.getMonth(), today.getDate());
-      
-      // 타임라인 옵션 설정
+      const startDate = new Date(today.getFullYear()-2, today.getMonth(), today.getDate());
+      const endDate = new Date(today.getFullYear()+2, today.getMonth(), today.getDate());
+
+      // 초기 표시할 4개월 범위 설정
+      const minDate = new Date(today.getFullYear(), today.getMonth() -1, today.getDate());
+      const maxDate = new Date(today.getFullYear(), today.getMonth() +6, today.getDate());
+
       const options = {
-        start: startdate,
-        end: enddate,
+        min: startDate,
+        max: endDate,
+
+        movable: false,
         editable: true,
         margin: { item: 10 },
         orientation: 'top',
-        
-        zoomMin : 1000 * 60 * 60 * 24 * 30,  //최소 줌 1개월
-        zoomMax : 1000 * 60 * 60 * 24 * 365 * 4, //최대 줌 4년
-        
+
+   //     zoomMin : 1000 * 60 * 60 * 24 * 4 ,  //최소 줌 1개월
+   //     zoomMax : 1000 * 60 * 60 * 24 * 365 * 4, //최대 줌 4년
         timeAxis: {
           scale: 'month' as TimelineTimeAxisScaleType,  // 초기 단위를 월로 설정
           step: 1,         // 1개월 단위
-          min: 1000 * 60 * 60 * 24 * 30, // 최소 날짜 간격 (1개월)
-          max: 1000 * 60 * 60 * 24 * 365 * 4, // 최대 날짜 간격 (4년)
         },
 
       };
       //타임라인 생성
       const createtimeline = new VisTimeline(timelineRef.current, items, groups, options);
+      setTimeline(createtimeline);
 
-      // 타임라인의 시작 위치를 현재 날짜 기준으로 3개월 보이도록 설정
-    const rangeStart = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate()); // 1개월 전
-    const rangeEnd = new Date(today.getFullYear(), today.getMonth() + 2, today.getDate());   // 2개월 후
+      createtimeline.setWindow(minDate, maxDate, {animation: false});
 
-    // 3개월 범위로 스크롤 시작
-    createtimeline.setWindow(rangeStart, rangeEnd);
-      
-      // 에픽마다 그룹 추가
+    // 에픽마다 그룹 추가
       epics.forEach((epic, epicIndex) => {
         // 그룹 생성 (에픽 제목이 왼쪽에 표시됨)
         groups.add({ id: epicIndex, content: epic.title });
 
         const epicstart = new Date(2024,11,5);
         const epicend = new Date(2024,11,30);
-        /*
-        // 각 스프린트를 그룹에 추가
-        epic.sprints.forEach((sprint, sprintIndex) => {
-          const startDate = new Date();
-          const endDate = new Date(startDate);
-          endDate.setDate(startDate.getDate() + 7 * (sprintIndex + 1));
-        */
-          items.add({
-            id: `${epicIndex}`,
-            content: epic.title,
-            start: epicstart,
-            end: epicend,
-            group: epicIndex, // 에픽의 인덱스에 해당하는 그룹 ID로 지정
-          });
-      //  });
+        
+        items.add({
+          id: `${epicIndex}`,
+          content: epic.title,
+          start: epicstart,
+          end: epicend,
+          group: epicIndex, 
+        });
       });
 
       return () => createtimeline.destroy();
@@ -115,17 +105,11 @@ const Timeline = () => {
   const multiButton = (type:string)=>{
     switch (type){
       case 'month' : 
-        setRange('month'); 
-        console.log("month 선택");
-        break;
+        setRange('month'); break;
       case 'week' : 
-        setRange('week');
-        console.log("week 선택");
-        break;
+        setRange('week'); break;
       case 'day' : 
-        setRange('day'); 
-        console.log("day 선택");
-        break;
+        setRange('day'); break;
       default : break;
     }
   }
@@ -136,21 +120,29 @@ const Timeline = () => {
 
     let scale: TimelineTimeAxisScaleType;
     let step: number;
+    let minDate: Date;
+    let maxDate: Date;
 
-    console.log(`Setting range: ${type}`); // 설정된 범위 확인
+    const today = new Date();
 
     switch(type){
       case 'month':
         scale = 'month'; 
         step = 1;
+        minDate = new Date(today.getFullYear(), today.getMonth() -1, today.getDate());
+        maxDate = new Date(today.getFullYear(), today.getMonth() +6, today.getDate());        
         break;
       case 'week':
         scale = 'week';
         step = 1;
+        minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        maxDate = new Date(today.getFullYear(), today.getMonth()+2, today.getDate());   
         break;
       case 'day':
         scale = 'day';
         step = 1;
+        minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate()-7);
+        maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate()+14);         
         break; 
       default: return;
     }
@@ -158,9 +150,12 @@ const Timeline = () => {
     timeline.setOptions({
       timeAxis: { scale, step }
     });
+
+    timeline.setWindow(minDate, maxDate);
   };
 
   return (
+    
       <div className="timeline-all">
         
         <div className="topbar">
@@ -193,10 +188,14 @@ const Timeline = () => {
               {/*에픽 제목, 진척도 사이드바에 추가*/}
               {epics.map((epic, index) => (
                 <div key={index} className="epic-item">
-                  <div className="epic-title">{epic.title}</div>
-                  <div className="progress-bar">
-                    <div className="progress" style={{ width: `${epic.progress}%` }}></div>
+                  <IoIosAdd className="add"/>
+                  <div className="showepic">
+                    <div className="epic-title">{epic.title}</div>
+                    <div className="progress-bar">
+                      <div className="progress" style={{ width: `${epic.progress}%` }}></div>
+                    </div>
                   </div>
+                  
                 </div>
               ))}
             </div>
