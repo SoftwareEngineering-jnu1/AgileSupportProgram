@@ -11,6 +11,7 @@ import './Timeline.css';
 type Epic = {
   title: string;
   progress:number; //진행률
+  issues: string[];
 };
 
 // Item 타입 정의
@@ -27,6 +28,7 @@ const Timeline = () => {
   const [newEpic, setNewEpic] = useState('');
   const timelineRef = useRef<HTMLDivElement | null>(null);
   const [timeline, setTimeline] = useState<VisTimeline | null>(null);
+  const [selectedEpic, setSelectedEpic] = useState<Epic | null>(null);
 
   const users = ["User1", "User2", "User3", "User4"];
 
@@ -92,16 +94,44 @@ const Timeline = () => {
   // 에픽 추가
   const addEpic = () => {
     if (newEpic) {
-      setEpics([...epics, { title: newEpic, progress:0}]);
+      setEpics([...epics, { title: newEpic, progress:0, issues:[]}]);
       setNewEpic('');
     }
   };
+
+  // 에픽 상세보기 이벤트
+  const showDetailEpic = (epic: Epic) => {
+    setSelectedEpic(epic);
+  }
+
+  type EpicDetailProps={
+    epic: Epic;
+    onClose: () => void;
+  };
+
+  const EpicDetail = ({epic, onClose}: EpicDetailProps) => {
+    return (
+      <EpicDetailContainer>
+        <button onClick={onClose}>닫기</button>
+        <h2>{epic.title}</h2>
+        <div>
+          <p>진척도: {epic.progress}%</p>
+          <h3>하위 이슈</h3>
+          <ul>
+            {epic.issues.map((issue, index) => (
+              <li key={index}>{issue}</li>
+            ))}
+          </ul>
+        </div>
+      </EpicDetailContainer>
+    );
+  }
 
   // 모달 생성
   const [epicModal, setEpicModal] = useState(false);
   const epicModalRef = useRef<HTMLDivElement | null>(null);
 
-  // 타임라인 기간 설정 버튼
+  // 타임라인 단위 설정 버튼
   const multiButton = (type:string)=>{
     switch (type){
       case 'month' : 
@@ -133,8 +163,8 @@ const Timeline = () => {
         maxDate = new Date(today.getFullYear(), today.getMonth() +6, today.getDate());        
         break;
       case 'week':
-        scale = 'week';
-        step = 1;
+        scale = 'day';
+        step = 7;
         minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         maxDate = new Date(today.getFullYear(), today.getMonth()+2, today.getDate());   
         break;
@@ -148,7 +178,8 @@ const Timeline = () => {
     }
 
     timeline.setOptions({
-      timeAxis: { scale, step }
+      timeAxis: { scale, step },
+      
     });
 
     timeline.setWindow(minDate, maxDate);
@@ -187,15 +218,14 @@ const Timeline = () => {
             <div className="sideEpic">
               {/*에픽 제목, 진척도 사이드바에 추가*/}
               {epics.map((epic, index) => (
-                <div key={index} className="epic-item">
-                  <IoIosAdd className="add"/>
-                  <div className="showepic">
+                <div key={index} className="epic-item" onClick={() => showDetailEpic(epic)}>
+                  <div className="epic-header">
                     <div className="epic-title">{epic.title}</div>
-                    <div className="progress-bar">
-                      <div className="progress" style={{ width: `${epic.progress}%` }}></div>
-                    </div>
+                    <IoIosAdd className="add"/>
                   </div>
-                  
+                  <div className="progress-bar">
+                    <div className="progress" style={{ width: `${epic.progress}%` }}></div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -217,6 +247,10 @@ const Timeline = () => {
           <div className="timeline-area">
             <div id="timeline" className="timeline" ref={timelineRef} />
           </div>
+
+          {selectedEpic && (
+          <EpicDetail epic={selectedEpic} onClose={() => setSelectedEpic(null)} />
+        )}
         </div>
 
         {/*에픽 생성 모달창*/}
@@ -244,6 +278,8 @@ const Timeline = () => {
             </ModalepicContent>
           </Modalepic>
         )}
+
+        
       </div>
   );
 };
@@ -287,4 +323,18 @@ const ButtonPart = styled.div`
 const Divider = styled.div`
   margin: 0 8px;
   color: #000;
+`;
+
+const EpicDetailContainer = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30%; /* 타임라인 오른쪽 30% 크기 */
+  height: 100%; /* 부모 컨테이너의 높이에 맞추기 */
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-left: 1px solid #ddd;
+  box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  z-index: 1000; /* 다른 요소 위에 표시되도록 */
 `;
