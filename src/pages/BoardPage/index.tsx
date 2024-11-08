@@ -27,6 +27,7 @@ const BoardPage = () => {
 export default BoardPage;
 
 const Wrapper = styled.div`
+  height: 100%;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -41,9 +42,10 @@ const TopCantainer = styled.div`
 
 const MiddleCantainer = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
-  padding: 20px 10px;
+  padding: 20px 0;
 `;
