@@ -7,87 +7,103 @@ import { FaCheckCircle } from "react-icons/fa";
 import { GrPowerCycle } from "react-icons/gr";
 
 import AddIssue from "./AddIssue";
+import Button from "@components/common/Button";
 
 const SprintPage = () => {
   return (
-    <Container>
-      <Top>
-        <Title>스프린트 이름</Title>
-        <Date>~10월 5일</Date>
-      </Top>
-      <BoardContents>
-        <TodoContainer>
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              padding: "0 15px",
-              alignItems: "center",
-            }}
-          >
-            <TodoTitle>
-              <HiPencilSquare color="#8A8A8A" style={{ marginRight: "8px" }} />
-              <span>To do</span>
-            </TodoTitle>
-            <TodoCount>2</TodoCount>
-          </div>
-          <IssueItem />
-          <IssueItem />
-          <AddIssue />
-        </TodoContainer>
-        <ProgressContainer>
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              padding: "0 15px",
-              alignItems: "center",
-            }}
-          >
-            <ProgressTitle>
-              <MdDirectionsRun color="#0099FF" style={{ marginRight: "8px" }} />
-              <span>In Progress</span>
-            </ProgressTitle>
-            <ProgressCount>0</ProgressCount>
-          </div>
-          <AddIssue />
-        </ProgressContainer>
-        <DoneContainer>
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              padding: "0 15px",
-              alignItems: "center",
-            }}
-          >
-            <DoneTitle>
-              <FaCheckCircle color="#6FC349" style={{ marginRight: "8px" }} />
-              <span>Done</span>
-            </DoneTitle>
-            <DoneCount>0</DoneCount>
-          </div>
-          <AddIssue />
-        </DoneContainer>
-        <HoldContainer>
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              padding: "0 15px",
-              alignItems: "center",
-            }}
-          >
-            <HoldTitle>
-              <GrPowerCycle color="#6C3091" style={{ marginRight: "8px" }} />
-              <span>Hold</span>
-            </HoldTitle>
-            <HoldCount>0</HoldCount>
-          </div>
-          <AddIssue />
-        </HoldContainer>
-      </BoardContents>
-    </Container>
+    <>
+      <Container>
+        <Top>
+          <Title>스프린트 이름</Title>
+          <Date>~10월 5일</Date>
+        </Top>
+        <BoardContents>
+          <TodoContainer>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                padding: "0 15px",
+                alignItems: "center",
+              }}
+            >
+              <TodoTitle>
+                <HiPencilSquare
+                  color="#8A8A8A"
+                  style={{ marginRight: "8px" }}
+                />
+                <span>To do</span>
+              </TodoTitle>
+              <TodoCount>2</TodoCount>
+            </div>
+            <IssueItem />
+            <IssueItem />
+            <AddIssue />
+          </TodoContainer>
+          <ProgressContainer>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                padding: "0 15px",
+                alignItems: "center",
+              }}
+            >
+              <ProgressTitle>
+                <MdDirectionsRun
+                  color="#0099FF"
+                  style={{ marginRight: "8px" }}
+                />
+                <span>In Progress</span>
+              </ProgressTitle>
+              <ProgressCount>0</ProgressCount>
+            </div>
+            <AddIssue />
+          </ProgressContainer>
+          <DoneContainer>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                padding: "0 15px",
+                alignItems: "center",
+              }}
+            >
+              <DoneTitle>
+                <FaCheckCircle color="#6FC349" style={{ marginRight: "8px" }} />
+                <span>Done</span>
+              </DoneTitle>
+              <DoneCount>0</DoneCount>
+            </div>
+            <AddIssue />
+          </DoneContainer>
+          <HoldContainer>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                padding: "0 15px",
+                alignItems: "center",
+              }}
+            >
+              <HoldTitle>
+                <GrPowerCycle color="#6C3091" style={{ marginRight: "8px" }} />
+                <span>Hold</span>
+              </HoldTitle>
+              <HoldCount>0</HoldCount>
+            </div>
+            <AddIssue />
+          </HoldContainer>
+        </BoardContents>
+      </Container>
+      <BottomCantainer>
+        <Button
+          title="스프린트 만들기"
+          padding="5px 15px"
+          style={{ fontWeight: "bold" }}
+        />
+      </BottomCantainer>
+    </>
   );
 };
 
@@ -98,6 +114,7 @@ const Container = styled.div`
   padding: 20px;
   background-color: #eee;
   border-radius: 20px;
+  margin-bottom: 20px;
 `;
 
 const Top = styled.div`
@@ -153,7 +170,6 @@ const TodoContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 25%;
-  // height: 300px;
   background-color: #f8f8f8;
   border-radius: 20px;
   padding: 10px 0 15px;
@@ -187,7 +203,6 @@ const ProgressContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 25%;
-  // height: 300px;
   background-color: #ebf7fc;
   border-radius: 20px;
   padding: 10px 0 15px;
@@ -221,7 +236,6 @@ const DoneContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 25%;
-  // height: 300px;
   background-color: #edf9e8;
   border-radius: 20px;
   padding: 10px 0 15px;
@@ -255,8 +269,14 @@ const HoldContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 25%;
-  // height: 300px;
   background-color: #efe8f9;
   border-radius: 20px;
   padding: 10px 0 15px;
+`;
+
+const BottomCantainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  padding-bottom: 20px;
 `;
