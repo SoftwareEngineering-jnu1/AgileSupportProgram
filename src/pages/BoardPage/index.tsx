@@ -10,12 +10,21 @@ const BoardPage = () => {
   return (
     <Wrapper>
       <TopCantainer>
-        <Button
-          title="스프린트 만들기"
-          padding="5px 15px"
-          style={{ fontWeight: "bold" }}
-          onClick={(e) => setHasSprint(!hasSprint)}
-        />
+        {hasSprint ? (
+          <Button
+            title="스프린트 시작"
+            padding="5px 15px"
+            style={{ fontWeight: "bold" }}
+            onClick={(e) => setHasSprint(!hasSprint)}
+          />
+        ) : (
+          <Button
+            title="스프린트 만들기"
+            padding="5px 15px"
+            style={{ fontWeight: "bold" }}
+            onClick={(e) => setHasSprint(!hasSprint)}
+          />
+        )}
       </TopCantainer>
       <MiddleCantainer>
         {hasSprint ? <SprintPage /> : <NonSprintPage />}
