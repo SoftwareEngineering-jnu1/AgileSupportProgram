@@ -60,9 +60,8 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  // border-right: 1px solid #efefef;
+  border-right: 1px solid #efefef;
   box-shadow: 4px 0 5px #efefef;
-  background-color: #efefef;
 `;
 
 const Container = styled.div`
