@@ -5,7 +5,8 @@ import { HiPencilSquare } from "react-icons/hi2";
 import { MdDirectionsRun } from "react-icons/md";
 import { FaCheckCircle } from "react-icons/fa";
 import { GrPowerCycle } from "react-icons/gr";
-import { FaPlus } from "react-icons/fa6";
+
+import AddIssue from "./AddIssue";
 
 const SprintPage = () => {
   return (
@@ -32,18 +33,7 @@ const SprintPage = () => {
           </div>
           <IssueItem />
           <IssueItem />
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              padding: "0 15px",
-              marginTop: "10px",
-            }}
-          >
-            <FaPlus style={{ marginRight: "8px" }} />
-            이슈 만들기
-          </div>
+          <AddIssue />
         </TodoContainer>
         <ProgressContainer>
           <div
@@ -60,18 +50,7 @@ const SprintPage = () => {
             </ProgressTitle>
             <ProgressCount>0</ProgressCount>
           </div>
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              padding: "0 15px",
-              marginTop: "10px",
-            }}
-          >
-            <FaPlus style={{ marginRight: "8px" }} />
-            이슈 만들기
-          </div>
+          <AddIssue />
         </ProgressContainer>
         <DoneContainer>
           <div
@@ -88,18 +67,7 @@ const SprintPage = () => {
             </DoneTitle>
             <DoneCount>0</DoneCount>
           </div>
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              padding: "0 15px",
-              marginTop: "10px",
-            }}
-          >
-            <FaPlus style={{ marginRight: "8px" }} />
-            이슈 만들기
-          </div>
+          <AddIssue />
         </DoneContainer>
         <HoldContainer>
           <div
@@ -116,18 +84,7 @@ const SprintPage = () => {
             </HoldTitle>
             <HoldCount>0</HoldCount>
           </div>
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              padding: "0 15px",
-              marginTop: "10px",
-            }}
-          >
-            <FaPlus style={{ marginRight: "8px" }} />
-            이슈 만들기
-          </div>
+          <AddIssue />
         </HoldContainer>
       </BoardContents>
     </Container>
