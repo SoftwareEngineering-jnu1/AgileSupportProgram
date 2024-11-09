@@ -10,6 +10,7 @@ const AddIssue = () => {
         alignItems: "center",
         padding: "0 15px",
         marginTop: "10px",
+        cursor: "pointer",
       }}
     >
       <FaPlus style={{ marginRight: "8px" }} />
