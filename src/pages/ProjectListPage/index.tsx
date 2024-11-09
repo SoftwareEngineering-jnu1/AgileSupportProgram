@@ -11,7 +11,7 @@ import ProjectList from "./ProjectList";
 import EmptyProject from "./EmptyProject";
 
 const ProjectListPage = () => {
-  const [hasProject, setHasProject] = useState(true);
+  const [hasProject, setHasProject] = useState(false);
 
   return (
     <Wrapper>
@@ -38,6 +38,7 @@ const ProjectListPage = () => {
             bgColor="#7895B2"
             color="#fff"
             style={{ fontWeight: "bold", height: "40px" }}
+            onClick={() => setHasProject(!hasProject)}
           >
             <FaCirclePlus size={30} />
             프로젝트 생성
