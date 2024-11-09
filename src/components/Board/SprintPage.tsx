@@ -97,11 +97,9 @@ const SprintPage = () => {
         </BoardContents>
       </Container>
       <BottomCantainer>
-        <Button
-          title="스프린트 만들기"
-          padding="5px 15px"
-          style={{ fontWeight: "bold" }}
-        />
+        <Button padding="5px 15px" style={{ fontWeight: "bold" }}>
+          스프린트 만들기
+        </Button>
       </BottomCantainer>
     </>
   );
