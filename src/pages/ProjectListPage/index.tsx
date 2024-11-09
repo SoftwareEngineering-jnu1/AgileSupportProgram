@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useState } from "react";
 
 import { Link } from "react-router-dom";
 import { RouterPath } from "@routes/path";
@@ -6,9 +7,12 @@ import Button from "@components/common/Button";
 
 import { FaUserCircle } from "react-icons/fa";
 import { FaCirclePlus } from "react-icons/fa6";
-import ProjectItem from "@components/ProjectList/ProjectItem";
+import ProjectList from "./ProjectList";
+import EmptyProject from "./EmptyProject";
 
 const ProjectListPage = () => {
+  const [hasProject, setHasProject] = useState(true);
+
   return (
     <Wrapper>
       <TopContainer>
@@ -41,19 +45,7 @@ const ProjectListPage = () => {
         </div>
         <Divider />
       </MiddleContainer>
-      <ProjectContainer>
-        <ProjectItem />
-        <ProjectItem />
-        <ProjectItem />
-        <ProjectItem />
-        <ProjectItem />
-        <ProjectItem />
-        <ProjectItem />
-        <ProjectItem />
-        <ProjectItem />
-        <ProjectItem />
-        <ProjectItem />
-      </ProjectContainer>
+      {hasProject ? <ProjectList /> : <EmptyProject />}
     </Wrapper>
   );
 };
@@ -88,13 +80,4 @@ const Divider = styled.div`
   height: 1px;
   background-color: #7e7e7e;
   margin: 10px 0 20px;
-`;
-
-const ProjectContainer = styled.div`
-  display: flex;
-  gap: 20px;
-  // width: 100%;
-  flex-wrap: wrap;
-  align-items: space-evenly;
-  justify-content: flex-start;
 `;
