@@ -16,7 +16,6 @@ const SignUpPage: React.FC = () => {
     password: '',
     confirmpassword: '',
   });
-
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,6 +32,7 @@ const SignUpPage: React.FC = () => {
       return;
     }
     console.log('Form Data:', form);
+    alert('회원가입이 완료되었습니다!')
     navigate('/login');
   };
 

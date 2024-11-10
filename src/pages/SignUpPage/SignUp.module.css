@@ -1,7 +1,7 @@
   .form {
     display: flex;
     flex-direction: column;
-    width: 300px;
+    width: 320px;
     margin: 0 auto;
     padding: 20px;
     border: 1px solid #ccc;
@@ -24,7 +24,7 @@
   }
   
   .input {
-    width: 277px;
+    width: 280px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -32,6 +32,7 @@
   }
   
   .button {
+    width: 280px;
     padding: 5px 20px;
     border: none;
     border-radius: 10px;
