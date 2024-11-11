@@ -4,6 +4,7 @@ import Button from '@components/common/Button';
 import styled from "styled-components";
 import { IoIosAdd } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
+import { IoIosClose } from "react-icons/io";
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 import './Timeline.css';
 
@@ -112,7 +113,7 @@ const Timeline = () => {
   const EpicDetail = ({epic, onClose}: EpicDetailProps) => {
     return (
       <EpicDetailContainer>
-        <button onClick={onClose}>닫기</button>
+        <IoIosClose className='close' onClick={onClose}/>
         <h2>{epic.title}</h2>
         <div>
           <div className="progress-bar" style={{ margin: '0 30px'  }}>
