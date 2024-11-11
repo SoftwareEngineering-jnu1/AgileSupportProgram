@@ -314,8 +314,6 @@ const Timeline = () => {
           </Modalepic>
         )}
 
-
-        // 하위 이슈 추가 모달
         {epicModal && selectedEpic && (
           <Modalepic onClick={() => setEpicModal(false)}>
             <ModalepicContent ref={epicModalRef} onClick={e => e.stopPropagation()}>
