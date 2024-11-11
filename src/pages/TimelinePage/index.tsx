@@ -95,8 +95,8 @@ const Timeline = () => {
           items.add({
             id: `${epicIndex}-${issueIndex}`, // 고유한 아이디
             content: issue,
-            start: epicstart,
-            end: epicend,
+            start: issuestart,
+            end: issuesend,
             group: epicIndex,
           });
         });
