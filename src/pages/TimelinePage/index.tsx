@@ -115,7 +115,9 @@ const Timeline = () => {
         <button onClick={onClose}>닫기</button>
         <h2>{epic.title}</h2>
         <div>
-          <p>진척도: {epic.progress}%</p>
+          <div className="progress-bar" style={{ margin: '0 30px'  }}>
+            <div className="progress" style={{ width: `${epic.progress}%` }}></div>
+          </div>
           <h3>하위 이슈</h3>
           <ul>
             {epic.issues.map((issue, index) => (
@@ -327,14 +329,12 @@ const Divider = styled.div`
 
 const EpicDetailContainer = styled.div`
   position: absolute;
-  top: 0;
   right: 0;
-  width: 30%; /* 타임라인 오른쪽 30% 크기 */
-  height: 100%; /* 부모 컨테이너의 높이에 맞추기 */
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-left: 1px solid #ddd;
-  box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
-  overflow-y: auto;
-  z-index: 1000; /* 다른 요소 위에 표시되도록 */
+  top: 0;
+  bottom: 0;
+  width: 25%; /* 원하는 넓이로 설정 */
+  border-left: 1px solid #ccc; /* 네모 칸의 경계선 표현 */
+  box-sizing: border-box;
+  background-color: #f8f8f8; /* 배경색 조정 */
+}
 `;
