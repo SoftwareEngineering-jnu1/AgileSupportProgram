@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { IoIosAdd } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
+import { IoPencil } from "react-icons/io5";
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 import './Timeline.css';
 
@@ -112,6 +113,7 @@ const Timeline = () => {
     if (newEpic) {
       setEpics([...epics, { title: newEpic, progress:0, issues:[]}]);
       setNewEpic('');
+      setEpicModal(false);
     }
   };
 
@@ -130,18 +132,20 @@ const Timeline = () => {
     return (
       <EpicDetailContainer>
         <IoIosClose className='close' onClick={onClose}/>
-        <h2>{epic.title}</h2>
-        <div>
-          <div className="progress-bar" style={{ margin: '0 30px'  }}>
+          <div className="epic-title2">{epic.title}
+            <IoPencil className="editTitle" />
+          </div>
+          <div className="progress-bar" style={{ margin: '0 20px', padding: '8px', borderRadius: '10px'  }}>
             <div className="progress" style={{ width: `${epic.progress}%` }}></div>
           </div>
+        
           <h3>하위 이슈</h3>
+
           <ul>
             {epic.issues.map((issue, index) => (
               <li key={index}>{issue}</li>
             ))}
           </ul>
-        </div>
       </EpicDetailContainer>
     );
   }
@@ -255,7 +259,7 @@ const Timeline = () => {
               {epics.map((epic, index) => (
                 <div key={index} className="epic-item" onClick={() => showDetailEpic(epic)}>
                   <div className="epic-header">
-                    <div className="epic-title">{epic.title}</div>
+                    <div className="epic-title1">{epic.title}</div>
                     <IoIosAdd className="add" onClick={()=> addIssueModal(index)}/>
                   </div>
                   <div className="progress-bar">
