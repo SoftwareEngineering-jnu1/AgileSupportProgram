@@ -14,7 +14,7 @@ const Home: React.FC = () => {
 
   return ( 
   <div className={styles.homediv}>
-    <img src="/로고.png" alt="logo" className={styles.logo}/>
+    <img src="/images/로고.png" alt="logo" className={styles.logo}/>
     <div className={styles.hometext}>
       <div className={styles.lefttext}>팀 프로젝트를<br/>더 효율적으로 관리<br/></div>
       <div className={styles.righttext}>프로젝트를<br/>한눈에 볼 수 있게</div>

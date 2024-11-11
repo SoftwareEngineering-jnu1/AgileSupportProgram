@@ -39,7 +39,7 @@ const SignUpPage: React.FC = () => {
   return (
   <form className={style.form} onSubmit={handleSubmit}>
     <div className={style.logodiv}>
-      <img src="/로고.png" alt="logo" className={style.logo}/>
+      <img src="/images/로고.png" alt="logo" className={style.logo}/>
       <span className={style.logoText}>로그인</span>
       </div>
     <div className={style.div}>

@@ -31,7 +31,7 @@ const LoginPage: React.FC = () => {
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
       <div className={styles.logodiv}>
-      <img src="/로고.png" alt="logo" className={styles.logo}/>
+      <img src="/images/로고.png" alt="logo" className={styles.logo}/>
       <span className={styles.logoText}>로그인</span>
       </div>
       
