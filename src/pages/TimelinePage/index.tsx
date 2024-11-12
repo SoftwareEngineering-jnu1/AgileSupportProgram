@@ -19,12 +19,12 @@ const Timeline = () => {
 
   const users = ["User1", "User2", "User3", "User4"];
 
-  const items = useRef(new DataSet<Item>([]));
-  const groups = useRef(new DataSet<{ id: number; content: string }>([]));
-
   useEffect(() => {
     if (timelineRef.current) {
-      
+      // 데이터셋 초기화
+      const items = new DataSet<Item>([]);
+      const groups = new DataSet<{ id: number; content: string }>();
+
       //날짜 설정
       const today = new Date();
       const startDate = new Date(today.getFullYear()-2, today.getMonth(), today.getDate());
@@ -43,55 +43,54 @@ const Timeline = () => {
         margin: { item: 10 },
         orientation: 'top',
 
+   //     zoomMin : 1000 * 60 * 60 * 24 * 4 ,  //최소 줌 1개월
+   //     zoomMax : 1000 * 60 * 60 * 24 * 365 * 4, //최대 줌 4년
         timeAxis: {
-          scale: 'month' as TimelineTimeAxisScaleType,  
-          step: 1,        
+          scale: 'month' as TimelineTimeAxisScaleType,  // 초기 단위를 월로 설정
+          step: 1,         // 1개월 단위
         },
 
       };
-      // 타임라인 생성
-      const createtimeline = new VisTimeline(timelineRef.current, items.current, groups.current, options);
+      //타임라인 생성
+      const createtimeline = new VisTimeline(timelineRef.current, items, groups, options);
       setTimeline(createtimeline);
 
-      createtimeline.setWindow(minDate, maxDate, { animation: false });
+      createtimeline.setWindow(minDate, maxDate, {animation: false});
 
-      return () => createtimeline.destroy();
-    }
-  }, []); // 빈 배열로 초기화하여 한 번만 실행되도록 함
-
-  useEffect(() => {
-    if (timeline) {
-      // 에픽마다 그룹 추가
+    // 에픽마다 그룹 추가
       epics.forEach((epic, epicIndex) => {
         // 그룹 생성 (에픽 제목이 왼쪽에 표시됨)
-        groups.current.add({ id: epicIndex, content: epic.title });
+        groups.add({ id: epicIndex, content: epic.title });
 
-        const epicstart = new Date(2024, 11, 5);
-        const epicend = new Date(2024, 11, 30);
-
-        items.current.add({
+        const epicstart = new Date(2024,11,5);
+        const epicend = new Date(2024,11,30);
+        
+        items.add({
           id: `${epicIndex}`,
           content: epic.title,
           start: epicstart,
           end: epicend,
-          group: epicIndex,
+          group: epicIndex, 
         });
 
         const issuestart = new Date();
         const issuesend = new Date();
 
         epic.issues.forEach((issue, issueIndex) => {
-          items.current.add({
-            id: `${epicIndex}-${issueIndex}`,
+          items.add({
+            id: `${epicIndex}-${issueIndex}`, // 고유한 아이디
             content: issue,
             start: issuestart,
             end: issuesend,
             group: epicIndex,
           });
         });
+        
       });
+
+      return () => createtimeline.destroy();
     }
-  }, [epics, timeline]); // `epics`가 변경될 때마다 데이터셋을 업데이트
+  }, [epics]);
 
   // 에픽 추가
   const addEpic = () => {
@@ -106,6 +105,8 @@ const Timeline = () => {
   const showDetailEpic = (epic: Epic) => {
     setSelectedEpic(epic);
   }
+
+  
 
   const EpicDetail = ({epic, onClose}: EpicDetailProps) => {
     return (
@@ -357,7 +358,7 @@ const ButtonContainer = styled.div`
   align-items: center;
   background-color: #f6f3ed;
   border-radius: 10px;
-  border: 1px solid #000;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   font-size: 16px;
   padding: 15px;
 `
