@@ -1,9 +1,18 @@
-.profilediv {
-    position:absolute;
-    left: 20px;
+.containeruser {
+    display: fex;
+    flex-direction: coulm;
+    position: absolute;
+    left: 3%;
+    margin: 0 auto;
 }
-.projectdiv {
-    display: flex;
-    justify-content: flex-end;
-    margin-right: 10%;
+.containerlist {
+    display: fex;
+    flex-direction: coulm;
+    position:absolute;
+    right: 3%;
+    margin: 0 auto;
+}
+.usercircle {
+   margin-top: 15%;
+   margin-bottom: 5px;
 }

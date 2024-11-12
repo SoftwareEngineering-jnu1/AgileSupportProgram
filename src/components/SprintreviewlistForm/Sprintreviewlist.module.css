@@ -1,0 +1,8 @@
+.splistcontainer {
+    display: flex;
+    width: 600px;
+    align-items: center;
+}
+.span {
+    text-align: left;
+}

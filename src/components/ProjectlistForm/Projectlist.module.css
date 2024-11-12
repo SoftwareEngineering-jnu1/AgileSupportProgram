@@ -1,5 +1,15 @@
+.pjlistcontainer {
+    display: flex;
+    width: 600px;
+    justify-content: space-between;
+    align-items: center;
+
+}
+.span {
+    text-align: left;
+}
 .projectLink {
-    margin-left: 10px;
+    text-align: right;
     display: inline-block;
     color: #008CBA;
     cursor: pointer;
