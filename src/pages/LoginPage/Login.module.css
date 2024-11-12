@@ -1,77 +1,77 @@
-  .form {
-    display: flex;
-    flex-direction: column;
-    width: 350px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-    margin-top: 100px;
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  margin-top: 100px;
 }
-  .input::placeholder {
-    color: #aaa;
+.input::placeholder {
+  color: #aaa;
 }
 
-  .div {
-    margin-bottom: 15px;
-  }
-  
-  .label {
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .input {
-    width: 328px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-  }
-  
-  .loginbutton {
-    padding: 8px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #AEBDCA;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 15px;
-  }
-  .loginbutton:hover {
-    background-color: #97a4af;
-  }
+.div {
+  margin-bottom: 15px;
+}
 
-  .signupbutton {
-    margin-top: 15px;
-    padding: 8px 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    color: #000;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
-  .signupbutton:hover {
-    background-color: #ececec;
-  }
+.label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
 
-  .logodiv {
-    display:flex;
-    align-items: center;
-    margin: 0 auto 15px;
-    margin-top: 20px;
-   }
-   .logo {
-    width: 80px;
-    margin-right:10px;
-   }
-   .logoText {
-    font-size: 30px;
-    font-weight: bold;
-    color: #AEBDCA;
-   }
+.input {
+  width: 328px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.loginbutton {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #aebdca;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+.loginbutton:hover {
+  background-color: #97a4af;
+}
+
+.signupbutton {
+  margin-top: 15px;
+  padding: 8px 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #000;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.signupbutton:hover {
+  background-color: #ececec;
+}
+
+.logodiv {
+  display: flex;
+  align-items: center;
+  margin: 0 auto 15px;
+  margin-top: 20px;
+}
+.logo {
+  width: 80px;
+  margin-right: 10px;
+}
+.logoText {
+  font-size: 30px;
+  font-weight: bold;
+  color: #aebdca;
+}

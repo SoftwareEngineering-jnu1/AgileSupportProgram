@@ -18,39 +18,33 @@ const Menubar = () => {
           to={RouterPath.timelinePage}
           active={pagePath === RouterPath.timelinePage}
         >
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <MdViewTimeline />
-            타임라인
-          </div>
+          <MdViewTimeline style={{ marginRight: "8px", fontSize: "1.2em" }} />
+          타임라인
         </MenuLink>
+        <Space>
+          <hr />
+        </Space>
         <MenuLink
           to={RouterPath.boardPage}
           active={pagePath === RouterPath.boardPage}
         >
-          <Space>
-            <hr />
-          </Space>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <MdDashboard />
-            칸반보드
-          </div>
+          <MdDashboard style={{ marginRight: "8px", fontSize: "1.2em" }} />
+          칸반보드
         </MenuLink>
+        <Space>
+          <hr />
+        </Space>
         <MenuLink
           to={RouterPath.memoPage}
           active={pagePath === RouterPath.memoPage}
         >
-          <Space>
-            <hr />
-          </Space>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <FaNoteSticky />
-            메모
-          </div>
+          <FaNoteSticky style={{ marginRight: "8px", fontSize: "1.2em" }} />
+          메모
         </MenuLink>
       </Container>
       <GitLinkWrapper>
         <GitLink onClick={() => window.open("https://github.com/")}>
-          <IoLogoGithub size={30} />
+          <IoLogoGithub size={30} style={{ marginRight: "8px" }} />
           Git
         </GitLink>
       </GitLinkWrapper>
@@ -66,7 +60,8 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  background-color: #efefef;
+  border-right: 1px solid #efefef;
+  box-shadow: 4px 0 5px #efefef;
 `;
 
 const Container = styled.div`
@@ -79,16 +74,17 @@ const Container = styled.div`
 const MenuLink = styled(Link)<{ active: boolean }>`
   text-decoration: none;
   color: ${(props) => (props.active ? "#000" : "#999")};
-  font-weight: bold;
-  text-align: start;
   font-size: 30px;
   transition: color 0.3s ease;
+  display: flex; /* 추가 */
+  align-items: center; /* 추가 */
   &:hover {
     color: #000;
   }
 `;
 
 const Space = styled.div`
+  padding: 5px 0;
   width: 100%;
   height: 20px;
 `;
@@ -102,7 +98,6 @@ const GitLinkWrapper = styled.div`
 
 const GitLink = styled.a`
   display: flex;
-  align-items: center;
   color: #aebdca;
   fontweight: bold;
   font-size: 26px;
