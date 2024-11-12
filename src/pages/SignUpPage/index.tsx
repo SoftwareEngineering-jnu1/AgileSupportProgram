@@ -16,7 +16,6 @@ const SignUpPage: React.FC = () => {
     password: '',
     confirmpassword: '',
   });
-
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,13 +32,14 @@ const SignUpPage: React.FC = () => {
       return;
     }
     console.log('Form Data:', form);
+    alert('회원가입이 완료되었습니다!')
     navigate('/login');
   };
 
   return (
   <form className={style.form} onSubmit={handleSubmit}>
     <div className={style.logodiv}>
-      <img src="/로고.png" alt="logo" className={style.logo}/>
+      <img src="/images/로고.png" alt="logo" className={style.logo}/>
       <span className={style.logoText}>로그인</span>
       </div>
     <div className={style.div}>
