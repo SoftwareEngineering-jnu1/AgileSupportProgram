@@ -270,7 +270,6 @@ const Timeline = () => {
             </div>
             <div className="sideButton">
               <Button
-                title="에픽 만들기"
                 bgColor="#000"
                 padding="5px 30px"
                 radius="20px"
@@ -278,7 +277,7 @@ const Timeline = () => {
                 fontSize="15px"
                 style={{ fontWeight: "bold", marginTop: 'auto' }}
                 onClick ={() => setEpicModal(true)}
-              />
+            >에픽만들기</Button>
             </div>
           </div>
 
@@ -306,12 +305,11 @@ const Timeline = () => {
                 />
                 <br/>
                 <Button
-                  title="만들기"
                   bgColor="#AEBDCA"
                   padding="20"
                   fontSize="15px"
                   onClick={addEpic} // 에픽 추가
-                />
+                >만들기</Button>
               </div>
               
             </ModalepicContent>
@@ -330,12 +328,11 @@ const Timeline = () => {
                 />
                 <br />
                 <Button
-                  title="추가"
                   bgColor="#AEBDCA"
                   padding="20"
                   fontSize="15px"
                   onClick={() => addIssue(epics.indexOf(selectedEpic!))}
-                />
+                >추가</Button>
               </div>
             </ModalepicContent>
           </Modalepic>
