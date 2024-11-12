@@ -113,7 +113,7 @@ const Timeline = () => {
       <EpicDetailContainer>
         <IoIosClose className='close' onClick={onClose}/>
           <div className='epic-title2'>{epic.title}
-            <IoPencil className='editTitle' />
+            <IoPencil className='edit-title' />
           </div>
           <div className='progress-bar' style={{ margin: '0 20px', padding: '8px', borderRadius: '10px'  }}>
             <div className='progress' style={{ width: `${epic.progress}%` }}></div>
@@ -225,7 +225,7 @@ const Timeline = () => {
               key={index} 
               size={35} />
             ))}
-           {users.length > 3 && <span>+{users.length - 3}</span>}
+           {users.length > 3 && <div className='userShow'>+{users.length - 3}</div>}
           </div>
 
           <ButtonContainer>
@@ -358,6 +358,7 @@ const ButtonContainer = styled.div`
   align-items: center;
   background-color: #f6f3ed;
   border-radius: 10px;
+  border: 1px solid #000;
   font-size: 16px;
   padding: 15px;
 `
