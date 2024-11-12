@@ -1,3 +1,4 @@
+
   .form {
     display: flex;
     align-items: center;
@@ -11,8 +12,8 @@
     background-color: #fff;
     margin-top: 100px;
 }
-  .input::placeholder {
-    color: #aaa;
+.input::placeholder {
+  color: #aaa;
 }
 
   .div {
@@ -63,18 +64,18 @@
     background-color: #ececec;
   }
 
-  .logodiv {
-    display:flex;
-    align-items: center;
-    margin: 0 auto 15px;
-    margin-top: 20px;
-   }
-   .logo {
-    width: 80px;
-    margin-right:10px;
-   }
-   .logoText {
-    font-size: 30px;
-    font-weight: bold;
-    color: #AEBDCA;
-   }
+.logodiv {
+  display: flex;
+  align-items: center;
+  margin: 0 auto 15px;
+  margin-top: 20px;
+}
+.logo {
+  width: 80px;
+  margin-right: 10px;
+}
+.logoText {
+  font-size: 30px;
+  font-weight: bold;
+  color: #aebdca;
+}

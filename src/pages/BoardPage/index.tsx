@@ -10,12 +10,23 @@ const BoardPage = () => {
   return (
     <Wrapper>
       <TopCantainer>
-        <Button
-          title="스프린트 만들기"
-          padding="5px 15px"
-          style={{ fontWeight: "bold" }}
-          onClick={(e) => setHasSprint(!hasSprint)}
-        />
+        {hasSprint ? (
+          <Button
+            padding="5px 15px"
+            style={{ fontWeight: "bold" }}
+            onClick={(e) => setHasSprint(!hasSprint)}
+          >
+            스프린트 시작
+          </Button>
+        ) : (
+          <Button
+            padding="5px 15px"
+            style={{ fontWeight: "bold" }}
+            onClick={(e) => setHasSprint(!hasSprint)}
+          >
+            스프린트 만들기
+          </Button>
+        )}
       </TopCantainer>
       <MiddleCantainer>
         {hasSprint ? <SprintPage /> : <NonSprintPage />}
@@ -27,6 +38,7 @@ const BoardPage = () => {
 export default BoardPage;
 
 const Wrapper = styled.div`
+  height: 100%;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -41,9 +53,10 @@ const TopCantainer = styled.div`
 
 const MiddleCantainer = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
-  padding: 20px 10px;
+  padding: 20px 0;
 `;

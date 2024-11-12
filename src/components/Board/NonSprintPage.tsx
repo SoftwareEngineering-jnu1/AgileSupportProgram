@@ -26,6 +26,5 @@ const DesBig = styled.span`
 `;
 const DesSmall = styled.span`
   font-size: 14px;
-  font-weight: bold;
   color: #8a8a8a;
 `;
