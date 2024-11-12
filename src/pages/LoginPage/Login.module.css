@@ -1,5 +1,7 @@
+
   .form {
     display: flex;
+    align-items: center;
     flex-direction: column;
     width: 350px;
     margin: 0 auto;
@@ -10,8 +12,8 @@
     background-color: #fff;
     margin-top: 100px;
 }
-  .input::placeholder {
-    color: #aaa;
+.input::placeholder {
+  color: #aaa;
 }
 
   .div {
@@ -24,7 +26,7 @@
   }
   
   .input {
-    width: 328px;
+    width: 300px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -32,6 +34,7 @@
   }
   
   .loginbutton {
+    width: 300px;
     padding: 8px 20px;
     border: none;
     border-radius: 5px;
@@ -46,6 +49,7 @@
   }
 
   .signupbutton {
+    width: 300px;
     margin-top: 15px;
     padding: 8px 20px;
     border: 1px solid #ccc;
@@ -60,18 +64,18 @@
     background-color: #ececec;
   }
 
-  .logodiv {
-    display:flex;
-    align-items: center;
-    margin: 0 auto 15px;
-    margin-top: 20px;
-   }
-   .logo {
-    width: 80px;
-    margin-right:10px;
-   }
-   .logoText {
-    font-size: 30px;
-    font-weight: bold;
-    color: #AEBDCA;
-   }
+.logodiv {
+  display: flex;
+  align-items: center;
+  margin: 0 auto 15px;
+  margin-top: 20px;
+}
+.logo {
+  width: 80px;
+  margin-right: 10px;
+}
+.logoText {
+  font-size: 30px;
+  font-weight: bold;
+  color: #aebdca;
+}

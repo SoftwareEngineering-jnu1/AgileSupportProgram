@@ -1,0 +1,9 @@
+.profilediv {
+    position:absolute;
+    left: 20px;
+}
+.projectdiv {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 10%;
+}

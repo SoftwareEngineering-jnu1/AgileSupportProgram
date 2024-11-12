@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  title: string;
+  children: React.ReactNode;
   padding: string;
   fontSize?: string;
   bgColor?: string;
@@ -12,7 +12,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button = ({
   onClick,
-  title,
+  children,
   bgColor = "#AEBDCA",
   padding,
   radius = "10px",
@@ -30,7 +30,7 @@ const Button = ({
       fontSize={fontSize}
       {...rest}
     >
-      {title}
+      {children}
     </CustomButton>
   );
 };
@@ -51,6 +51,10 @@ const CustomButton = styled.button<{
   font-size: ${(props) => props.fontSize};
   border: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   transition: opacity 0.3s ease;
   &:hover {
     opacity: 0.8;
