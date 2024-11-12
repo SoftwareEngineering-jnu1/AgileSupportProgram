@@ -2,9 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { DataSet, TimelineTimeAxisScaleType, Timeline as VisTimeline } from 'vis-timeline/standalone';
 import Button from '@components/common/Button';
 import styled from "styled-components";
-import { IoIosAdd } from "react-icons/io";
+import { IoIosAdd, IoIosClose } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
-import { IoIosClose } from "react-icons/io";
 import { IoPencil } from "react-icons/io5";
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 import './Timeline.css';
@@ -260,13 +259,13 @@ const Timeline = () => {
             <div className='sideButton'>
               <Button
                 bgColor="#000"
-                padding="5px 30px"
+                padding="10px 30px"
                 radius="20px"
                 color="#fff"
                 fontSize="15px"
-                style={{ fontWeight: "bold", marginTop: 'auto' }}
+                style={{ position:'relative', fontWeight:'bold', marginTop: 'auto', }}
                 onClick ={() => setEpicModal(true)}
-            >에픽만들기</Button>
+            ><IoIosAdd size={20} style={{position:'absolute', left:0, marginLeft:'12px'}}/>에픽만들기</Button>
             </div>
           </div>
 
