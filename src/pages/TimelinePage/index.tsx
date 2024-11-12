@@ -8,22 +8,7 @@ import { IoIosClose } from "react-icons/io";
 import { IoPencil } from "react-icons/io5";
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 import './Timeline.css';
-
-// 에픽 타입 정의
-type Epic = {
-  title: string;
-  progress:number; //진행률
-  issues: string[];
-};
-
-// Item 타입 정의
-type Item = {
-  id: string;
-  content: string;
-  start: Date;
-  end: Date;
-  group: number;
-};
+import type { Epic, Item, EpicDetailProps } from './type';
 
 const Timeline = () => {
   const [epics, setEpics] = useState<Epic[]>([]);
@@ -122,11 +107,7 @@ const Timeline = () => {
     setSelectedEpic(epic);
   }
 
-  type EpicDetailProps={
-    epic: Epic;
-    onClose: () => void;
-    onAddIssue: (epicIndex: number)=> void;
-  };
+  
 
   const EpicDetail = ({epic, onClose}: EpicDetailProps) => {
     return (
@@ -399,9 +380,9 @@ const EpicDetailContainer = styled.div`
   right: 0;
   top: 0;
   bottom: 0;
-  width: 25%; /* 원하는 넓이로 설정 */
-  border-left: 1px solid #ccc; /* 네모 칸의 경계선 표현 */
+  width: 25%; 
+  border-left: 1px solid #ccc; 
   box-sizing: border-box;
-  background-color: #f8f8f8; /* 배경색 조정 */
+  background-color: #f8f8f8; /* 배경색 흰색 or 회색? */
 }
 `;
