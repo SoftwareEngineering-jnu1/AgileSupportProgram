@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ProfileForm from '../../components/ProfileInputForm/ProfileForm';
 import Projectlist from '../../components/ProjectlistForm/Projectlist';
 import style from './MyPage.module.css';
