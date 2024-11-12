@@ -118,10 +118,10 @@
 
 .add {
     cursor: pointer;
-    font-size: 20px; /* 아이콘 크기 고정 */
-    flex-shrink: 0; /* 아이콘 크기가 줄어들지 않게 고정 */
-    width: 24px; /* 고정된 너비 */
-    height: 24px; /* 고정된 높이 */
+    font-size: 20px; 
+    flex-shrink: 0; 
+    width: 24px; 
+    height: 24px; 
     margin-bottom: 20px;
   }
 
@@ -131,12 +131,29 @@
     cursor: pointer;
     font-size: 20px;
     flex-shrink: 0;
-    width: 24px; /* 고정된 너비 */
-    height: 24px; /* 고정된 높이 */
+    width: 24px; 
+    height: 24px; 
     margin: 10px;
 }
 
 .editTitle {
     cursor: pointer;
     margin:5px;
+}
+
+.issueContainer {
+    height:40px;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid #969696;
+    margin: 0 20px;
+    
+    max-height: 300px; 
+}
+
+.issueAdd {
+    margin-top: 5px;
+    margin-left: 5px;
+    height: 30px;
+    display: flex;
 }

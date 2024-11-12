@@ -132,20 +132,28 @@ const Timeline = () => {
     return (
       <EpicDetailContainer>
         <IoIosClose className='close' onClick={onClose}/>
-          <div className="epic-title2">{epic.title}
-            <IoPencil className="editTitle" />
+          <div className='epic-title2'>{epic.title}
+            <IoPencil className='editTitle' />
           </div>
-          <div className="progress-bar" style={{ margin: '0 20px', padding: '8px', borderRadius: '10px'  }}>
-            <div className="progress" style={{ width: `${epic.progress}%` }}></div>
+          <div className='progress-bar' style={{ margin: '0 20px', padding: '8px', borderRadius: '10px'  }}>
+            <div className='progress' style={{ width: `${epic.progress}%` }}></div>
           </div>
         
-          <h3>하위 이슈</h3>
+          <div className='epic-title2' style={{fontSize: '15px', fontWeight: 'normal'}}>하위 이슈</div>
+          <div className='issueContainer'>
+            <div className='issueAdd'>
+              <IoIosAdd className='add'/>
+              <div style={{fontSize: '15px', marginTop:'2px'}}>이슈 만들기</div>
+            </div>
+            
+            <ul>
+              {epic.issues.map((issue, index) => (
+                <li key={index}>{issue}</li>
+              ))}
+            </ul>
 
-          <ul>
-            {epic.issues.map((issue, index) => (
-              <li key={index}>{issue}</li>
-            ))}
-          </ul>
+          </div>
+      
       </EpicDetailContainer>
     );
   }
@@ -226,14 +234,14 @@ const Timeline = () => {
 
   return (
     
-      <div className="timeline-all">
+      <div className='timeline-all'>
         
-        <div className="topbar">
+        <div className='topbar'>
           {/*사용자 그룹 */}
-          <div className="userGrop">
+          <div className='userGrop'>
             {users.slice(0, 3).map((user, index) => (
             <FaUserCircle
-              className="userIcon"
+              className='userIcon'
               key={index} 
               size={35} />
             ))}
@@ -249,26 +257,26 @@ const Timeline = () => {
           </ButtonContainer>
         </div>
 
-        <div className="timeline-container">
+        <div className='timeline-container'>
           {/* 왼쪽 사이드바 */}
-          <div className="sidebar">
+          <div className='sidebar'>
             <div className='blank'></div>
             
-            <div className="sideEpic">
+            <div className='sideEpic'>
               {/*에픽 제목, 진척도 사이드바에 추가*/}
               {epics.map((epic, index) => (
-                <div key={index} className="epic-item" onClick={() => showDetailEpic(epic)}>
-                  <div className="epic-header">
-                    <div className="epic-title1">{epic.title}</div>
-                    <IoIosAdd className="add" onClick={()=> addIssueModal(index)}/>
+                <div key={index} className='epic-item' onClick={() => showDetailEpic(epic)}>
+                  <div className='epic-header'>
+                    <div className='epic-title1'>{epic.title}</div>
+                    <IoIosAdd className='add' onClick={()=> addIssueModal(index)}/>
                   </div>
-                  <div className="progress-bar">
-                    <div className="progress" style={{ width: `${epic.progress}%` }}></div>
+                  <div className='progress-bar'>
+                    <div className='progress' style={{ width: `${epic.progress}%` }}></div>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="sideButton">
+            <div className='sideButton'>
               <Button
                 title="에픽 만들기"
                 bgColor="#000"
@@ -283,8 +291,8 @@ const Timeline = () => {
           </div>
 
           {/* 타임라인 */}
-          <div className="timeline-area">
-            <div id="timeline" className="timeline" ref={timelineRef} />
+          <div className='timeline-area'>
+            <div id='timeline' className='timeline' ref={timelineRef} />
           </div>
 
           {selectedEpic && (
