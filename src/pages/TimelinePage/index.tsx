@@ -109,28 +109,70 @@ const Timeline = () => {
   
 
   const EpicDetail = ({epic, onClose}: EpicDetailProps) => {
+    const [editTitle, setEditTitle] = useState(false);
+    const [editedTitle, setEditedTitle] = useState(epic.title);
+
+    const handleEdit = () => {
+      setEditTitle(true);
+    };
+
+    const handleSave = () => {
+      const updatedEpics = epics.map((e) =>
+        e === epic ? { ...e, title: editedTitle} : e );
+        setEpics(updatedEpics);
+        setEditTitle(true);
+    };
+
     return (
       <EpicDetailContainer>
-        <IoIosClose className='close' onClick={onClose}/>
-          <div className='epic-title2'>{epic.title}
-            <IoPencil className='edit-title' />
-          </div>
+        <IoIosClose className="close" onClick={onClose} />
+        <div className="epic-title2">
+          {editTitle ? (
+            <EditingContainer>
+              <div
+                contentEditable={true}
+                suppressContentEditableWarning={true}
+                onInput={(e) => setEditedTitle(e.currentTarget.textContent || "")}
+                ref={(el) => el && el.focus()}
+              >
+                {epic.title}
+              </div>
+              <Button
+                bgColor="#000"
+                padding="2px 8px"
+                radius="10px"
+                color="#fff"
+                fontSize="10px"
+                onClick={handleSave}
+              >
+                완료
+              </Button>
+            </EditingContainer>
+        ) : (
+          <>
+            {editedTitle || epic.title}
+            <IoPencil className='edit-title' onClick={handleEdit} />
+          </>
+        )}
+      </div>
+
           <div className='progress-bar' style={{ margin: '0 20px', padding: '8px', borderRadius: '10px'  }}>
             <div className='progress' style={{ width: `${epic.progress}%` }}></div>
           </div>
         
           <div className='epic-title2' style={{fontSize: '15px', fontWeight: 'normal'}}>하위 이슈</div>
           <div className='issueContainer'>
+            <div >
+                {epic.issues.map((issue, index) => (
+                  <div className='issueList' key={index}>{issue}</div>
+                ))}
+              </div>
+
             <div className='issueAdd'>
               <IoIosAdd className='add'/>
               <div style={{fontSize: '15px', marginTop:'2px'}}>이슈 만들기</div>
             </div>
             
-            <ul>
-              {epic.issues.map((issue, index) => (
-                <li key={index}>{issue}</li>
-              ))}
-            </ul>
 
           </div>
       
@@ -382,4 +424,10 @@ const EpicDetailContainer = styled.div`
   box-sizing: border-box;
   background-color: #f8f8f8; /* 배경색 흰색 or 회색? */
 }
+`;
+
+const EditingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px; /* 텍스트와 버튼 사이 간격 */
 `;

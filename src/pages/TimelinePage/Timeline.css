@@ -175,7 +175,7 @@
 }
 
 .issueContainer {
-    height:40px;
+    height:auto;
     background-color: #fff;
     border-radius: 5px;
     border: 1px solid #969696;
@@ -183,9 +183,17 @@
     max-height: 300px; 
 }
 
-.issueAdd {
-    margin-top: 5px;
-    margin-left: 5px;
-    height: 30px;
+.issueList {
     display: flex;
+    height: 40px;
+    padding-left: 10px;
+    align-items: center;
+    border-bottom : 1px solid #969696;
+}
+
+.issueAdd {
+    height: 40px;
+    display: flex;
+    padding-top: 5px;
+    margin-left: 5px;
 }
