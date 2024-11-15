@@ -7,8 +7,10 @@ const Projectlist: React.FC = () => {
 
   return (
     <div className={style.pjlistcontainer}>
+      <div className={style.textcontainer}>
         <span className={style.span}>내 프로젝트 목록</span>
         <p className={style.projectLink} onClick={() => navigate('/project')}>모두보기</p>
+      </div>  
     </div>
     
   );};export default Projectlist;

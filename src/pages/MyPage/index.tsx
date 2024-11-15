@@ -7,11 +7,12 @@ import Sprintreviewlist from '@components/SprintreviewlistForm/Sprintreviewlist'
 
 const MyPage: React.FC = () => {
   return (
-    <div>
+    <div className={style.div}>
       <div className={style.containeruser}>
         <div className={style.usercircle}><FaUserCircle size={200}/></div>
         <span className={style.name}>이름</span> {/*로그인 정보를 바탕으로 이름 정보 가져오기*/}
         <div className={style.profilediv}><ProfileForm/></div>
+        <div className={style.spacer}></div>  {/*하단공백*/}
       </div>
       
       <div className={style.containerlist}>

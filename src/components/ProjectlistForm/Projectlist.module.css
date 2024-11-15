@@ -1,16 +1,27 @@
 .pjlistcontainer {
     display: flex;
-    width: 600px;
-    justify-content: space-between;
+    width: 650px;
+    height: 400px;
+    flex-direction: column;
     align-items: center;
+    margin-top: 40px;
 
 }
+.textcontainer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
 .span {
+    font-size: 20px;
+    margin-top: 5px;
     text-align: left;
 }
 .projectLink {
+    font-size: 20px;
+    margin-top: 5px;
     text-align: right;
-    display: inline-block;
     color: #008CBA;
     cursor: pointer;
    }

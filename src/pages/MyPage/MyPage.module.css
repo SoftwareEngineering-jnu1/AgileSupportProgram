@@ -1,18 +1,24 @@
+
 .containeruser {
-    display: fex;
-    flex-direction: coulm;
+    display: flex;
+    flex-direction: column;
     position: absolute;
     left: 3%;
     margin: 0 auto;
+    margin-right: 10px;
 }
 .containerlist {
-    display: fex;
-    flex-direction: coulm;
+    display: flex;
+    flex-direction: column;
     position:absolute;
-    right: 3%;
+    left: 500px;
     margin: 0 auto;
 }
 .usercircle {
    margin-top: 15%;
    margin-bottom: 5px;
+}
+
+.spacer {
+    height: 150px;
 }

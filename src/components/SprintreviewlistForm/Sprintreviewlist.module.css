@@ -1,8 +1,24 @@
 .splistcontainer {
     display: flex;
+    flex-direction: column;
     width: 600px;
-    align-items: center;
+    max-height: 300px;
+    overflow-y: auto;
+    align-items: left;
 }
 .span {
+    font-size: 20px;
     text-align: left;
+}
+.rivewdiv {
+    display: flex;
+    height: 35px;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px
+}
+.sprintname{
+    margin-left: 10px;
 }
