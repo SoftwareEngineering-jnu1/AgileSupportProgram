@@ -7,7 +7,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { IoPencil } from "react-icons/io5";
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 import './Timeline.css';
-import type { Epic, Item, EpicDetailProps } from './type';
+import type { Epic, Item, EpicDetailProps, Issue, IssueDetailProps } from './type';
 
 const Timeline = () => {
   const [epics, setEpics] = useState<Epic[]>([]);
@@ -16,7 +16,8 @@ const Timeline = () => {
   const timelineRef = useRef<HTMLDivElement | null>(null);
   const [timeline, setTimeline] = useState<VisTimeline | null>(null);
   const [selectedEpic, setSelectedEpic] = useState<Epic | null>(null);
-
+  const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
+  
   const users = ["User1", "User2", "User3", "User4"];
 
   useEffect(() => {
@@ -71,6 +72,7 @@ const Timeline = () => {
           start: epicstart,
           end: epicend,
           group: epicIndex, 
+          assign: '',
         });
 
         const issuestart = new Date();
@@ -79,10 +81,11 @@ const Timeline = () => {
         epic.issues.forEach((issue, issueIndex) => {
           items.add({
             id: `${epicIndex}-${issueIndex}`, // 고유한 아이디
-            content: issue,
+            content: issue.title,
             start: issuestart,
             end: issuesend,
             group: epicIndex,
+            assign: issue.assign || '',
           });
         });
         
@@ -106,7 +109,59 @@ const Timeline = () => {
     setSelectedEpic(epic);
   }
 
-  
+  // 이슈 상세보기 이벤트
+  const showDetailIssue = (issue: Issue) => {
+      setSelectedIssue(issue);
+  }
+
+  const IssueDetail = ({issue, onClose}: IssueDetailProps) =>{
+    const [editTitle, setEditTitle] = useState(false);
+    const [editedTitle, setEditedTitle] = useState(issue.title);
+
+    const handleEdit = () => {
+      setEditTitle(true);
+    };
+
+    const handleSave = () => {
+      setEditTitle(false);
+    };
+
+    return (
+      <IssueDetailContainer>
+        <IoIosClose className="close" onClick={onClose} />
+          <div className="issue-title">
+            {editTitle ? (
+              <EditingContainer>
+                <div
+                  contentEditable={true}
+                  suppressContentEditableWarning={true}
+                  onInput={(e) => setEditedTitle(e.currentTarget.textContent || "")}
+                  ref={(el) => el && el.focus()}
+                >
+                  {issue.title}
+                </div>
+                <Button
+                  bgColor="#000"
+                  padding="2px 8px"
+                  radius="10px"
+                  color="#fff"
+                  fontSize="10px"
+                  onClick={handleSave}
+                >
+                  완료
+                </Button>
+              </EditingContainer>
+          ) : (
+            <>
+              {editedTitle || issue.title}
+              <IoPencil className='edit-title' onClick={handleEdit} />
+          </>
+        )}
+            </div>
+
+      </IssueDetailContainer>
+    )
+  }
 
   const EpicDetail = ({epic, onClose}: EpicDetailProps) => {
     const [editTitle, setEditTitle] = useState(false);
@@ -162,9 +217,9 @@ const Timeline = () => {
         
           <div className='epic-title2' style={{fontSize: '15px', fontWeight: 'normal'}}>하위 이슈</div>
           <div className='issueContainer'>
-            <div >
+            <div>
                 {epic.issues.map((issue, index) => (
-                  <div className='issueList' key={index}>{issue}</div>
+                  <div className='issueList' key={index} onClick={()=> showDetailIssue(issue)}>{issue.title}</div>
                 ))}
               </div>
 
@@ -172,10 +227,8 @@ const Timeline = () => {
               <IoIosAdd className='add'/>
               <div style={{fontSize: '15px', marginTop:'2px'}}>이슈 만들기</div>
             </div>
-            
-
           </div>
-      
+
       </EpicDetailContainer>
     );
   }
@@ -184,7 +237,8 @@ const Timeline = () => {
   const addIssue = (epicIndex: number) => {
     if (newIssue) {
       const updatedEpics = [...epics];
-      updatedEpics[epicIndex].issues.push(newIssue);
+      const newIssueTitle : Issue = { title: newIssue, assign: ''};
+      updatedEpics[epicIndex].issues.push(newIssueTitle);
       setEpics(updatedEpics);
       setNewIssue('');
     }
@@ -319,6 +373,10 @@ const Timeline = () => {
           {selectedEpic && (
           <EpicDetail epic={selectedEpic} onClose={() => setSelectedEpic(null)} onAddIssue={addIssue} />
         )}
+
+          {selectedIssue && (
+          <IssueDetail issue={selectedIssue} onClose={() => setSelectedIssue(null)} />
+        )}
         </div>
 
         {/*에픽 생성 모달창*/}
@@ -425,6 +483,19 @@ const EpicDetailContainer = styled.div`
   background-color: #f8f8f8; /* 배경색 흰색 or 회색? */
 }
 `;
+
+const IssueDetailContainer = styled.div`
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 25%; 
+  border-left: 1px solid #ccc; 
+  box-sizing: border-box;
+  background-color: #f8f8f8; /* 배경색 흰색 or 회색? */
+}
+`;
+
 
 const EditingContainer = styled.div`
   display: flex;
