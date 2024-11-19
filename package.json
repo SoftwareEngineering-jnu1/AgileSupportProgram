@@ -18,7 +18,7 @@
     "react-timelines2": "^2.7.6",
     "styled-components": "^6.1.13",
     "typescript-plugin-css-modules": "^5.1.0",
-    "uuid": "^11.0.3",
+    "uuid": "^9.0.1",
     "vis-timeline": "^7.7.3",
     "web-vitals": "^2.1.4"
   },
