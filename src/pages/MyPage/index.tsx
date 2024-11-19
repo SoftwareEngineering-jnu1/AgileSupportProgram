@@ -12,12 +12,12 @@ const MyPage: React.FC = () => {
         <div className={style.usercircle}><FaUserCircle size={200}/></div>
         <span className={style.name}>이름</span> {/*로그인 정보를 바탕으로 이름 정보 가져오기*/}
         <div className={style.profilediv}><ProfileForm/></div>
-        <div className={style.spacer}></div>  {/*하단공백*/}
       </div>
       
       <div className={style.containerlist}>
         <div className={style.projectlistdiv}><Projectlist/></div>
         <div className={style.sprintlistdiv}><Sprintreviewlist/></div>
+        <div className={style.spacer}></div>  {/*하단공백*/}
       </div>
     </div>
     

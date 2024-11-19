@@ -1,24 +1,32 @@
 .splistcontainer {
     display: flex;
     flex-direction: column;
-    width: 600px;
-    max-height: 300px;
-    overflow-y: auto;
+    width: 650px;
+    height:200px;
+    max-height: 200px;
     align-items: left;
+    margin-top: 25px;
 }
-.span {
+.title {
     font-size: 20px;
     text-align: left;
+}
+.sprintrivewlistdiv {
+    overflow-y: auto;
 }
 .rivewdiv {
     display: flex;
     height: 35px;
     align-items: center;
-    border: 1px solid #ccc;
+    border: 1px solid #bdbdbd;
     border-radius: 5px;
     cursor: pointer;
     margin-top: 10px
 }
+.rivewdiv:hover {
+    background-color: #f2f2f2;
+}
 .sprintname{
     margin-left: 10px;
+    font-size: 13px;
 }
