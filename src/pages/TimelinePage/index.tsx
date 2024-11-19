@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { DataSet, TimelineTimeAxisScaleType, Timeline as VisTimeline } from 'vis-timeline/standalone';
 import Button from '@components/common/Button';
-import styled from "styled-components";
 import { IoIosAdd, IoIosClose } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 import { IoPencil } from "react-icons/io5";
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 import './Timeline.css';
-import type { Epic, Item, EpicDetailProps, Issue, IssueDetailProps } from './type';
+import type { Epic, Item, Issue, EpicDetailProps, IssueDetailProps } from './type';
+import { Modalepic, ModalepicContent, ButtonContainer, ButtonPart, Divider, EpicDetailContainer, IssueDetailContainer, EditingContainer } from './style';
 
 const Timeline = () => {
   const [epics, setEpics] = useState<Epic[]>([]);
@@ -123,6 +123,8 @@ const Timeline = () => {
     };
 
     const handleSave = () => {
+      if (!editedTitle) return;
+      issue.title = editedTitle;
       setEditTitle(false);
     };
 
@@ -138,7 +140,7 @@ const Timeline = () => {
                   onInput={(e) => setEditedTitle(e.currentTarget.textContent || "")}
                   ref={(el) => el && el.focus()}
                 >
-                  {issue.title}
+                  {editedTitle}
                 </div>
                 <Button
                   bgColor="#000"
@@ -175,7 +177,8 @@ const Timeline = () => {
       const updatedEpics = epics.map((e) =>
         e === epic ? { ...e, title: editedTitle} : e );
         setEpics(updatedEpics);
-        setEditTitle(true);
+        epic.title = editedTitle;
+        setEditTitle(false);
     };
 
     return (
@@ -379,7 +382,7 @@ const Timeline = () => {
         )}
         </div>
 
-        {/*에픽 생성 모달창*/}
+        {/*모달*/}
         {epicModal && (
           <Modalepic onClick={() => setEpicModal(false)}>
             <ModalepicContent ref={epicModalRef} onClick={e => e.stopPropagation()}>
@@ -431,74 +434,3 @@ const Timeline = () => {
 };
 
 export default Timeline;
-
-const Modalepic = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1001;
-  `;
-
-const ModalepicContent = styled.div`
-  background: #EEEEEE;
-  padding: 20px;
-  border-radius: 5px;
-  width: 400px; // 원하는 너비로 설정
-  max-width: 90%; // 화면이 작을 때의 최대 너비
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  align-items: center;
-  background-color: #f6f3ed;
-  border-radius: 10px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  font-size: 16px;
-  padding: 15px;
-`
-
-const ButtonPart = styled.div`
-  cursor: pointer;
-`;
-
-const Divider = styled.div`
-  margin: 0 8px;
-  color: #000;
-`;
-
-const EpicDetailContainer = styled.div`
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 25%; 
-  border-left: 1px solid #ccc; 
-  box-sizing: border-box;
-  background-color: #f8f8f8; /* 배경색 흰색 or 회색? */
-}
-`;
-
-const IssueDetailContainer = styled.div`
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 25%; 
-  border-left: 1px solid #ccc; 
-  box-sizing: border-box;
-  background-color: #f8f8f8; /* 배경색 흰색 or 회색? */
-}
-`;
-
-
-const EditingContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px; /* 텍스트와 버튼 사이 간격 */
-`;
