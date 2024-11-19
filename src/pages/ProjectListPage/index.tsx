@@ -127,10 +127,9 @@ const Content = styled.form`
 const ProjectTitleWrapper = styled.div`
   position: relative;
   width: 350px;
-  margin-bottom: 10px;
+  margin: 5px 0 10px;
 `;
 
-// Icon for ProjectTitle
 const ProjectTitleIcon = styled(MdOutlineTitle)`
   position: absolute;
   top: 50%;
@@ -139,7 +138,6 @@ const ProjectTitleIcon = styled(MdOutlineTitle)`
   color: #7e7e7e;
 `;
 
-// Input for ProjectTitle
 const ProjectTitleInput = styled.input`
   width: 100%;
   padding: 10px 15px 10px 35px;
@@ -153,7 +151,7 @@ const ProjectTitleInput = styled.input`
 const TeamEmailInputWrapper = styled.div`
   position: relative;
   width: 350px;
-  margin-bottom: 10px;
+  margin: 5px 0 10px;
 `;
 
 const TeamEmailIcon = styled(FaUserPlus)`
