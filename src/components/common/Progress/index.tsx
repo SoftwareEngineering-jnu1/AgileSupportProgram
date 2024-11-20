@@ -4,13 +4,14 @@ import styled from 'styled-components';
 interface ProgressProps {
     total: number;
     completed: number;
+    style?: React.CSSProperties;
 }
 
-const Progress : React.FC<ProgressProps> = ({total, completed}) => {
+const Progress : React.FC<ProgressProps> = ({total, completed, style}) => {
     const progress = total === 0? 0 : (completed / total) * 100;
 
     return (
-        <ProgressTotal>
+        <ProgressTotal style={style}>
             <ProgressCompleted style={{width: `${progress}%`}}/>
         </ProgressTotal>
         

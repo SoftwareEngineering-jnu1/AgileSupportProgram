@@ -10,8 +10,8 @@ import { IoIosAdd, IoIosClose } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 import { IoPencil } from "react-icons/io5";
 
-import type { Epic, Item, Issue, EpicDetailProps, IssueDetailProps } from './type';
-import { Content, TitleWrapper, TitleIcon, TitleInput, ButtonBox } from './style';
+import type { Epic, Item, Issue, EpicDetailProps, IssueDetailProps, IssueStatus } from './type';
+import { Content, TitleWrapper, TitleIcon, TitleInput, ButtonBox, SelectWrapper, SelectStatus } from './style';
 import { DateWrapper, DateInput, AssignIcon } from './style';
 import { ButtonContainer, ButtonPart, Divider, EpicDetailContainer, IssueDetailContainer, EditingContainer } from './style';
 
@@ -144,6 +144,7 @@ const Timeline = () => {
     }
   }
 
+
   // 에픽 상세보기 이벤트
   const showDetailEpic = (epic: Epic) => {
     setSelectedEpic(epic);
@@ -258,7 +259,7 @@ const Timeline = () => {
         )}
       </div>
 
-          <Progress total={totalIssues} completed={completedIssues} />
+          <Progress total={totalIssues} completed={completedIssues} style={{ margin: '0 20px', padding: '8px', borderRadius: '10px'  }} />
         
           <div className='epic-title2' style={{fontSize: '15px', fontWeight: 'normal'}}>하위 이슈</div>
           <div className='issueContainer'>
@@ -332,7 +333,11 @@ const Timeline = () => {
     timeline.setWindow(minDate, maxDate);
   };
 
- 
+ // 진행 상태 드롭다운
+ const [status, setStatus] = useState('to do');
+ const handleChange = (e:React.ChangeEvent<HTMLSelectElement>) => {
+  setStatus(e.target.value as IssueStatus);
+}
 
   
   return (
@@ -490,6 +495,14 @@ const Timeline = () => {
             </TitleWrapper>
             
             <span>진행 상태</span>
+            <SelectWrapper>
+              <SelectStatus value={status} onChange={handleChange}>
+                <option value="to do">To Do</option>
+                <option value="in progress">In Progress</option>
+                <option value="done">Done</option>
+                <option value="hold">Hold</option>
+              </SelectStatus>
+            </SelectWrapper>
             
   
             </Content>

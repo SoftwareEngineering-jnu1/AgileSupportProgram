@@ -130,3 +130,17 @@ export const AssignIcon = styled(FaUserCircle)`
   transform: translateY(-50%);
   color: #7e7e7e;
 `;
+
+export const SelectWrapper = styled.div`
+position: relative;
+width: 350px;
+margin: 5px 0 10px;
+`;
+
+export const SelectStatus = styled.select`
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #fff;
+  border-radius: 4px;
+`

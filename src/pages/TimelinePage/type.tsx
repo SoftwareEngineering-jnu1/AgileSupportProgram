@@ -21,10 +21,13 @@ export type EpicDetailProps={
     onAddIssue: (epicIndex: number)=> void;
 };
 
+export type IssueStatus = 'to do' | 'in progress' | 'done' | 'hold';
+
 export type Issue = {
     title: string;
     assign: string;
-}
+    status: IssueStatus;
+} 
 
 export type IssueDetailProps = {
     issue: Issue;
