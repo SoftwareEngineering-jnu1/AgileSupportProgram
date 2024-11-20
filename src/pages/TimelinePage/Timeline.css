@@ -21,20 +21,37 @@
     justify-content: space-between;
 }
 
-.userIcon {
+.userGrop {
     position: relative;
+    display: flex;
+}
+
+.userIcon {
     margin-left: -15px;
     background-color: #fff;
     border-radius: 50%;
 }
 
+.userShow {
+    margin-left: -15px;
+    background-color:#fff;
+    border-radius: 50%;
+    border: 1px solid #000;
+    font-size: 15px;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+}
+
 .sidebar {
     display:flex;
-    width: 25%; 
     padding: 30px;
     background-color: #C9CCD2;
     height:100%;
     flex-direction: column;
+    flex: 0 0 20%;
 }
 
 .blank{
@@ -45,18 +62,34 @@
 
 .sideEpic {
     padding-bottom: 50px; 
-    overflow-x:hidden;
+    overflow-x: hidden;
     overflow-y: auto;
     margin-top: 0;
     flex-grow: 1;
-  }
+
+    &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.4);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 6px;
+    }
+}
 
 .sideButton {
+    display: flex;
+    justify-content: center;
+    width: 100%;
     margin-top: auto;
     padding-top:10px;
 }
 
 .epic-item {
+    width: 90%;
     margin-bottom: 15px;
     padding: 20px;
     background-color: #D9D9D9;
@@ -73,7 +106,7 @@
 
 .epic-title1 {
     font-weight: bold;
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 5px;
     margin-right:10px;
     flex-grow: 1;
@@ -118,10 +151,10 @@
 
 .add {
     cursor: pointer;
-    font-size: 20px; /* 아이콘 크기 고정 */
-    flex-shrink: 0; /* 아이콘 크기가 줄어들지 않게 고정 */
-    width: 24px; /* 고정된 너비 */
-    height: 24px; /* 고정된 높이 */
+    font-size: 20px; 
+    flex-shrink: 0; 
+    width: 24px; 
+    height: 24px; 
     margin-bottom: 20px;
   }
 
@@ -131,12 +164,36 @@
     cursor: pointer;
     font-size: 20px;
     flex-shrink: 0;
-    width: 24px; /* 고정된 너비 */
-    height: 24px; /* 고정된 높이 */
+    width: 24px; 
+    height: 24px; 
     margin: 10px;
 }
 
-.editTitle {
+.edit-title {
     cursor: pointer;
-    margin:5px;
+    margin:2px;
+}
+
+.issueContainer {
+    height:auto;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid #969696;
+    margin: 0 20px;
+    max-height: 300px; 
+}
+
+.issueList {
+    display: flex;
+    height: 40px;
+    padding-left: 10px;
+    align-items: center;
+    border-bottom : 1px solid #969696;
+}
+
+.issueAdd {
+    height: 40px;
+    display: flex;
+    padding-top: 5px;
+    margin-left: 5px;
 }
