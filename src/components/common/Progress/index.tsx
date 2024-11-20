@@ -6,15 +6,14 @@ interface ProgressProps {
     completed: number;
 }
 
-const Progress : React.FC<ProgressProps> = ({ total, completed}) => {
+const Progress : React.FC<ProgressProps> = ({total, completed}) => {
     const progress = total === 0? 0 : (completed / total) * 100;
 
     return (
-        <div className = 'progress-bar'>
         <ProgressTotal>
-            <ProgressCompleted style={{width: `$(progress)`}}/>
+            <ProgressCompleted style={{width: `${progress}%`}}/>
         </ProgressTotal>
-        </div>
+        
     )
 };
 

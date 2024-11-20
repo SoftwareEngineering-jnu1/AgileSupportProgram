@@ -4,6 +4,7 @@ import { DataSet, TimelineTimeAxisScaleType, Timeline as VisTimeline } from 'vis
 
 import Button from '@components/common/Button';
 import Modal from '@components/common/Modal';
+import Progress from '@components/common/Progress';
 
 import { IoIosAdd, IoIosClose } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
@@ -135,7 +136,7 @@ const Timeline = () => {
   const addIssue = (epicIndex: number) => {
     if (newIssue) {
       const updatedEpics = [...epics];
-      const newIssueTitle : Issue = { title: newIssue, assign: ''};
+      const newIssueTitle : Issue = { title: newIssue, assign: '', status: 'to do'};
       updatedEpics[epicIndex].issues.push(newIssueTitle);
       setEpics(updatedEpics);
       setNewIssue('');
@@ -220,10 +221,13 @@ const Timeline = () => {
         setEditTitle(false);
     };
 
+    const totalIssues = epic.issues.length;
+    const completedIssues = epic.issues.filter(issues => issues.status==='done').length;
+
     return (
       <EpicDetailContainer>
         <IoIosClose className="close" onClick={onClose} />
-        <div className="sprint-title">Sprint1</div>
+        <div className="sprint-title">Sprint1</div> {/* 스프린트 제목을 받아와야함 */}
         <div className="epic-title2">
           {editTitle ? (
             <EditingContainer>
@@ -254,9 +258,7 @@ const Timeline = () => {
         )}
       </div>
 
-          <div className='progress-bar' style={{ margin: '0 20px', padding: '8px', borderRadius: '10px'  }}>
-            <div className='progress' style={{ width: `${epic.progress}%` }}></div>
-          </div>
+          <Progress total={totalIssues} completed={completedIssues} />
         
           <div className='epic-title2' style={{fontSize: '15px', fontWeight: 'normal'}}>하위 이슈</div>
           <div className='issueContainer'>
@@ -332,8 +334,8 @@ const Timeline = () => {
 
  
 
+  
   return (
-    
       <div className='timeline-all'>
         
         <div className='topbar'>
@@ -363,18 +365,22 @@ const Timeline = () => {
             <div className='blank'></div>
             
             <div className='sideEpic'>
-              {/*에픽 제목, 진척도 사이드바에 추가*/}
-              {epics.map((epic, index) => (
-                <div key={index} className='epic-item' onClick={() => showDetailEpic(epic)}>
-                  <div className='epic-header'>
-                    <div className='epic-title1'>{epic.title}</div>
-                    <IoIosAdd className='add' onClick={toggleIssueModal}/>
-                  </div>
-                  <div className='progress-bar'>
-                    <div className='progress' style={{ width: `${epic.progress}%` }}></div>
-                  </div>
+              {/* 에픽 제목, 진척도 사이드바에 추가 */}
+          {epics.map((epic, index) => {
+            const totalIssues = epic.issues.length;
+            const completedIssues = epic.issues.filter(issue => issue.status==='done').length;
+
+            return (
+              <div key={index} className='epic-item' onClick={() => showDetailEpic(epic)}>
+                <div className='epic-header'>
+                  <div className='epic-title1'>{epic.title}</div>
+                  <IoIosAdd className='add' onClick={toggleIssueModal} />
                 </div>
-              ))}
+                {/* 진척도 표시 */}
+                <Progress total={totalIssues} completed={completedIssues} />
+              </div>
+            );
+          })}
             </div>
             <div className='sideButton'>
               <Button
