@@ -1,25 +1,40 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { DataSet, TimelineTimeAxisScaleType, Timeline as VisTimeline } from 'vis-timeline/standalone';
+
+
 import Button from '@components/common/Button';
 import Modal from '@components/common/Modal';
+
 import { IoIosAdd, IoIosClose } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 import { IoPencil } from "react-icons/io5";
-import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
-import './Timeline.css';
+
 import type { Epic, Item, Issue, EpicDetailProps, IssueDetailProps } from './type';
 import { Content, TitleWrapper, TitleIcon, TitleInput, ButtonBox } from './style';
+import { DateWrapper, DateInput, AssignIcon } from './style';
 import { ButtonContainer, ButtonPart, Divider, EpicDetailContainer, IssueDetailContainer, EditingContainer } from './style';
+
+
+import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
+import './Timeline.css';
 
 const Timeline = () => {
   const [epics, setEpics] = useState<Epic[]>([]);
   const [newEpic, setNewEpic] = useState('');
   const [newIssue, setNewIssue] = useState('');
+
   const timelineRef = useRef<HTMLDivElement | null>(null);
   const [timeline, setTimeline] = useState<VisTimeline | null>(null);
+
   const [selectedEpic, setSelectedEpic] = useState<Epic | null>(null);
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
-  
+
+  const [epicStartDate, setEpicStartDate] = useState('');
+  const [epicEndDate, setEpicEndDate] = useState('');
+
+  const [issueStartDate, setIssueStartDate] = useState('');
+  const [issueEndDate, setIssueEndDate] = useState('');
+    
   const users = ["User1", "User2", "User3", "User4"];
 
   useEffect(() => {
@@ -65,8 +80,8 @@ const Timeline = () => {
         // 그룹 생성 (에픽 제목이 왼쪽에 표시됨)
         groups.add({ id: epicIndex, content: epic.title });
 
-        const epicstart = new Date(2024,11,5);
-        const epicend = new Date(2024,11,30);
+        const epicstart = new Date();
+        const epicend = new Date();
         
         items.add({
           id: `${epicIndex}`,
@@ -97,14 +112,14 @@ const Timeline = () => {
     }
   }, [epics]);
 
-  const [isIssueModalOpen, setIsIssueModalOpen] = useState(false);
-  const toggleIssueModal = () => {
-    setIsIssueModalOpen(!isIssueModalOpen);
-  };
-
   const [isEpicModalOpen, setIsEpicModalOpen] = useState(false);
   const toggleEpicModal = () => {
     setIsEpicModalOpen(!isEpicModalOpen);
+  };
+
+  const [isIssueModalOpen, setIsIssueModalOpen] = useState(false);
+  const toggleIssueModal = () => {
+    setIsIssueModalOpen(!isIssueModalOpen);
   };
 
   // 에픽 추가
@@ -208,6 +223,7 @@ const Timeline = () => {
     return (
       <EpicDetailContainer>
         <IoIosClose className="close" onClick={onClose} />
+        <div className="sprint-title">Sprint1</div>
         <div className="epic-title2">
           {editTitle ? (
             <EditingContainer>
@@ -251,7 +267,7 @@ const Timeline = () => {
               </div>
 
             <div className='issueAdd'>
-              <IoIosAdd className='add'/>
+              <IoIosAdd className='add' onClick={toggleIssueModal} />
               <div style={{fontSize: '15px', marginTop:'2px'}}>이슈 만들기</div>
             </div>
           </div>
@@ -399,6 +415,22 @@ const Timeline = () => {
                 value={newEpic}
                 onChange={(e) => setNewEpic(e.target.value)} />
             </TitleWrapper>
+
+            <span>시작일 ~ 종료일</span>
+            <DateWrapper>
+              <DateInput
+                type="date"
+                value={epicStartDate}
+                onChange={(e) => setEpicStartDate(e.target.value)}
+              />
+              <span> ~ </span>
+              <DateInput
+                type="date"
+                value={epicEndDate}
+                onChange={(e) => setEpicEndDate(e.target.value)}
+              />
+            </DateWrapper>
+
             </Content>
             <ButtonBox>
             <Button
@@ -416,7 +448,7 @@ const Timeline = () => {
 
 
         {isIssueModalOpen && selectedEpic && (
-          <Modal isOpen={isIssueModalOpen} onClose={toggleEpicModal}>
+          <Modal isOpen={isIssueModalOpen} onClose={toggleIssueModal}>
             <h2>이슈 만들기</h2>
             <Content>
               <span>할 일</span>
@@ -427,6 +459,33 @@ const Timeline = () => {
                 value={newIssue}
                 onChange={(e) => setNewIssue(e.target.value)} />
             </TitleWrapper>
+            <span>시작일 ~ 종료일</span>
+            <DateWrapper>
+              <DateInput
+                type="date"
+                value={issueStartDate}
+                onChange={(e) => setIssueStartDate(e.target.value)}
+              />
+              <span> ~ </span>
+              <DateInput
+                type="date"
+                value={issueEndDate}
+                onChange={(e) => setIssueEndDate(e.target.value)}
+              />
+            </DateWrapper>
+
+            <span>담당자</span>
+            <TitleWrapper>
+              <AssignIcon />
+              <TitleInput 
+                placeholder="담당자를 입력하세요"
+              
+              />
+            </TitleWrapper>
+            
+            <span>진행 상태</span>
+            
+  
             </Content>
             <ButtonBox>
             <Button
@@ -437,12 +496,10 @@ const Timeline = () => {
               onClick={() => addIssue(epics.indexOf(selectedEpic!))}
             >
               생성
-            </Button>
+            </Button> 
           </ButtonBox>
           </Modal>
         )}
-
-
     </div>
   );
 };

@@ -111,6 +111,13 @@
     margin-right:10px;
     flex-grow: 1;
 }
+.sprint-title {
+    display: flex;
+    font-size: 20px;
+    left:0;
+    margin-top: 15px;
+    margin-left:15px;
+}
 
 .epic-title2 {
     display: flex;

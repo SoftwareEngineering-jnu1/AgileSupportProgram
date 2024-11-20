@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { MdOutlineTitle } from "react-icons/md";
+import { FaUserCircle } from "react-icons/fa";
 
 export const Modalepic = styled.div`
   position: fixed;
@@ -103,6 +104,29 @@ export const TitleInput = styled.input`
 `;
 
 export const ButtonBox = styled.div`
-display: flex;
-justify-content: flex-end;
+  display: flex;
+  justify-content: flex-end;
+`;
+
+export const DateWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+`;
+
+export const DateInput = styled.input`
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #fff;
+  border-radius: 4px;
+`;
+
+export const AssignIcon = styled(FaUserCircle)`
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #7e7e7e;
 `;
