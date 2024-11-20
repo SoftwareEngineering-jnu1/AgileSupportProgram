@@ -40,7 +40,7 @@ const SignUpPage: React.FC = () => {
   <form className={style.form} onSubmit={handleSubmit}>
     <div className={style.logodiv}>
       <img src="/images/로고.png" alt="logo" className={style.logo}/>
-      <span className={style.logoText}>로그인</span>
+      <span className={style.logoText}>회원가입</span>
       </div>
     <div className={style.div}>
       <label className={style.label} htmlFor="username"></label>
@@ -63,7 +63,7 @@ const SignUpPage: React.FC = () => {
         value={form.emailOrphone}
         onChange={handleChange}
         className={style.input}
-        placeholder="이메일 또는 전화번호"
+        placeholder="이메일"
         required/>
     </div>
     <div className={style.div}>
