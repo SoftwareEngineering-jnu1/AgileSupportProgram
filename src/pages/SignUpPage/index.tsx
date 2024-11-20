@@ -1,6 +1,6 @@
-import React, {useState} from "react";
-import { useNavigate } from 'react-router-dom';
-import style from './SignUp.module.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import style from "./SignUp.module.css";
 
 interface SignupProps {
   username: string;
@@ -10,11 +10,11 @@ interface SignupProps {
 }
 
 const SignUpPage: React.FC = () => {
-  const [form, setFrom] = useState<SignupProps> ({
-    username: '',
-    emailOrphone: '',
-    password: '',
-    confirmpassword: '',
+  const [form, setFrom] = useState<SignupProps>({
+    username: "",
+    emailOrphone: "",
+    password: "",
+    confirmpassword: "",
   });
   const navigate = useNavigate();
 
@@ -28,12 +28,12 @@ const SignUpPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (form.password !== form.confirmpassword) {
-      alert('비밀번호가 일치하지 않습니다!');
+      alert("비밀번호가 일치하지 않습니다!");
       return;
     }
-    console.log('Form Data:', form);
-    alert('회원가입이 완료되었습니다!')
-    navigate('/login');
+    console.log("Form Data:", form);
+    alert("회원가입이 완료되었습니다!");
+    navigate("/login");
   };
 
   return (
@@ -96,7 +96,7 @@ const SignUpPage: React.FC = () => {
       <p className={style.loginLink} onClick={() => navigate('/login')}>로그인 하러 가기</p>
     </div>
     </form>
-    );
+  );
 };
 
 export default SignUpPage;
