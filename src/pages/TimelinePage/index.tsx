@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { DataSet, TimelineTimeAxisScaleType, Timeline as VisTimeline } from 'vis-timeline/standalone';
 import Button from '@components/common/Button';
+import Modal from '@components/common/Modal';
 import { IoIosAdd, IoIosClose } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 import { IoPencil } from "react-icons/io5";
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 import './Timeline.css';
 import type { Epic, Item, Issue, EpicDetailProps, IssueDetailProps } from './type';
-import { Modalepic, ModalepicContent, ButtonContainer, ButtonPart, Divider, EpicDetailContainer, IssueDetailContainer, EditingContainer } from './style';
+import { Content, TitleWrapper, TitleIcon, TitleInput, ButtonBox } from './style';
+import { ButtonContainer, ButtonPart, Divider, EpicDetailContainer, IssueDetailContainer, EditingContainer } from './style';
 
 const Timeline = () => {
   const [epics, setEpics] = useState<Epic[]>([]);
@@ -95,14 +97,36 @@ const Timeline = () => {
     }
   }, [epics]);
 
+  const [isIssueModalOpen, setIsIssueModalOpen] = useState(false);
+  const toggleIssueModal = () => {
+    setIsIssueModalOpen(!isIssueModalOpen);
+  };
+
+  const [isEpicModalOpen, setIsEpicModalOpen] = useState(false);
+  const toggleEpicModal = () => {
+    setIsEpicModalOpen(!isEpicModalOpen);
+  };
+
   // 에픽 추가
   const addEpic = () => {
     if (newEpic) {
       setEpics([...epics, { title: newEpic, progress:0, issues:[]}]);
       setNewEpic('');
-      setEpicModal(false);
+      toggleEpicModal();
     }
   };
+
+  // 하위 이슈 추가
+  const addIssue = (epicIndex: number) => {
+    if (newIssue) {
+      const updatedEpics = [...epics];
+      const newIssueTitle : Issue = { title: newIssue, assign: ''};
+      updatedEpics[epicIndex].issues.push(newIssueTitle);
+      setEpics(updatedEpics);
+      setNewIssue('');
+      toggleIssueModal();
+    }
+  }
 
   // 에픽 상세보기 이벤트
   const showDetailEpic = (epic: Epic) => {
@@ -236,27 +260,6 @@ const Timeline = () => {
     );
   }
 
-  // 하위 이슈 추가
-  const addIssue = (epicIndex: number) => {
-    if (newIssue) {
-      const updatedEpics = [...epics];
-      const newIssueTitle : Issue = { title: newIssue, assign: ''};
-      updatedEpics[epicIndex].issues.push(newIssueTitle);
-      setEpics(updatedEpics);
-      setNewIssue('');
-    }
-  }
-  
-  // 모달 생성
-  const [epicModal, setEpicModal] = useState(false);
-  const epicModalRef = useRef<HTMLDivElement | null>(null);
-
-  // 하위 이슈 추가 버튼 클릭 시 하위 이슈 추가 모달 표시
-  const addIssueModal = (epicIndex: number) => {
-    setSelectedEpic(epics[epicIndex]); // 클릭한 에픽을 선택
-    setEpicModal(true); // 모달 표시
-  };
-
   // 타임라인 단위 설정 버튼
   const multiButton = (type:string)=>{
     switch (type){
@@ -311,6 +314,8 @@ const Timeline = () => {
     timeline.setWindow(minDate, maxDate);
   };
 
+ 
+
   return (
     
       <div className='timeline-all'>
@@ -347,7 +352,7 @@ const Timeline = () => {
                 <div key={index} className='epic-item' onClick={() => showDetailEpic(epic)}>
                   <div className='epic-header'>
                     <div className='epic-title1'>{epic.title}</div>
-                    <IoIosAdd className='add' onClick={()=> addIssueModal(index)}/>
+                    <IoIosAdd className='add' onClick={toggleIssueModal}/>
                   </div>
                   <div className='progress-bar'>
                     <div className='progress' style={{ width: `${epic.progress}%` }}></div>
@@ -363,7 +368,7 @@ const Timeline = () => {
                 color="#fff"
                 fontSize="15px"
                 style={{ position:'relative', fontWeight:'bold', marginTop: 'auto', }}
-                onClick ={() => setEpicModal(true)}
+                onClick ={toggleEpicModal}
             ><IoIosAdd size={20} style={{position:'absolute', left:0, marginLeft:'12px'}}/>에픽만들기</Button>
             </div>
           </div>
@@ -382,55 +387,67 @@ const Timeline = () => {
         )}
         </div>
 
-        {/*모달*/}
-        {epicModal && (
-          <Modalepic onClick={() => setEpicModal(false)}>
-            <ModalepicContent ref={epicModalRef} onClick={e => e.stopPropagation()}>
-              <div className="epicModalposition">
-                <p style={{fontWeight:'bold', alignItems:'flex-start'}}>에픽만들기</p>
-                <p>할 일</p>
-                <input
-                  value={newEpic}
-                  onChange={(e) => setNewEpic(e.target.value)}
-                  placeholder="무엇을 완료해야 하나요?"
-                />
-                <br/>
-                <Button
-                  bgColor="#AEBDCA"
-                  padding="20"
-                  fontSize="15px"
-                  onClick={addEpic} // 에픽 추가
-                >만들기</Button>
-              </div>
-              
-            </ModalepicContent>
-          </Modalepic>
+        {isEpicModalOpen && (
+          <Modal isOpen={isEpicModalOpen} onClose={toggleEpicModal}>
+            <h2>에픽 만들기</h2>
+            <Content>
+              <span>할 일</span>
+              <TitleWrapper>
+              <TitleIcon />
+              <TitleInput 
+                placeholder="무엇을 완료해야 하나요?"
+                value={newEpic}
+                onChange={(e) => setNewEpic(e.target.value)} />
+            </TitleWrapper>
+            </Content>
+            <ButtonBox>
+            <Button
+              padding="6px 6px"
+              bgColor="#7895B2"
+              fontSize="16px"
+              style={{ fontWeight: "bold" }}
+              onClick={addEpic}
+            >
+              생성
+            </Button>
+          </ButtonBox>
+          </Modal>
         )}
 
-        {epicModal && selectedEpic && (
-          <Modalepic onClick={() => setEpicModal(false)}>
-            <ModalepicContent ref={epicModalRef} onClick={e => e.stopPropagation()}>
-              <div className="epicModalposition">
-                <p style={{ fontWeight: 'bold' }}>하위 이슈 추가</p>
-                <input
-                  value={newIssue}
-                  onChange={(e) => setNewIssue(e.target.value)}
-                  placeholder="이슈를 입력하세요"
-                />
-                <br />
-                <Button
-                  bgColor="#AEBDCA"
-                  padding="20"
-                  fontSize="15px"
-                  onClick={() => addIssue(epics.indexOf(selectedEpic!))}
-                >추가</Button>
-              </div>
-            </ModalepicContent>
-          </Modalepic>
+
+        {isIssueModalOpen && selectedEpic && (
+          <Modal isOpen={isIssueModalOpen} onClose={toggleEpicModal}>
+            <h2>이슈 만들기</h2>
+            <Content>
+              <span>할 일</span>
+              <TitleWrapper>
+              <TitleIcon />
+              <TitleInput 
+                placeholder="무엇을 완료해야 하나요?"
+                value={newIssue}
+                onChange={(e) => setNewIssue(e.target.value)} />
+            </TitleWrapper>
+            </Content>
+            <ButtonBox>
+            <Button
+              padding="6px 6px"
+              bgColor="#7895B2"
+              fontSize="16px"
+              style={{ fontWeight: "bold" }}
+              onClick={() => addIssue(epics.indexOf(selectedEpic!))}
+            >
+              생성
+            </Button>
+          </ButtonBox>
+          </Modal>
         )}
+
 
     </div>
   );
 };
 
 export default Timeline;
+
+
+

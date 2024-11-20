@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { MdOutlineTitle } from "react-icons/md";
 
 export const Modalepic = styled.div`
   position: fixed;
@@ -65,8 +66,43 @@ export const IssueDetailContainer = styled.div`
 `;
 
 
+export const Content = styled.form`
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+`;
+
 export const EditingContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px; /* 텍스트와 버튼 사이 간격 */
+`;
+
+export const TitleWrapper = styled.div`
+  position: relative;
+  width: 350px;
+  margin: 5px 0 10px;
+`;
+
+export const TitleIcon = styled(MdOutlineTitle)`
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #7e7e7e;
+`;
+
+export const TitleInput = styled.input`
+  width: 100%;
+  padding: 10px 15px 10px 35px;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  font-size: 14px;
+  color: #7e7e7e;
+`;
+
+export const ButtonBox = styled.div`
+display: flex;
+justify-content: flex-end;
 `;
