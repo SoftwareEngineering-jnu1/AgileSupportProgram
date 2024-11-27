@@ -1,15 +1,21 @@
 import styled from "styled-components";
 
-const IssueItem = () => {
+type IssueItemProps = {
+  title: string;
+  person: string;
+  color: string;
+};
+
+const IssueItem = ({ title, person, color }: IssueItemProps) => {
   return (
     <Container>
       <div
-        style={{ width: "100%", height: "13px", backgroundColor: "#E33333" }}
+        style={{ width: "100%", height: "13px", backgroundColor: `${color}` }}
       />
       <IssueDes>
-        <IssueTitle>발표자료 만들기</IssueTitle>
-        <IssuePerson>
-          <span>호정</span>
+        <IssueTitle>{title}</IssueTitle>
+        <IssuePerson color={color}>
+          <span>{person}</span>
         </IssuePerson>
       </IssueDes>
     </Container>
@@ -19,8 +25,8 @@ const IssueItem = () => {
 export default IssueItem;
 
 const Container = styled.div`
-  width: 80%;
-  height: 70px;
+  width: 100%;
+  height: 65px;
   background-color: #fff;
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
   margin-bottom: 15px;
@@ -30,23 +36,21 @@ const IssueDes = styled.div`
   display: flex;
   justify-content: space-between;
   height: 67px;
-  padding: 3px 10px;
+  padding: 7px 10px;
 `;
 
 const IssueTitle = styled.span`
-  font-size: 15px;
+  font-size: 16px;
   font-weight: bold;
 `;
 
-const IssuePerson = styled.div`
+const IssuePerson = styled.div<{ color: string }>`
+  box-sizing: content-box;
   border-radius: 20px;
-  background-color: #e33333;
-  width: 25%;
+  background-color: ${(props) => props.color};
+  width: 30%;
   height: 30%;
   color: #fff;
-  font-size: 14px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  font-size: 13px;
+  padding: 1px 5px;
 `;
