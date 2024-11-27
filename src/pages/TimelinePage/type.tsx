@@ -24,6 +24,7 @@ export type EpicDetailProps={
 export type IssueStatus = 'to do' | 'in progress' | 'done' | 'hold';
 
 export type Issue = {
+    epicTitle?: string;
     title: string;
     assign: string;
     status: IssueStatus;

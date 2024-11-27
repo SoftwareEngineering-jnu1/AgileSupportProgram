@@ -192,8 +192,10 @@
 
 .issueList {
     display: flex;
+    justify-content: space-between;
     height: 40px;
     padding-left: 10px;
+    padding-right: 10px;
     align-items: center;
     border-bottom : 1px solid #969696;
 }
@@ -204,3 +206,33 @@
     padding-top: 5px;
     margin-left: 5px;
 }
+
+.issueStatus {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+  }
+  
+  .issueStatus.to-do {
+    background-color: #d3d3d3; /* 회색 */
+    color: #000; /* 검정색 */
+  }
+  
+  .issueStatus.in-progress {
+    background-color: #4a90e2; /* 파란색 */
+  }
+  
+  .issueStatus.done {
+    background-color: #a8e6a2; /* 연한 초록색 */
+    color: #000; /* 검정색 */
+  }
+  
+  .issueStatus.hold {
+    background-color: #f5a623; /* 주황색 */
+    color: #000; /* 검정색 */
+  }
+  

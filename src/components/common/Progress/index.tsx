@@ -12,7 +12,7 @@ const Progress : React.FC<ProgressProps> = ({total, completed, style}) => {
 
     return (
         <ProgressTotal style={style}>
-            <ProgressCompleted style={{width: `${progress}%`}}/>
+            <ProgressCompleted style={{...style, width: `${progress}%`}}/>
         </ProgressTotal>
         
     )

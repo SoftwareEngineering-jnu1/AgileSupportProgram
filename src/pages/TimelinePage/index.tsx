@@ -136,7 +136,7 @@ const Timeline = () => {
   const addIssue = (epicIndex: number) => {
     if (newIssue) {
       const updatedEpics = [...epics];
-      const newIssueTitle : Issue = { title: newIssue, assign: '', status: 'to do'};
+      const newIssueTitle : Issue = { title: newIssue, assign: '', status: 'done'};
       updatedEpics[epicIndex].issues.push(newIssueTitle);
       setEpics(updatedEpics);
       setNewIssue('');
@@ -151,8 +151,8 @@ const Timeline = () => {
   }
 
   // 이슈 상세보기 이벤트
-  const showDetailIssue = (issue: Issue) => {
-      setSelectedIssue(issue);
+  const showDetailIssue = (issue: Issue, epicTitle:string) => {
+      setSelectedIssue({...issue, epicTitle});
   }
 
   const IssueDetail = ({issue, onClose}: IssueDetailProps) =>{
@@ -172,7 +172,8 @@ const Timeline = () => {
     return (
       <IssueDetailContainer>
         <IoIosClose className="close" onClick={onClose} />
-          <div className="issue-title">
+        <div className="sprint-title">{(issue as any).epicTitle}</div>
+          <div className="epic-title2">
             {editTitle ? (
               <EditingContainer>
                 <div
@@ -202,6 +203,13 @@ const Timeline = () => {
         )}
             </div>
 
+            <div className='epic-title2' style={{fontSize: '15px', fontWeight: 'normal'}}>담당자</div>
+            <div className='issueContainer'>
+              <div className='issueAdd'>
+                <FaUserCircle size={30}/>
+               <div style={{fontSize: '15px', padding:'5px', marginTop:'2px'}}>{issue.assign=== '000' ? issue.assign: '000'}</div>
+              </div>
+            </div>
       </IssueDetailContainer>
     )
   }
@@ -258,14 +266,18 @@ const Timeline = () => {
           </>
         )}
       </div>
-
+          
           <Progress total={totalIssues} completed={completedIssues} style={{ margin: '0 20px', padding: '8px', borderRadius: '10px'  }} />
         
           <div className='epic-title2' style={{fontSize: '15px', fontWeight: 'normal'}}>하위 이슈</div>
           <div className='issueContainer'>
             <div>
                 {epic.issues.map((issue, index) => (
-                  <div className='issueList' key={index} onClick={()=> showDetailIssue(issue)}>{issue.title}</div>
+                  <div className='issueList' key={index} onClick={()=> showDetailIssue(issue, epic.title)}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>{issue.title}</div>
+                    <div className={`issueStatus ${issue.status.replace(' ', '-').toLowerCase()}`}>
+                      {issue.status === 'to do' ? 'To do' : issue.status}</div>
+                  </div>
                 ))}
               </div>
 
@@ -524,6 +536,4 @@ const Timeline = () => {
 };
 
 export default Timeline;
-
-
 
