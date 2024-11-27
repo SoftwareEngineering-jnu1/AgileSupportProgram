@@ -136,7 +136,7 @@ const Timeline = () => {
   const addIssue = (epicIndex: number) => {
     if (newIssue) {
       const updatedEpics = [...epics];
-      const newIssueTitle : Issue = { title: newIssue, assign: '', status: 'done'};
+      const newIssueTitle : Issue = { title: newIssue, assign: '', status: 'to do'};
       updatedEpics[epicIndex].issues.push(newIssueTitle);
       setEpics(updatedEpics);
       setNewIssue('');
@@ -266,9 +266,9 @@ const Timeline = () => {
           </>
         )}
       </div>
-          
-          <Progress total={totalIssues} completed={completedIssues} style={{ margin: '0 20px', padding: '8px', borderRadius: '10px'  }} />
-        
+          <div style={{ margin: '0 10px', padding: '8px' }}>
+          <Progress total={totalIssues} completed={completedIssues} height='20px' borderRadius='10px' />
+        </div>
           <div className='epic-title2' style={{fontSize: '15px', fontWeight: 'normal'}}>하위 이슈</div>
           <div className='issueContainer'>
             <div>
