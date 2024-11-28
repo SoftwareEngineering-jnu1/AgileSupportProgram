@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 import IssueItem from "./IssueItem";
@@ -10,6 +10,11 @@ import { GrPowerCycle } from "react-icons/gr";
 
 import AddIssue from "./AddIssue";
 import { boardData } from "./data";
+import Button from "@components/common/Button";
+import Modal from "@components/common/Modal";
+
+import { MdOutlineTitle } from "react-icons/md";
+import ModalIssueItem from "@components/Board/ModalIssueItem";
 
 type Issue = {
   issueId: number;
@@ -23,6 +28,8 @@ type GroupedIssues = {
 };
 
 const SprintPage = () => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
   const { sprintName, sprintEndData, kanbanboardIssueDTO } = boardData;
   const cleanedIssues = kanbanboardIssueDTO.map((issue) => ({
     ...issue,
@@ -30,9 +37,17 @@ const SprintPage = () => {
       Object.entries(issue.mainMemberNameAndcolor).map(([key, value]) => [
         key,
         value || "#000000",
-      ]) // undefined 대신 기본 색상 설정
+      ])
     ),
   }));
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const handleIssueSelect = (label: string) => {
+    setSelectedIssue(label === selectedIssue ? null : label); // 동일한 아이템 선택 시 해제
+  };
 
   const [issues, setIssues] = React.useState<Issue[]>(cleanedIssues);
   const [draggedItem, setDraggedItem] = React.useState<number | null>(null);
@@ -47,10 +62,12 @@ const SprintPage = () => {
 
   const handleDragStart = ({ active }: any) => {
     setDraggedItem(active.id);
+    console.log(active.id);
+    console.log(draggedItem);
   };
 
   const handleDragEnd = ({ active, over }: any) => {
-    setDraggedItem(null); // 드래그 종료 시 초기화
+    setDraggedItem(null);
     if (!over) return;
 
     const sourceStatus = active.data.current.status;
@@ -67,66 +84,131 @@ const SprintPage = () => {
   };
 
   return (
-    <Container>
-      <Top>
-        <Title>{sprintName}</Title>
-        <Date>~ {sprintEndData}</Date>
-      </Top>
-      <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <BoardContents>
-          {["To Do", "In Progress", "Done", "Hold"].map((status) => (
-            <Droppable status={status} key={status}>
-              {(isOver) => (
-                <>
-                  <Header>
-                    <Status status={status}>
-                      {status === "To Do" && <HiPencilSquare />}
-                      {status === "In Progress" && <MdDirectionsRun />}
-                      {status === "Done" && <FaCheckCircle />}
-                      {status === "Hold" && <GrPowerCycle />}
-                      <span>{status}</span>
-                    </Status>
-                    <Count status={status}>
-                      {groupedIssues[status]?.length || 0}
-                    </Count>
-                  </Header>
-                  <div>
-                    {groupedIssues[status]?.map((issue) => {
-                      const [person, color] = Object.entries(
-                        issue.mainMemberNameAndcolor
-                      )[0];
-                      return (
-                        <Draggable
-                          key={issue.issueId}
-                          id={issue.issueId}
-                          status={issue.progressStatus}
-                        >
-                          <IssueItem
-                            title={issue.issuetitle}
-                            person={person}
-                            color={color}
-                          />
-                        </Draggable>
-                      );
-                    })}
-                    {isOver && (
-                      <div style={{ border: "2px solid #ffd700" }}></div>
-                    )}
-                  </div>
-                  <AddIssue />
-                </>
-              )}
-            </Droppable>
-          ))}
-        </BoardContents>
-      </DndContext>
-    </Container>
+    <>
+      <TopBox>
+        <Button padding="5px 15px" style={{ fontWeight: "bold" }}>
+          스프린트 시작
+        </Button>
+      </TopBox>
+      <Container>
+        <Top>
+          <Title>{sprintName}</Title>
+          <Date>~ {sprintEndData}</Date>
+        </Top>
+        <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+          <BoardContents>
+            {["To Do", "In Progress", "Done", "Hold"].map((status) => (
+              <Droppable status={status} key={status}>
+                {(isOver) => (
+                  <>
+                    <Header>
+                      <Status status={status}>
+                        {status === "To Do" && (
+                          <HiPencilSquare style={{ marginRight: "5px" }} />
+                        )}
+                        {status === "In Progress" && (
+                          <MdDirectionsRun style={{ marginRight: "5px" }} />
+                        )}
+                        {status === "Done" && (
+                          <FaCheckCircle style={{ marginRight: "5px" }} />
+                        )}
+                        {status === "Hold" && (
+                          <GrPowerCycle style={{ marginRight: "5px" }} />
+                        )}
+                        <span>{status}</span>
+                      </Status>
+                      <Count status={status}>
+                        {groupedIssues[status]?.length || 0}
+                      </Count>
+                    </Header>
+                    <div>
+                      {groupedIssues[status]?.map((issue) => {
+                        const [person, color] = Object.entries(
+                          issue.mainMemberNameAndcolor
+                        )[0];
+                        return (
+                          <Draggable
+                            key={issue.issueId}
+                            id={issue.issueId}
+                            status={issue.progressStatus}
+                          >
+                            <IssueItem
+                              title={issue.issuetitle}
+                              person={person}
+                              color={color}
+                            />
+                          </Draggable>
+                        );
+                      })}
+                      {isOver && (
+                        <div style={{ border: "2px solid #ffd700" }}></div>
+                      )}
+                    </div>
+                    <AddIssue />
+                  </>
+                )}
+              </Droppable>
+            ))}
+          </BoardContents>
+        </DndContext>
+      </Container>
+      <BottomContainer>
+        <Button
+          padding="5px 15px"
+          style={{ fontWeight: "bold" }}
+          onClick={() => {
+            toggleModal();
+          }}
+        >
+          스프린트 만들기
+        </Button>
+      </BottomContainer>
+      {isModalOpen && (
+        <Modal isOpen={isModalOpen} onClose={toggleModal}>
+          <h3>새 스프린트를 생성하시겠습니까?</h3>
+          <Content>
+            <span>스프린트 이름</span>
+            <SprintTitleWrapper>
+              <SprintTitleIcon />
+              <SprintTitleInput placeholder="프로젝트 이름을 입력해주세요" />
+            </SprintTitleWrapper>
+            <span>스프린트에 추가할 에픽 선택</span>
+            <SelectIssueWrapper>
+              <ModalIssueItem
+                label="발표 자료 제작"
+                isChecked={selectedIssue === "발표 자료 제작"}
+                onCheck={() => handleIssueSelect("발표 자료 제작")}
+              />
+              <ModalIssueItem
+                label="개발 환경 설정"
+                isChecked={selectedIssue === "개발 환경 설정"}
+                onCheck={() => handleIssueSelect("개발 환경 설정")}
+              />
+              <ModalIssueItem
+                label="기능 기획"
+                isChecked={selectedIssue === "기능 기획"}
+                onCheck={() => handleIssueSelect("기능 기획")}
+              />
+            </SelectIssueWrapper>
+          </Content>
+          <ButtonBox>
+            <Button
+              padding="6px 6px"
+              bgColor="#7895B2"
+              fontSize="16px"
+              style={{ fontWeight: "bold" }}
+            >
+              생성
+            </Button>
+          </ButtonBox>
+        </Modal>
+      )}
+    </>
   );
 };
 
 export default SprintPage;
 
-// Draggable 컴포넌트
 const Draggable = ({ id, children, status }: any) => {
   const { attributes, listeners, setNodeRef, transform, active } = useDraggable(
     {
@@ -152,7 +234,6 @@ const Draggable = ({ id, children, status }: any) => {
   );
 };
 
-// Droppable 컴포넌트
 const Droppable = ({
   status,
   children,
@@ -167,15 +248,15 @@ const Droppable = ({
   const getBackgroundColor = (status: string) => {
     switch (status) {
       case "To Do":
-        return "#F8F8F8"; // 연한 회색
+        return "#F8F8F8";
       case "In Progress":
-        return "#EBF7FC"; // 연한 파란색
+        return "#EBF7FC";
       case "Done":
-        return "#EDF9E8"; // 연한 초록색
+        return "#EDF9E8";
       case "Hold":
-        return "#EFE8F9"; // 연한 보라색
+        return "#EFE8F9";
       default:
-        return "#f8f8f8"; // 기본값
+        return "#f8f8f8";
     }
   };
 
@@ -184,23 +265,79 @@ const Droppable = ({
     borderRadius: "8px",
     backgroundColor: getBackgroundColor(status),
     minHeight: "100px",
-    transition: "background-color 0.2s ease", // 배경색 변경 애니메이션
+    transition: "background-color 0.2s ease",
   };
 
   return (
     <StatusContainer ref={setNodeRef} style={style}>
-      {children(isOver)} {/* isOver를 children 함수에 전달 */}
+      {children(isOver)}
     </StatusContainer>
   );
 };
 
+//모달 스타일
+const Content = styled.form`
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+`;
+
+const SprintTitleWrapper = styled.div`
+  position: relative;
+  width: 350px;
+  margin: 5px 0 10px;
+`;
+
+const SprintTitleIcon = styled(MdOutlineTitle)`
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #7e7e7e;
+`;
+
+const SprintTitleInput = styled.input`
+  width: 100%;
+  padding: 10px 15px 10px 35px;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  font-size: 14px;
+  color: #7e7e7e;
+`;
+
+const SelectIssueWrapper = styled.div`
+  width: 350px;
+  margin: 5px 0;
+  padding: 0 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  max-height: 150px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const ButtonBox = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
 // 스타일 정의
+const TopBox = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+`;
+
 const Container = styled.div`
   width: 100%;
   padding: 20px;
   background-color: #eee;
   border-radius: 20px;
-  margin-bottom: 20px;
+  margin: 20px 0;
 `;
 
 const Top = styled.div`
@@ -279,4 +416,11 @@ const StatusContainer = styled.div`
   padding: 16px;
   border-radius: 8px;
   background-color: #f8f8f8;
+`;
+
+const BottomContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
 `;

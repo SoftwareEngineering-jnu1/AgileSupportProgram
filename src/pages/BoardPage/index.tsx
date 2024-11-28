@@ -24,16 +24,8 @@ const BoardPage = () => {
 
   return (
     <Wrapper>
-      <TopCantainer>
-        {hasSprint ? (
-          <Button
-            padding="5px 15px"
-            style={{ fontWeight: "bold" }}
-            onClick={(e) => setHasSprint(!hasSprint)}
-          >
-            스프린트 시작
-          </Button>
-        ) : (
+      <TopContainer>
+        {hasSprint ? null : (
           <Button
             padding="5px 15px"
             style={{ fontWeight: "bold" }}
@@ -45,10 +37,10 @@ const BoardPage = () => {
             스프린트 만들기
           </Button>
         )}
-      </TopCantainer>
-      <MiddleCantainer>
+      </TopContainer>
+      <MiddleContainer>
         {hasSprint ? <SprintPage /> : <NonSprintPage />}
-      </MiddleCantainer>
+      </MiddleContainer>
       {isModalOpen && (
         <Modal isOpen={isModalOpen} onClose={toggleModal}>
           <h3>새 스프린트를 생성하시겠습니까?</h3>
@@ -103,20 +95,19 @@ const Wrapper = styled.div`
   padding: 20px;
 `;
 
-const TopCantainer = styled.div`
+const TopContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: end;
 `;
 
-const MiddleCantainer = styled.div`
+const MiddleContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  padding: 20px 0;
 `;
 
 const Content = styled.form`
