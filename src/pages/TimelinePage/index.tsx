@@ -109,7 +109,8 @@ const Timeline = () => {
           });
         });
 
-        const dependency = epic.issues
+        /*
+      const dependency = epic.issues
   .map((issue, issueIndex) => {
     // issue.dependencies가 undefined일 경우 빈 배열로 초기화
     const dependencies = issue.dependencies || [];
@@ -119,7 +120,7 @@ const Timeline = () => {
   })
   .flat(); // 이중 배열을 평탄화
 
-  /*
+  
 if (dependency.length > 0) {
   drawDependencies(dependency, createtimeline);
 }*/
@@ -309,7 +310,7 @@ if (dependency.length > 0) {
   const EpicDetail = ({epic, onClose}: EpicDetailProps) => {
     const [editTitle, setEditTitle] = useState(false);
     const [editedTitle, setEditedTitle] = useState(epic.title);
-    const [selectedDependency] = useState<{ [issueId: string]:number}>({});
+  //  const [selectedDependency] = useState<{ [issueId: string]:number}>({});
 
     const handleEdit = () => {
       setEditTitle(true);
