@@ -14,6 +14,8 @@ import Button from "@components/common/Button";
 import Modal from "@components/common/Modal";
 
 import { MdOutlineTitle } from "react-icons/md";
+import ReviewContentBox from "@components/Board/ReviewContentBox";
+import InputWithDropdown from "@components/Board/InputWithDropdown";
 import ModalIssueItem from "@components/Board/ModalIssueItem";
 
 type Issue = {
@@ -165,43 +167,61 @@ const SprintPage = () => {
       </BottomContainer>
       {isModalOpen && (
         <Modal isOpen={isModalOpen} onClose={toggleModal}>
-          <h3>새 스프린트를 생성하시겠습니까?</h3>
-          <Content>
-            <span>스프린트 이름</span>
-            <SprintTitleWrapper>
-              <SprintTitleIcon />
-              <SprintTitleInput placeholder="프로젝트 이름을 입력해주세요" />
-            </SprintTitleWrapper>
-            <span>스프린트에 추가할 에픽 선택</span>
-            <SelectIssueWrapper>
-              <ModalIssueItem
-                label="발표 자료 제작"
-                isChecked={selectedIssue === "발표 자료 제작"}
-                onCheck={() => handleIssueSelect("발표 자료 제작")}
-              />
-              <ModalIssueItem
-                label="개발 환경 설정"
-                isChecked={selectedIssue === "개발 환경 설정"}
-                onCheck={() => handleIssueSelect("개발 환경 설정")}
-              />
-              <ModalIssueItem
-                label="기능 기획"
-                isChecked={selectedIssue === "기능 기획"}
-                onCheck={() => handleIssueSelect("기능 기획")}
-              />
-            </SelectIssueWrapper>
-          </Content>
-          <ButtonBox>
+          <ReviewBox>
+            <ReviewContentBox category="Stop" />
+            <ReviewContentBox category="Start" />
+            <ReviewContentBox category="Continue" />
+          </ReviewBox>
+          <BottomBox>
+            <InputWithDropdown />
             <Button
-              padding="6px 6px"
-              bgColor="#7895B2"
+              padding="3px 30px"
+              bgColor="#AEBDCA"
               fontSize="16px"
               style={{ fontWeight: "bold" }}
             >
-              생성
+              스프린트 리뷰
             </Button>
-          </ButtonBox>
+          </BottomBox>
         </Modal>
+        // <Modal isOpen={isModalOpen} onClose={toggleModal}>
+        //   <h3>새 스프린트를 생성하시겠습니까?</h3>
+        //   <Content>
+        //     <span>스프린트 이름</span>
+        //     <SprintTitleWrapper>
+        //       <SprintTitleIcon />
+        //       <SprintTitleInput placeholder="프로젝트 이름을 입력해주세요" />
+        //     </SprintTitleWrapper>
+        //     <span>스프린트에 추가할 에픽 선택</span>
+        //     <SelectIssueWrapper>
+        //       <ModalIssueItem
+        //         label="발표 자료 제작"
+        //         isChecked={selectedIssue === "발표 자료 제작"}
+        //         onCheck={() => handleIssueSelect("발표 자료 제작")}
+        //       />
+        //       <ModalIssueItem
+        //         label="개발 환경 설정"
+        //         isChecked={selectedIssue === "개발 환경 설정"}
+        //         onCheck={() => handleIssueSelect("개발 환경 설정")}
+        //       />
+        //       <ModalIssueItem
+        //         label="기능 기획"
+        //         isChecked={selectedIssue === "기능 기획"}
+        //         onCheck={() => handleIssueSelect("기능 기획")}
+        //       />
+        //     </SelectIssueWrapper>
+        //   </Content>
+        //   <ButtonBox>
+        //     <Button
+        //       padding="6px 6px"
+        //       bgColor="#7895B2"
+        //       fontSize="16px"
+        //       style={{ fontWeight: "bold" }}
+        //     >
+        //       생성
+        //     </Button>
+        //   </ButtonBox>
+        // </Modal>
       )}
     </>
   );
@@ -423,4 +443,17 @@ const BottomContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-bottom: 20px;
+`;
+
+const ReviewBox = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+`;
+
+const BottomBox = styled.div`
+  width: 100%;
+  height: 30px;
+  display: flex;
+  justify-content: space-between;
 `;
