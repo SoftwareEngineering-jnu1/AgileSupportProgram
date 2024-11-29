@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { DataSet, TimelineTimeAxisScaleType, Timeline as VisTimeline } from 'vis-timeline/standalone';
 
 
@@ -81,8 +81,8 @@ const Timeline = () => {
         // 그룹 생성 (에픽 제목이 왼쪽에 표시됨)
         groups.add({ id: epicIndex, content: epic.title });
 
-        const epicstart = new Date();
-        const epicend = new Date();
+        const epicstart = new Date(epic.startDate);
+        const epicend = new Date(epic.endDate);
         
         items.add({
           id: `${epicIndex}`,
@@ -93,10 +93,12 @@ const Timeline = () => {
           assign: '',
         });
 
-        const issuestart = new Date();
-        const issuesend = new Date();
+        
 
         epic.issues.forEach((issue, issueIndex) => {
+          const issuestart = new Date(issue.startDate);
+          const issuesend = new Date(issue.endDate);
+
           items.add({
             id: `${epicIndex}-${issueIndex}`, // 고유한 아이디
             content: issue.title,
@@ -117,11 +119,10 @@ const Timeline = () => {
   })
   .flat(); // 이중 배열을 평탄화
 
+  /*
 if (dependency.length > 0) {
   drawDependencies(dependency, createtimeline);
-}
-  
-        
+}*/
       });
       
 
@@ -129,6 +130,7 @@ if (dependency.length > 0) {
     }
   }, [epics]);
 
+/*
   const getItemPos = (item: any) => {
     if (!item) {
       // item이 undefined인 경우 기본값을 반환하거나 처리할 로직 추가
@@ -159,51 +161,42 @@ if (dependency.length > 0) {
     };
   };
   
-  const drawArrows = useCallback(
-    (i: number, j: number, timeline: any, dependencyPath: any[]) => {
-      let item_i = getItemPos(timeline.itemSet.items[i]);
-      let item_j = getItemPos(timeline.itemSet.items[j]);
-      if (item_j.mid_x < item_i.mid_x) [item_i, item_j] = [item_j, item_i]; // 왼쪽에서 오른쪽으로 화살표 그리기
+  const drawArrows = (i: number, j: number, timeline: any, dependencyPath: any[]) => {
+    let item_i = getItemPos(timeline.itemSet.items[i]);
+    let item_j = getItemPos(timeline.itemSet.items[j]);
+    if (item_j.mid_x < item_i.mid_x) [item_i, item_j] = [item_j, item_i]; // 왼쪽에서 오른쪽으로 화살표 그리기
   
-      const curveLen = item_i.height * 2; // 곡선의 길이
-      item_j.left -= 10; // 화살표의 여백 공간
+    const curveLen = item_i.height * 2; // 곡선의 길이
+    item_j.left -= 10; // 화살표의 여백 공간
   
-      // 의존성 화살표 경로 업데이트
-      const path = dependencyPath[j];
-      if (path && path.setAttribute) {
-        path.setAttribute(
-          'd',
-          `M ${item_i.right} ${item_i.mid_y} C ${item_i.right + curveLen} ${item_i.mid_y} ${item_j.left - curveLen} ${item_j.mid_y} ${item_j.left} ${item_j.mid_y}`
-        );
-      }
-    },
-    [getItemPos] // getItemPos 함수에 의존
-  );
+    // 의존성 화살표 경로 업데이트
+    const path = dependencyPath[j];
+    if (path && path.setAttribute) {
+      path.setAttribute(
+        'd',
+        `M ${item_i.right} ${item_i.mid_y} C ${item_i.right + curveLen} ${item_i.mid_y} ${item_j.left - curveLen} ${item_j.mid_y} ${item_j.left} ${item_j.mid_y}`
+      );
+    }
+  };
   
+  const drawDependencies = (dependency: number[][], timeline: any) => {
+    const dependencyPath: any[] = [];
+    dependency.forEach((dep) => {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', 'M 0 0');
+      path.setAttribute('stroke', '#F00');
+      path.setAttribute('stroke-width', '3');
+      path.setAttribute('fill', 'none');
+      path.setAttribute('marker-end', 'url(#arrowhead0)');
+      dependencyPath.push(path);
+      timeline.dom.center.appendChild(path);
+    });
   
-  const drawDependencies = useCallback(
-    (dependency: number[][], timeline: any) => {
-      const dependencyPath: any[] = [];
-      dependency.forEach((dep) => {
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', 'M 0 0');
-        path.setAttribute('stroke', '#F00');
-        path.setAttribute('stroke-width', '3');
-        path.setAttribute('fill', 'none');
-        path.setAttribute('marker-end', 'url(#arrowhead0)');
-        dependencyPath.push(path);
-        timeline.dom.center.appendChild(path);
-      });
-  
-      dependency.forEach((dep, index) => {
-        drawArrows(dep[0], dep[1], timeline, dependencyPath[index]);
-      });
-    },
-    [drawArrows] // drawDependencies는 drawArrows에 의존하므로 포함
-  );
-  
-  
-  
+    dependency.forEach((dep, index) => {
+      drawArrows(dep[0], dep[1], timeline, dependencyPath[index]);
+    });
+  };
+  */
 
 
   const [isEpicModalOpen, setIsEpicModalOpen] = useState(false);
@@ -219,7 +212,7 @@ if (dependency.length > 0) {
   // 에픽 추가
   const addEpic = () => {
     if (newEpic) {
-      setEpics([...epics, { title: newEpic, progress:0, issues:[]}]);
+      setEpics([...epics, { title: newEpic, progress:0, issues:[], startDate:'', endDate:''}]);
       setNewEpic('');
       toggleEpicModal();
     }
@@ -233,7 +226,9 @@ if (dependency.length > 0) {
         title: newIssue, 
         assign: '', 
         status: 'to do',  
-        ...(dependentIssues.length > 0 && { dependencies: dependentIssues }),};
+        ...(dependentIssues.length > 0 && { dependencies: dependentIssues }),
+        startDate:'',
+        endDate:''};
       updatedEpics[epicIndex].issues.push(newIssueTitle);
       setEpics(updatedEpics);
       setNewIssue('');
@@ -328,6 +323,7 @@ if (dependency.length > 0) {
         setEditTitle(false);
     };
 
+    /*
     const handleDependency = (issueId: string, dependentIssueTitle: string) => {
       
       // 에픽 찾기
@@ -385,7 +381,7 @@ if (dependency.length > 0) {
         }
       }
     };
-
+*/
     const totalIssues = epic.issues.length;
     const completedIssues = epic.issues.filter(issues => issues.status==='done').length;
 
@@ -432,7 +428,7 @@ if (dependency.length > 0) {
                   <div className='issueList' key={index} >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} onClick={()=> showDetailIssue(issue, epic.title)}>{issue.title}</div>
               {/* 의존도 설정은 어떤 형식으로 해야할지 */}
-               
+               {/*
               <SelectWrapper>
                 <SelectStatus
                   value={selectedDependency[`${epic.title}-${issue.title}`] || ''}  // 의존성 값을 표시
@@ -448,6 +444,7 @@ if (dependency.length > 0) {
                     ))}
                 </SelectStatus>
               </SelectWrapper>
+              */}
               
                     <div className={`issueStatus ${issue.status.replace(' ', '-').toLowerCase()}`}>
                       {issue.status === 'to do' ? 'To do' : issue.status}</div>

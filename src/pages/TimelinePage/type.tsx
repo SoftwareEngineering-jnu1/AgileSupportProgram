@@ -3,6 +3,8 @@ export type Epic = {
     title: string;
     progress:number; //진행률
     issues: Issue[];
+    startDate: string;
+    endDate: string;
 };
   
   // Item 타입 정의
@@ -29,6 +31,8 @@ export type Issue = {
     assign: string;
     status: IssueStatus;
     dependencies?: number[]; 
+    startDate: string;
+    endDate: string;
 } 
 
 export type IssueDetailProps = {
