@@ -159,42 +159,49 @@ if (dependency.length > 0) {
     };
   };
   
-  const drawArrows = (i: number, j: number, timeline: any, dependencyPath: any[]) => {
-    let item_i = getItemPos(timeline.itemSet.items[i]);
-    let item_j = getItemPos(timeline.itemSet.items[j]);
-    if (item_j.mid_x < item_i.mid_x) [item_i, item_j] = [item_j, item_i]; // 왼쪽에서 오른쪽으로 화살표 그리기
+  const drawArrows = useCallback(
+    (i: number, j: number, timeline: any, dependencyPath: any[]) => {
+      let item_i = getItemPos(timeline.itemSet.items[i]);
+      let item_j = getItemPos(timeline.itemSet.items[j]);
+      if (item_j.mid_x < item_i.mid_x) [item_i, item_j] = [item_j, item_i]; // 왼쪽에서 오른쪽으로 화살표 그리기
   
-    const curveLen = item_i.height * 2; // 곡선의 길이
-    item_j.left -= 10; // 화살표의 여백 공간
+      const curveLen = item_i.height * 2; // 곡선의 길이
+      item_j.left -= 10; // 화살표의 여백 공간
   
-    // 의존성 화살표 경로 업데이트
-    const path = dependencyPath[j];
-    if (path && path.setAttribute) {
-      path.setAttribute(
-        'd',
-        `M ${item_i.right} ${item_i.mid_y} C ${item_i.right + curveLen} ${item_i.mid_y} ${item_j.left - curveLen} ${item_j.mid_y} ${item_j.left} ${item_j.mid_y}`
-      );
-    }
-  };
+      // 의존성 화살표 경로 업데이트
+      const path = dependencyPath[j];
+      if (path && path.setAttribute) {
+        path.setAttribute(
+          'd',
+          `M ${item_i.right} ${item_i.mid_y} C ${item_i.right + curveLen} ${item_i.mid_y} ${item_j.left - curveLen} ${item_j.mid_y} ${item_j.left} ${item_j.mid_y}`
+        );
+      }
+    },
+    [getItemPos] // getItemPos 함수에 의존
+  );
   
-  const drawDependencies = useCallback((dependency: number[][], timeline: any) => {
-    const dependencyPath: any[] = [];
   
-    dependency.forEach(() => {
-      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      path.setAttribute('d', 'M 0 0');
-      path.setAttribute('stroke', '#F00');
-      path.setAttribute('stroke-width', '3');
-      path.setAttribute('fill', 'none');
-      path.setAttribute('marker-end', 'url(#arrowhead0)');
-      dependencyPath.push(path);
-      timeline.dom.center.appendChild(path);
-    });
+  const drawDependencies = useCallback(
+    (dependency: number[][], timeline: any) => {
+      const dependencyPath: any[] = [];
+      dependency.forEach((dep) => {
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', 'M 0 0');
+        path.setAttribute('stroke', '#F00');
+        path.setAttribute('stroke-width', '3');
+        path.setAttribute('fill', 'none');
+        path.setAttribute('marker-end', 'url(#arrowhead0)');
+        dependencyPath.push(path);
+        timeline.dom.center.appendChild(path);
+      });
   
-    dependency.forEach((dep, index) => {
-      drawArrows(dep[0], dep[1], timeline, dependencyPath[index]);
-    });
-  }, []);
+      dependency.forEach((dep, index) => {
+        drawArrows(dep[0], dep[1], timeline, dependencyPath[index]);
+      });
+    },
+    [drawArrows] // drawDependencies는 drawArrows에 의존하므로 포함
+  );
+  
   
   
 
