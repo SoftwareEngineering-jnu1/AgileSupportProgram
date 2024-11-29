@@ -11,6 +11,17 @@ import ModalIssueItem from "@components/Board/ModalIssueItem";
 
 const BoardPage = () => {
   const [hasSprint, setHasSprint] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const handleIssueSelect = (label: string) => {
+    setSelectedIssue(label === selectedIssue ? null : label); // 동일한 아이템 선택 시 해제
+  };
+
   return (
     <Wrapper>
       <TopCantainer>
@@ -38,6 +49,46 @@ const BoardPage = () => {
       <MiddleCantainer>
         {hasSprint ? <SprintPage /> : <NonSprintPage />}
       </MiddleCantainer>
+      {isModalOpen && (
+        <Modal isOpen={isModalOpen} onClose={toggleModal}>
+          <h3>새 스프린트를 생성하시겠습니까?</h3>
+          <Content>
+            <span>스프린트 이름</span>
+            <SprintTitleWrapper>
+              <SprintTitleIcon />
+              <SprintTitleInput placeholder="프로젝트 이름을 입력해주세요" />
+            </SprintTitleWrapper>
+            <span>스프린트에 추가할 에픽 선택</span>
+            <SelectIssueWrapper>
+              <ModalIssueItem
+                label="발표 자료 제작"
+                isChecked={selectedIssue === "발표 자료 제작"}
+                onCheck={() => handleIssueSelect("발표 자료 제작")}
+              />
+              <ModalIssueItem
+                label="개발 환경 설정"
+                isChecked={selectedIssue === "개발 환경 설정"}
+                onCheck={() => handleIssueSelect("개발 환경 설정")}
+              />
+              <ModalIssueItem
+                label="기능 기획"
+                isChecked={selectedIssue === "기능 기획"}
+                onCheck={() => handleIssueSelect("기능 기획")}
+              />
+            </SelectIssueWrapper>
+          </Content>
+          <ButtonBox>
+            <Button
+              padding="6px 6px"
+              bgColor="#7895B2"
+              fontSize="16px"
+              style={{ fontWeight: "bold" }}
+            >
+              생성
+            </Button>
+          </ButtonBox>
+        </Modal>
+      )}
     </Wrapper>
   );
 };
