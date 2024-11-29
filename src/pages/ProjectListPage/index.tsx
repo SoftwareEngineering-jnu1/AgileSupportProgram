@@ -7,11 +7,18 @@ import Button from "@components/common/Button";
 
 import { FaUserCircle } from "react-icons/fa";
 import { FaCirclePlus } from "react-icons/fa6";
+import { FaUserPlus } from "react-icons/fa6";
+import { FaArrowCircleRight } from "react-icons/fa";
+import { MdOutlineTitle } from "react-icons/md";
 import ProjectList from "./ProjectList";
 import EmptyProject from "./EmptyProject";
+import Modal from "@components/common/Modal";
 
 const ProjectListPage = () => {
-  const [hasProject, setHasProject] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
 
   return (
     <Wrapper>
@@ -38,7 +45,7 @@ const ProjectListPage = () => {
             bgColor="#7895B2"
             color="#fff"
             style={{ fontWeight: "bold", height: "40px" }}
-            onClick={() => setHasProject(!hasProject)}
+            onClick={toggleModal}
           >
             <FaCirclePlus size={30} />
             프로젝트 생성
@@ -46,7 +53,36 @@ const ProjectListPage = () => {
         </div>
         <Divider />
       </MiddleContainer>
-      {hasProject ? <ProjectList /> : <EmptyProject />}
+      <ProjectList />
+      <EmptyProject />
+      {isModalOpen && (
+        <Modal isOpen={isModalOpen} onClose={toggleModal}>
+          <h2>새 프로젝트를 생성하시겠습니까?</h2>
+          <Content>
+            <span>프로젝트 이름</span>
+            <ProjectTitleWrapper>
+              <ProjectTitleIcon />
+              <ProjectTitleInput placeholder="프로젝트 이름을 입력해주세요" />
+            </ProjectTitleWrapper>
+            <span>팀원 이메일</span>
+            <TeamEmailInputWrapper>
+              <TeamEmailIcon />
+              <TeamEmailInput placeholder="팀원의 이메일을 입력해주세요" />
+              <TeamEmailSubmit />
+            </TeamEmailInputWrapper>
+          </Content>
+          <ButtonBox>
+            <Button
+              padding="6px 6px"
+              bgColor="#7895B2"
+              fontSize="16px"
+              style={{ fontWeight: "bold" }}
+            >
+              생성
+            </Button>
+          </ButtonBox>
+        </Modal>
+      )}
     </Wrapper>
   );
 };
@@ -81,4 +117,70 @@ const Divider = styled.div`
   height: 1px;
   background-color: #7e7e7e;
   margin: 10px 0 20px;
+`;
+const Content = styled.form`
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+`;
+
+const ProjectTitleWrapper = styled.div`
+  position: relative;
+  width: 350px;
+  margin: 5px 0 10px;
+`;
+
+const ProjectTitleIcon = styled(MdOutlineTitle)`
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #7e7e7e;
+`;
+
+const ProjectTitleInput = styled.input`
+  width: 100%;
+  padding: 10px 15px 10px 35px;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  font-size: 14px;
+  color: #7e7e7e;
+`;
+
+const TeamEmailInputWrapper = styled.div`
+  position: relative;
+  width: 350px;
+  margin: 5px 0 10px;
+`;
+
+const TeamEmailIcon = styled(FaUserPlus)`
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #7e7e7e;
+`;
+const TeamEmailSubmit = styled(FaArrowCircleRight)`
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  color: #7e7e7e;
+  cursor: pointer;
+`;
+
+const TeamEmailInput = styled.input`
+  width: 100%;
+  padding: 10px 15px 10px 35px;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  font-size: 14px;
+  color: #7e7e7e;
+`;
+
+const ButtonBox = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;

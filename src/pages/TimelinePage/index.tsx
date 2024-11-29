@@ -1,29 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { DataSet, TimelineTimeAxisScaleType, Timeline as VisTimeline } from 'vis-timeline/standalone';
 import Button from '@components/common/Button';
-import styled from "styled-components";
-import { IoIosAdd } from "react-icons/io";
+import { IoIosAdd, IoIosClose } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
-import { IoIosClose } from "react-icons/io";
 import { IoPencil } from "react-icons/io5";
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 import './Timeline.css';
-
-// 에픽 타입 정의
-type Epic = {
-  title: string;
-  progress:number; //진행률
-  issues: string[];
-};
-
-// Item 타입 정의
-type Item = {
-  id: string;
-  content: string;
-  start: Date;
-  end: Date;
-  group: number;
-};
+import type { Epic, Item, Issue, EpicDetailProps, IssueDetailProps } from './type';
+import { Modalepic, ModalepicContent, ButtonContainer, ButtonPart, Divider, EpicDetailContainer, IssueDetailContainer, EditingContainer } from './style';
 
 const Timeline = () => {
   const [epics, setEpics] = useState<Epic[]>([]);
@@ -32,7 +16,8 @@ const Timeline = () => {
   const timelineRef = useRef<HTMLDivElement | null>(null);
   const [timeline, setTimeline] = useState<VisTimeline | null>(null);
   const [selectedEpic, setSelectedEpic] = useState<Epic | null>(null);
-
+  const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
+  
   const users = ["User1", "User2", "User3", "User4"];
 
   useEffect(() => {
@@ -87,6 +72,7 @@ const Timeline = () => {
           start: epicstart,
           end: epicend,
           group: epicIndex, 
+          assign: '',
         });
 
         const issuestart = new Date();
@@ -95,10 +81,11 @@ const Timeline = () => {
         epic.issues.forEach((issue, issueIndex) => {
           items.add({
             id: `${epicIndex}-${issueIndex}`, // 고유한 아이디
-            content: issue,
+            content: issue.title,
             start: issuestart,
             end: issuesend,
             group: epicIndex,
+            assign: issue.assign || '',
           });
         });
         
@@ -122,30 +109,129 @@ const Timeline = () => {
     setSelectedEpic(epic);
   }
 
-  type EpicDetailProps={
-    epic: Epic;
-    onClose: () => void;
-    onAddIssue: (epicIndex: number)=> void;
-  };
+  // 이슈 상세보기 이벤트
+  const showDetailIssue = (issue: Issue) => {
+      setSelectedIssue(issue);
+  }
+
+  const IssueDetail = ({issue, onClose}: IssueDetailProps) =>{
+    const [editTitle, setEditTitle] = useState(false);
+    const [editedTitle, setEditedTitle] = useState(issue.title);
+
+    const handleEdit = () => {
+      setEditTitle(true);
+    };
+
+    const handleSave = () => {
+      if (!editedTitle) return;
+      issue.title = editedTitle;
+      setEditTitle(false);
+    };
+
+    return (
+      <IssueDetailContainer>
+        <IoIosClose className="close" onClick={onClose} />
+          <div className="issue-title">
+            {editTitle ? (
+              <EditingContainer>
+                <div
+                  contentEditable={true}
+                  suppressContentEditableWarning={true}
+                  onInput={(e) => setEditedTitle(e.currentTarget.textContent || "")}
+                  ref={(el) => el && el.focus()}
+                >
+                  {editedTitle}
+                </div>
+                <Button
+                  bgColor="#000"
+                  padding="2px 8px"
+                  radius="10px"
+                  color="#fff"
+                  fontSize="10px"
+                  onClick={handleSave}
+                >
+                  완료
+                </Button>
+              </EditingContainer>
+          ) : (
+            <>
+              {editedTitle || issue.title}
+              <IoPencil className='edit-title' onClick={handleEdit} />
+          </>
+        )}
+            </div>
+
+      </IssueDetailContainer>
+    )
+  }
 
   const EpicDetail = ({epic, onClose}: EpicDetailProps) => {
+    const [editTitle, setEditTitle] = useState(false);
+    const [editedTitle, setEditedTitle] = useState(epic.title);
+
+    const handleEdit = () => {
+      setEditTitle(true);
+    };
+
+    const handleSave = () => {
+      const updatedEpics = epics.map((e) =>
+        e === epic ? { ...e, title: editedTitle} : e );
+        setEpics(updatedEpics);
+        epic.title = editedTitle;
+        setEditTitle(false);
+    };
+
     return (
       <EpicDetailContainer>
-        <IoIosClose className='close' onClick={onClose}/>
-          <div className="epic-title2">{epic.title}
-            <IoPencil className="editTitle" />
-          </div>
-          <div className="progress-bar" style={{ margin: '0 20px', padding: '8px', borderRadius: '10px'  }}>
-            <div className="progress" style={{ width: `${epic.progress}%` }}></div>
+        <IoIosClose className="close" onClick={onClose} />
+        <div className="epic-title2">
+          {editTitle ? (
+            <EditingContainer>
+              <div
+                contentEditable={true}
+                suppressContentEditableWarning={true}
+                onInput={(e) => setEditedTitle(e.currentTarget.textContent || "")}
+                ref={(el) => el && el.focus()}
+              >
+                {epic.title}
+              </div>
+              <Button
+                bgColor="#000"
+                padding="2px 8px"
+                radius="10px"
+                color="#fff"
+                fontSize="10px"
+                onClick={handleSave}
+              >
+                완료
+              </Button>
+            </EditingContainer>
+        ) : (
+          <>
+            {editedTitle || epic.title}
+            <IoPencil className='edit-title' onClick={handleEdit} />
+          </>
+        )}
+      </div>
+
+          <div className='progress-bar' style={{ margin: '0 20px', padding: '8px', borderRadius: '10px'  }}>
+            <div className='progress' style={{ width: `${epic.progress}%` }}></div>
           </div>
         
-          <h3>하위 이슈</h3>
+          <div className='epic-title2' style={{fontSize: '15px', fontWeight: 'normal'}}>하위 이슈</div>
+          <div className='issueContainer'>
+            <div>
+                {epic.issues.map((issue, index) => (
+                  <div className='issueList' key={index} onClick={()=> showDetailIssue(issue)}>{issue.title}</div>
+                ))}
+              </div>
 
-          <ul>
-            {epic.issues.map((issue, index) => (
-              <li key={index}>{issue}</li>
-            ))}
-          </ul>
+            <div className='issueAdd'>
+              <IoIosAdd className='add'/>
+              <div style={{fontSize: '15px', marginTop:'2px'}}>이슈 만들기</div>
+            </div>
+          </div>
+
       </EpicDetailContainer>
     );
   }
@@ -154,7 +240,8 @@ const Timeline = () => {
   const addIssue = (epicIndex: number) => {
     if (newIssue) {
       const updatedEpics = [...epics];
-      updatedEpics[epicIndex].issues.push(newIssue);
+      const newIssueTitle : Issue = { title: newIssue, assign: ''};
+      updatedEpics[epicIndex].issues.push(newIssueTitle);
       setEpics(updatedEpics);
       setNewIssue('');
     }
@@ -226,18 +313,18 @@ const Timeline = () => {
 
   return (
     
-      <div className="timeline-all">
+      <div className='timeline-all'>
         
-        <div className="topbar">
+        <div className='topbar'>
           {/*사용자 그룹 */}
-          <div className="userGrop">
+          <div className='userGrop'>
             {users.slice(0, 3).map((user, index) => (
             <FaUserCircle
-              className="userIcon"
+              className='userIcon'
               key={index} 
               size={35} />
             ))}
-           {users.length > 3 && <span>+{users.length - 3}</span>}
+           {users.length > 3 && <div className='userShow'>+{users.length - 3}</div>}
           </div>
 
           <ButtonContainer>
@@ -249,49 +336,53 @@ const Timeline = () => {
           </ButtonContainer>
         </div>
 
-        <div className="timeline-container">
+        <div className='timeline-container'>
           {/* 왼쪽 사이드바 */}
-          <div className="sidebar">
+          <div className='sidebar'>
             <div className='blank'></div>
             
-            <div className="sideEpic">
+            <div className='sideEpic'>
               {/*에픽 제목, 진척도 사이드바에 추가*/}
               {epics.map((epic, index) => (
-                <div key={index} className="epic-item" onClick={() => showDetailEpic(epic)}>
-                  <div className="epic-header">
-                    <div className="epic-title1">{epic.title}</div>
-                    <IoIosAdd className="add" onClick={()=> addIssueModal(index)}/>
+                <div key={index} className='epic-item' onClick={() => showDetailEpic(epic)}>
+                  <div className='epic-header'>
+                    <div className='epic-title1'>{epic.title}</div>
+                    <IoIosAdd className='add' onClick={()=> addIssueModal(index)}/>
                   </div>
-                  <div className="progress-bar">
-                    <div className="progress" style={{ width: `${epic.progress}%` }}></div>
+                  <div className='progress-bar'>
+                    <div className='progress' style={{ width: `${epic.progress}%` }}></div>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="sideButton">
+            <div className='sideButton'>
               <Button
                 bgColor="#000"
-                padding="5px 30px"
+                padding="10px 30px"
                 radius="20px"
                 color="#fff"
                 fontSize="15px"
-                style={{ fontWeight: "bold", marginTop: 'auto' }}
+                style={{ position:'relative', fontWeight:'bold', marginTop: 'auto', }}
                 onClick ={() => setEpicModal(true)}
-            >에픽만들기</Button>
+            ><IoIosAdd size={20} style={{position:'absolute', left:0, marginLeft:'12px'}}/>에픽만들기</Button>
             </div>
           </div>
 
           {/* 타임라인 */}
-          <div className="timeline-area">
-            <div id="timeline" className="timeline" ref={timelineRef} />
+          <div className='timeline-area'>
+            <div id='timeline' className='timeline' ref={timelineRef} />
           </div>
 
           {selectedEpic && (
           <EpicDetail epic={selectedEpic} onClose={() => setSelectedEpic(null)} onAddIssue={addIssue} />
         )}
+
+          {selectedIssue && (
+          <IssueDetail issue={selectedIssue} onClose={() => setSelectedIssue(null)} />
+        )}
         </div>
 
-        {/*에픽 생성 모달창*/}
+        {/*모달*/}
         {epicModal && (
           <Modalepic onClick={() => setEpicModal(false)}>
             <ModalepicContent ref={epicModalRef} onClick={e => e.stopPropagation()}>
@@ -343,54 +434,3 @@ const Timeline = () => {
 };
 
 export default Timeline;
-
-const Modalepic = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1001;
-  `;
-
-const ModalepicContent = styled.div`
-  background: #EEEEEE;
-  padding: 20px;
-  border-radius: 5px;
-  width: 400px; // 원하는 너비로 설정
-  max-width: 90%; // 화면이 작을 때의 최대 너비
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  align-items: center;
-  background-color: #f6f3ed;
-  border-radius: 10px;
-  font-size: 16px;
-  padding: 15px;
-`
-
-const ButtonPart = styled.div`
-  cursor: pointer;
-`;
-
-const Divider = styled.div`
-  margin: 0 8px;
-  color: #000;
-`;
-
-const EpicDetailContainer = styled.div`
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 25%; /* 원하는 넓이로 설정 */
-  border-left: 1px solid #ccc; /* 네모 칸의 경계선 표현 */
-  box-sizing: border-box;
-  background-color: #f8f8f8; /* 배경색 조정 */
-}
-`;
