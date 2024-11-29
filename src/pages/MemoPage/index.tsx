@@ -4,6 +4,7 @@ import {IoIosAdd} from "react-icons/io"; /*메모 추가 아이콘*/
 import { BsSortDown } from "react-icons/bs"; /*메모 정렬 아이콘*/
 import { IoIosArrowRoundUp } from "react-icons/io"; /*up 정렬 아이콘*/
 import { IoIosArrowRoundDown } from "react-icons/io"; /*down 정렬 아이콘*/
+import { PiNoteLight } from "react-icons/pi"; /*메모페이지 배경 아이콘*/
 
 interface ModalData {
   id: number;
@@ -59,8 +60,6 @@ const MemoPage: React.FC = () => {
     handleOpenModal();
   };
 
-  
-
   const sortmemo = () => {
     const sorted = [...savedModals].sort((a,b) => sortedNewst ?  a.timestamp - b.timestamp : b.timestamp - a.timestamp);
     setSaveModals(sorted);
@@ -75,6 +74,14 @@ const MemoPage: React.FC = () => {
 
   return (
     <div className={style.memopagediv}>
+      <div className={style.backgrounddiv}>
+        { savedModals.length === 0 ? (
+          <p className={style.pp}> <PiNoteLight className={style.memopagebackicon}/> <br/> <span className={style.span}>생성된 메모가 없습니다</span><br/> 메모를 생성해 데일리 스크럼을 기록하거나 간단한 메모를 해보세요!</p>
+        ) : (
+          savedModals.map((memo, index) => <p key={index}></p>)
+      )}
+      </div>
+      
       <button className={style.memoadd} onClick={handleOpenModal}>
         <IoIosAdd className={style.addicon}/>
       </button>
@@ -112,7 +119,7 @@ const MemoPage: React.FC = () => {
             <h3>생성날짜: {formatDate(modal.timestamp)}</h3>
             <h3>제목: {modal.title}</h3>
             <p className={style.memocontent}>{modal.content}</p>
-            <span className={style.deletememobutton} onClick={() => deletememo(modal.id)}>&times;</span>
+            <span className={style.deletememobutton} onClick={(e) => { e.stopPropagation(); deletememo(modal.id)}}>&times;</span>
           </div>
         )
       )}

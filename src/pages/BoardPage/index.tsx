@@ -7,6 +7,7 @@ import SprintPage from "@components/Board/SprintPage";
 
 const BoardPage = () => {
   const [hasSprint, setHasSprint] = useState<boolean>(false);
+
   return (
     <Wrapper>
       <TopCantainer>
@@ -31,7 +32,7 @@ const BoardPage = () => {
       <MiddleCantainer>
         {hasSprint ? <SprintPage /> : <NonSprintPage />}
       </MiddleCantainer>
-    </Wrapper>
+    </Wrapper>  
   );
 };
 
