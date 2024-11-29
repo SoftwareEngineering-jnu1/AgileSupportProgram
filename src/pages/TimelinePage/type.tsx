@@ -28,6 +28,7 @@ export type Issue = {
     title: string;
     assign: string;
     status: IssueStatus;
+    dependencies?: number[]; 
 } 
 
 export type IssueDetailProps = {

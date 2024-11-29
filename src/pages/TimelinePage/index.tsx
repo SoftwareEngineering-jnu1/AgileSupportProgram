@@ -35,7 +35,7 @@ const Timeline = () => {
 
   const [issueStartDate, setIssueStartDate] = useState('');
   const [issueEndDate, setIssueEndDate] = useState('');
-    
+
   const users = ["User1", "User2", "User3", "User4"];
 
   useEffect(() => {
@@ -106,12 +106,96 @@ const Timeline = () => {
             assign: issue.assign || '',
           });
         });
+
+        const dependency = epic.issues
+  .map((issue, issueIndex) => {
+    // issue.dependencies가 undefined일 경우 빈 배열로 초기화
+    const dependencies = issue.dependencies || [];
+    return dependencies.map((depId) => {
+      return [issueIndex, depId]; // 의존도 관계 (이슈 인덱스 기준)
+    });
+  })
+  .flat(); // 이중 배열을 평탄화
+
+if (dependency.length > 0) {
+  drawDependencies(dependency, createtimeline);
+}
+  
         
       });
+      
 
       return () => createtimeline.destroy();
     }
   }, [epics]);
+
+  const getItemPos = (item: any) => {
+    if (!item) {
+      // item이 undefined인 경우 기본값을 반환하거나 처리할 로직 추가
+      console.warn('Item is undefined');
+      return {
+        left: 0,
+        top: 0,
+        right: 0,
+        bottom: 0,
+        mid_x: 0,
+        mid_y: 0,
+        width: 0,
+        height: 0,
+      };
+    }
+
+    const left_x = item.left;
+     const top_y = item.parent ? (item.parent.top + item.parent.height - item.top - item.height) : 0;
+    return {
+      left: left_x,
+      top: top_y,
+      right: left_x + item.width,
+      bottom: top_y + item.height,
+      mid_x: left_x + item.width / 2,
+      mid_y: top_y + item.height / 2,
+      width: item.width,
+      height: item.height,
+    };
+  };
+  
+  const drawArrows = (i: number, j: number, timeline: any, dependencyPath: any[]) => {
+    let item_i = getItemPos(timeline.itemSet.items[i]);
+    let item_j = getItemPos(timeline.itemSet.items[j]);
+    if (item_j.mid_x < item_i.mid_x) [item_i, item_j] = [item_j, item_i]; // 왼쪽에서 오른쪽으로 화살표 그리기
+  
+    const curveLen = item_i.height * 2; // 곡선의 길이
+    item_j.left -= 10; // 화살표의 여백 공간
+  
+    // 의존성 화살표 경로 업데이트
+    const path = dependencyPath[j];
+    if (path && path.setAttribute) {
+      path.setAttribute(
+        'd',
+        `M ${item_i.right} ${item_i.mid_y} C ${item_i.right + curveLen} ${item_i.mid_y} ${item_j.left - curveLen} ${item_j.mid_y} ${item_j.left} ${item_j.mid_y}`
+      );
+    }
+  };
+  
+  const drawDependencies = (dependency: number[][], timeline: any) => {
+    const dependencyPath: any[] = [];
+    dependency.forEach((dep) => {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', 'M 0 0');
+      path.setAttribute('stroke', '#F00');
+      path.setAttribute('stroke-width', '3');
+      path.setAttribute('fill', 'none');
+      path.setAttribute('marker-end', 'url(#arrowhead0)');
+      dependencyPath.push(path);
+      timeline.dom.center.appendChild(path);
+    });
+  
+    dependency.forEach((dep, index) => {
+      drawArrows(dep[0], dep[1], timeline, dependencyPath[index]);
+    });
+  };
+  
+
 
   const [isEpicModalOpen, setIsEpicModalOpen] = useState(false);
   const toggleEpicModal = () => {
@@ -133,10 +217,14 @@ const Timeline = () => {
   };
 
   // 하위 이슈 추가
-  const addIssue = (epicIndex: number) => {
+  const addIssue = (epicIndex: number, dependentIssues: number[]=[]) => {
     if (newIssue) {
       const updatedEpics = [...epics];
-      const newIssueTitle : Issue = { title: newIssue, assign: '', status: 'to do'};
+      const newIssueTitle : Issue = { 
+        title: newIssue, 
+        assign: '', 
+        status: 'to do',  
+        ...(dependentIssues.length > 0 && { dependencies: dependentIssues }),};
       updatedEpics[epicIndex].issues.push(newIssueTitle);
       setEpics(updatedEpics);
       setNewIssue('');
@@ -217,6 +305,7 @@ const Timeline = () => {
   const EpicDetail = ({epic, onClose}: EpicDetailProps) => {
     const [editTitle, setEditTitle] = useState(false);
     const [editedTitle, setEditedTitle] = useState(epic.title);
+    const [selectedDependency, setSelectedDependency] = useState<{ [issueId: string]:number}>({});
 
     const handleEdit = () => {
       setEditTitle(true);
@@ -228,6 +317,64 @@ const Timeline = () => {
         setEpics(updatedEpics);
         epic.title = editedTitle;
         setEditTitle(false);
+    };
+
+    const handleDependency = (issueId: string, dependentIssueTitle: string) => {
+      
+      // 에픽 찾기
+      const targetEpic = epics.find(epic => 
+        epic.issues.some(issue => `${epic.title}-${issue.title}` === issueId)
+      );
+    
+      if (!targetEpic) return;
+    
+      // 원본 이슈 찾기
+      const originalIssue = targetEpic.issues.find(
+        issue => `${targetEpic.title}-${issue.title}` === issueId
+      );
+    
+      // 의존 대상 이슈 찾기
+      const dependentIssue = targetEpic.issues.find(
+        issue => issue.title === dependentIssueTitle
+      );
+    
+      if (!originalIssue || !dependentIssue) return;
+    
+      // 의존성 추가
+      if (!originalIssue.dependencies) {
+        originalIssue.dependencies = [];
+      }
+      
+      // 중복 방지
+      if (!originalIssue.dependencies.includes(targetEpic.issues.indexOf(dependentIssue))) {
+        originalIssue.dependencies.push(
+          targetEpic.issues.indexOf(dependentIssue)
+        );
+      }
+    
+        // 상태 업데이트
+      const updatedEpics = epics.map(epic => ({
+        ...epic,
+        issues: epic.issues.map(issue => ({
+          ...issue,
+          dependencies: issue.dependencies ? [...issue.dependencies] : []
+        }))
+      }));
+      setEpics(updatedEpics);
+    
+      // 타임라인 의존성 다시 그리기
+      if (timeline) {
+        const dependency = targetEpic.issues
+          .map((issue, issueIndex) => {
+            const deps = issue.dependencies || [];
+            return deps.map(depId => [issueIndex, depId]);
+          })
+          .flat();
+    
+        if (dependency.length > 0) {
+          drawDependencies(dependency, timeline);
+        }
+      }
     };
 
     const totalIssues = epic.issues.length;
@@ -273,13 +420,32 @@ const Timeline = () => {
           <div className='issueContainer'>
             <div>
                 {epic.issues.map((issue, index) => (
-                  <div className='issueList' key={index} onClick={()=> showDetailIssue(issue, epic.title)}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>{issue.title}</div>
+                  <div className='issueList' key={index} >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} onClick={()=> showDetailIssue(issue, epic.title)}>{issue.title}</div>
+              {/* 의존도 설정은 어떤 형식으로 해야할지 */}
+              {/* 
+              <SelectWrapper>
+                <SelectStatus
+                  value={selectedDependency[`${epic.title}-${issue.title}`] || ''}  // 의존성 값을 표시
+                  onChange={(e) => handleDependency(`${epic.title}-${issue.title}`, e.target.value)}  // 의존성 선택 시 처리
+                >
+                  <option value="">의존도 설정</option>
+                  {epic.issues
+                    .filter((otherIssue) => otherIssue.title !== issue.title)  // 자기 자신은 제외
+                    .map((otherIssue, idx) => (
+                      <option key={idx} value={otherIssue.title}>
+                        {otherIssue.title}
+                      </option>
+                    ))}
+                </SelectStatus>
+              </SelectWrapper>
+              */}
                     <div className={`issueStatus ${issue.status.replace(' ', '-').toLowerCase()}`}>
                       {issue.status === 'to do' ? 'To do' : issue.status}</div>
-                  </div>
-                ))}
-              </div>
+             
+            </div>
+          ))}
+        </div>
 
             <div className='issueAdd'>
               <IoIosAdd className='add' onClick={toggleIssueModal} />
