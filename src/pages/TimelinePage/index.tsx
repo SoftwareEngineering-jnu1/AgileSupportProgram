@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { DataSet, TimelineTimeAxisScaleType, Timeline as VisTimeline } from 'vis-timeline/standalone';
 
 
@@ -177,9 +177,10 @@ if (dependency.length > 0) {
     }
   };
   
-  const drawDependencies = (dependency: number[][], timeline: any) => {
+  const drawDependencies = useCallback((dependency: number[][], timeline: any) => {
     const dependencyPath: any[] = [];
-    dependency.forEach((dep) => {
+  
+    dependency.forEach(() => {
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.setAttribute('d', 'M 0 0');
       path.setAttribute('stroke', '#F00');
@@ -193,7 +194,8 @@ if (dependency.length > 0) {
     dependency.forEach((dep, index) => {
       drawArrows(dep[0], dep[1], timeline, dependencyPath[index]);
     });
-  };
+  }, []);
+  
   
 
 
@@ -305,7 +307,7 @@ if (dependency.length > 0) {
   const EpicDetail = ({epic, onClose}: EpicDetailProps) => {
     const [editTitle, setEditTitle] = useState(false);
     const [editedTitle, setEditedTitle] = useState(epic.title);
-    const [selectedDependency, setSelectedDependency] = useState<{ [issueId: string]:number}>({});
+    const [selectedDependency] = useState<{ [issueId: string]:number}>({});
 
     const handleEdit = () => {
       setEditTitle(true);
