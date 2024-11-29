@@ -6,7 +6,7 @@
       "@pages/*": ["./pages/*"],
       "@styles/*": ["./styles/*"],
       "@routes/*": ["./routes/*"],
-      "@fonts/*": ["./fonts/*"]
+      "@api/*": ["./api/*"]
     }
   }
 }
