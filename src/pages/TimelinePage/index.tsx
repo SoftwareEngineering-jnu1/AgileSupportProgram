@@ -423,7 +423,7 @@ if (dependency.length > 0) {
                   <div className='issueList' key={index} >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} onClick={()=> showDetailIssue(issue, epic.title)}>{issue.title}</div>
               {/* 의존도 설정은 어떤 형식으로 해야할지 */}
-              {/* 
+               
               <SelectWrapper>
                 <SelectStatus
                   value={selectedDependency[`${epic.title}-${issue.title}`] || ''}  // 의존성 값을 표시
@@ -439,7 +439,7 @@ if (dependency.length > 0) {
                     ))}
                 </SelectStatus>
               </SelectWrapper>
-              */}
+              
                     <div className={`issueStatus ${issue.status.replace(' ', '-').toLowerCase()}`}>
                       {issue.status === 'to do' ? 'To do' : issue.status}</div>
              
