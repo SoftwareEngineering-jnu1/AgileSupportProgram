@@ -13,10 +13,10 @@ import { boardData } from "./data";
 import Button from "@components/common/Button";
 import Modal from "@components/common/Modal";
 
-import { MdOutlineTitle } from "react-icons/md";
+// import { MdOutlineTitle } from "react-icons/md";
 import ReviewContentBox from "@components/Board/ReviewContentBox";
 import InputWithDropdown from "@components/Board/InputWithDropdown";
-import ModalIssueItem from "@components/Board/ModalIssueItem";
+// import ModalIssueItem from "@components/Board/ModalIssueItem";
 
 type Issue = {
   issueId: number;
@@ -31,7 +31,7 @@ type GroupedIssues = {
 
 const SprintPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
+  // const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
   const { sprintName, sprintEndData, kanbanboardIssueDTO } = boardData;
   const cleanedIssues = kanbanboardIssueDTO.map((issue) => ({
     ...issue,
@@ -47,9 +47,9 @@ const SprintPage = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  const handleIssueSelect = (label: string) => {
-    setSelectedIssue(label === selectedIssue ? null : label); // 동일한 아이템 선택 시 해제
-  };
+  // const handleIssueSelect = (label: string) => {
+  //   setSelectedIssue(label === selectedIssue ? null : label); // 동일한 아이템 선택 시 해제
+  // };
 
   const [issues, setIssues] = React.useState<Issue[]>(cleanedIssues);
   const [draggedItem, setDraggedItem] = React.useState<number | null>(null);
@@ -296,54 +296,54 @@ const Droppable = ({
 };
 
 //모달 스타일
-const Content = styled.form`
-  display: flex;
-  flex-direction: column;
-  text-align: start;
-`;
+// const Content = styled.form`
+//   display: flex;
+//   flex-direction: column;
+//   text-align: start;
+// `;
 
-const SprintTitleWrapper = styled.div`
-  position: relative;
-  width: 350px;
-  margin: 5px 0 10px;
-`;
+// const SprintTitleWrapper = styled.div`
+//   position: relative;
+//   width: 350px;
+//   margin: 5px 0 10px;
+// `;
 
-const SprintTitleIcon = styled(MdOutlineTitle)`
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  transform: translateY(-50%);
-  color: #7e7e7e;
-`;
+// const SprintTitleIcon = styled(MdOutlineTitle)`
+//   position: absolute;
+//   top: 50%;
+//   left: 10px;
+//   transform: translateY(-50%);
+//   color: #7e7e7e;
+// `;
 
-const SprintTitleInput = styled.input`
-  width: 100%;
-  padding: 10px 15px 10px 35px;
-  border: none;
-  border-radius: 5px;
-  outline: none;
-  font-size: 14px;
-  color: #7e7e7e;
-`;
+// const SprintTitleInput = styled.input`
+//   width: 100%;
+//   padding: 10px 15px 10px 35px;
+//   border: none;
+//   border-radius: 5px;
+//   outline: none;
+//   font-size: 14px;
+//   color: #7e7e7e;
+// `;
 
-const SelectIssueWrapper = styled.div`
-  width: 350px;
-  margin: 5px 0;
-  padding: 0 10px;
-  background-color: #fff;
-  border-radius: 5px;
-  max-height: 150px;
-  overflow-y: auto;
+// const SelectIssueWrapper = styled.div`
+//   width: 350px;
+//   margin: 5px 0;
+//   padding: 0 10px;
+//   background-color: #fff;
+//   border-radius: 5px;
+//   max-height: 150px;
+//   overflow-y: auto;
 
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`;
+//   &::-webkit-scrollbar {
+//     display: none;
+//   }
+// `;
 
-const ButtonBox = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`;
+// const ButtonBox = styled.div`
+//   display: flex;
+//   justify-content: flex-end;
+// `;
 
 // 스타일 정의
 const TopBox = styled.div`
