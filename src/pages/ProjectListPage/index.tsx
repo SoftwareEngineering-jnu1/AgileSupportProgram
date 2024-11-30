@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Link } from "react-router-dom";
 import { RouterPath } from "@routes/path";
@@ -13,12 +13,31 @@ import { MdOutlineTitle } from "react-icons/md";
 import ProjectList from "./ProjectList";
 import EmptyProject from "./EmptyProject";
 import Modal from "@components/common/Modal";
+import { fetchInstance } from "@api/instance";
+
+interface ProjectResponse {
+  projectiId: number;
+  totalEpics: number;
+  completedEpics: number;
+}
 
 const ProjectListPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
+
+  useEffect(() => {
+    fetchInstance
+      .get<ProjectResponse[]>(`/projects/1`)
+      .then((response) => {
+        console.log("프로젝트 목록 호출 성공");
+        console.log("프로젝트 목록", response.data);
+      })
+      .catch((error) => {
+        console.log("호출 실패");
+      });
+  });
 
   return (
     <Wrapper>
