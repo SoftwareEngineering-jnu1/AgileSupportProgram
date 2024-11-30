@@ -28,7 +28,7 @@ const Projectlist: React.FC = () => {
       </div>
 
       <div className={style.projectdiv}>
-        <span className={style.projectname}>프로젝트 이름 1</span>
+        <span className={style.projectname}>프로젝트 이름 2</span>
         <div className={style.epic}>
           <MdDirectionsRun color="#0099FF" style={{ marginRight: "10px"}}/>
           <span className={style.epicname}>노션 일정정하기</span>
@@ -40,7 +40,19 @@ const Projectlist: React.FC = () => {
       </div>
 
       <div className={style.projectdiv}>
-        <span className={style.projectname}>프로젝트 이름 1</span>
+        <span className={style.projectname}>프로젝트 이름 3</span>
+        <div className={style.epic}>
+          <MdDirectionsRun color="#0099FF" style={{ marginRight: "10px"}}/>
+          <span className={style.epicname}>노션 일정정하기</span>
+        </div>
+        <div className={style.epic}>
+          <FaCheckCircle color="#6FC349" style={{ marginRight: "10px"}}/>
+          <span className={style.epicname}>노션 일정정하기</span>
+        </div>
+      </div>
+
+      <div className={style.projectdiv}>
+        <span className={style.projectname}>프로젝트 이름 4</span>
         <div className={style.epic}>
           <MdDirectionsRun color="#0099FF" style={{ marginRight: "10px"}}/>
           <span className={style.epicname}>노션 일정정하기</span>

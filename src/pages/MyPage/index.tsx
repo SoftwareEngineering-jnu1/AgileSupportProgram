@@ -3,7 +3,7 @@ import { FaUserCircle } from "react-icons/fa";
 import ProfileForm from '../../components/ProfileInputForm/ProfileForm';
 import Projectlist from '../../components/ProjectlistForm/Projectlist';
 import style from './MyPage.module.css';
-import Sprintreviewlist from '@components/SprintreviewlistForm/Sprintreviewlist';
+import Sprintreviewlist from '../../components/SprintreviewlistForm/Sprintreviewlist';
 
 const MyPage: React.FC = () => {
   return (
