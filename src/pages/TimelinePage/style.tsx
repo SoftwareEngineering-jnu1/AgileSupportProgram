@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { MdOutlineTitle } from "react-icons/md";
+import { FaUserCircle } from "react-icons/fa";
 
 export const Modalepic = styled.div`
   position: fixed;
@@ -65,8 +67,80 @@ export const IssueDetailContainer = styled.div`
 `;
 
 
+export const Content = styled.form`
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+`;
+
 export const EditingContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px; /* 텍스트와 버튼 사이 간격 */
 `;
+
+export const TitleWrapper = styled.div`
+  position: relative;
+  width: 350px;
+  margin: 5px 0 10px;
+`;
+
+export const TitleIcon = styled(MdOutlineTitle)`
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #7e7e7e;
+`;
+
+export const TitleInput = styled.input`
+  width: 100%;
+  padding: 10px 15px 10px 35px;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  font-size: 14px;
+  color: #7e7e7e;
+`;
+
+export const ButtonBox = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+export const DateWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+`;
+
+export const DateInput = styled.input`
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #fff;
+  border-radius: 4px;
+`;
+
+export const AssignIcon = styled(FaUserCircle)`
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #7e7e7e;
+`;
+
+export const SelectWrapper = styled.div`
+position: relative;
+width: 350px;
+margin: 5px 0 10px;
+`;
+
+export const SelectStatus = styled.select`
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #fff;
+  border-radius: 4px;
+`
