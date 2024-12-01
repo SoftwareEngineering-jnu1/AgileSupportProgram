@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import style from "./SignUp.module.css";
 import { fetchInstance } from "@api/instance";
@@ -36,7 +36,7 @@ const SignUpPage: React.FC = () => {
     fetchInstance
       .post<SignupProps[]>(`/join`, 
         {username: form.username, emailId: form.email, password: form.password},
-      )
+      ) 
       .then((response) => {
         console.log("Form Data:", form);
         console.log("회원가입 성공", response.data)
