@@ -1,6 +1,7 @@
-import React, { useState} from "react";
+import React, { useState, useEffect} from "react";
 import { useNavigate } from 'react-router-dom';
 import styles from "./Login.module.css";
+import { fetchInstance } from "@api/instance";
 
 interface LoginProps {
   username: string;
@@ -23,9 +24,19 @@ const LoginPage: React.FC = () => {
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Username:', form.username);
-    console.log('Passord:', form.password);
-    navigate('/boardpage');
+    fetchInstance
+      .post<LoginProps[]>(`/login`, 
+        {emailId: form.username, password: form.password},
+      )
+      .then((response) => {
+        console.log("Form Data:", form);
+        console.log("로그인 성공", response.data)
+        navigate('/boardpage');
+      })
+      .catch((error) => {
+        alert("계정이 존재하지 않거나 비밀번호가 일치하지 않습니다.")
+        console.log("로그인 실패")
+      });
   };
 
   return (
@@ -44,7 +55,7 @@ const LoginPage: React.FC = () => {
         value={form.username}
         onChange={handleChange}
         className={styles.input}
-        placeholder="아이디"
+        placeholder="이메일 또는 아이디"
         />
       </div>
       <div className={styles.div}>

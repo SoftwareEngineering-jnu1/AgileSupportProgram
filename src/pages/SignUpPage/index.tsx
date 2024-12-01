@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import style from "./SignUp.module.css";
+import { fetchInstance } from "@api/instance";
 
 interface SignupProps {
   username: string;
-  emailOrphone: string;
+  email: string;
   password: string;
   confirmpassword: string;
 }
@@ -12,12 +13,13 @@ interface SignupProps {
 const SignUpPage: React.FC = () => {
   const [form, setFrom] = useState<SignupProps>({
     username: "",
-    emailOrphone: "",
+    email: "",
     password: "",
     confirmpassword: "",
   });
-  const navigate = useNavigate();
+ 
 
+  const navigate = useNavigate();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFrom({
       ...form,
@@ -25,15 +27,25 @@ const SignUpPage: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (form.password !== form.confirmpassword) {
       alert("비밀번호가 일치하지 않습니다!");
       return;
     }
-    console.log("Form Data:", form);
-    alert("회원가입이 완료되었습니다!");
-    navigate("/login");
+    fetchInstance
+      .post<SignupProps[]>(`/join`, 
+        {username: form.username, emailId: form.email, password: form.password},
+      )
+      .then((response) => {
+        console.log("Form Data:", form);
+        console.log("회원가입 성공", response.data)
+        alert("회원가입이 완료되었습니다!");
+      navigate("/login");
+      })
+      .catch((error) => {
+        console.log("회원가입 실패")
+      });
   };
 
   return (
@@ -51,19 +63,19 @@ const SignUpPage: React.FC = () => {
         value={form.username}
         onChange={handleChange}
         className={style.input}
-        placeholder="이름 또는 아이디"
+        placeholder="이름"
         required/>
     </div>
     <div className={style.div}>
-      <label className={style.label} htmlFor="emailOrPhone"></label>
+      <label className={style.label} htmlFor="email"></label>
       <input
         type="text"
-        id="emailOrphone"
-        name="emailOrphone"
-        value={form.emailOrphone}
+        id="email"
+        name="email"
+        value={form.email}
         onChange={handleChange}
         className={style.input}
-        placeholder="이메일"
+        placeholder="이메일 또는 아이디"
         required/>
     </div>
     <div className={style.div}>
