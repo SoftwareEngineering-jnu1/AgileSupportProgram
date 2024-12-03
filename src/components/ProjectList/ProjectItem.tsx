@@ -1,15 +1,20 @@
 import styled from "styled-components";
-import { useState } from "react";
-import { FaRegStar, FaStar } from "react-icons/fa";
 
-const ProjectItem = () => {
-  const [isFavorited, setIsFavorited] = useState(false);
-  // const [progress, setProgress] = useState(30); // (0 ~ 100)
-  const progress = 30;
+interface ProjectResponse {
+  projectiId: number;
+  totalEpics: number;
+  completedEpics: number;
+  projectName: string;
+}
 
-  const toggleFavorite = () => {
-    setIsFavorited((prev) => !prev);
-  };
+interface ProjectItemProps {
+  project: ProjectResponse;
+}
+
+const ProjectItem = ({ project }: ProjectItemProps) => {
+  const progress = Math.round(
+    (project.completedEpics / project.totalEpics) * 100 || 0
+  );
 
   return (
     <ProjectWrapper>
@@ -20,16 +25,8 @@ const ProjectItem = () => {
           justifyContent: "space-between",
         }}
       >
-        <Title>프로젝트 이름</Title>
-        <div onClick={toggleFavorite} style={{ cursor: "pointer" }}>
-          {isFavorited ? (
-            <FaStar color="#7895B2" />
-          ) : (
-            <FaRegStar color="#7895B2" />
-          )}
-        </div>
+        <Title>{project.projectName}</Title> {/* 프로젝트 이름 표시 */}
       </div>
-      <Des>애자일 방법론을 도와주는 도구 생성</Des>
       <ProgressContainer>
         <Label>작업율</Label>
         <ProgressBar>
@@ -45,6 +42,7 @@ export default ProjectItem;
 const ProjectWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   width: 200px;
   height: 150px;
   background-color: #f5efe6;
@@ -54,12 +52,7 @@ const ProjectWrapper = styled.div`
 
 const Title = styled.span`
   font-weight: bold;
-`;
-
-const Des = styled.p`
-  color: #333;
-  font-size: 12px;
-  text-align: start;
+  font-size: 24px;
 `;
 
 const ProgressContainer = styled.div`

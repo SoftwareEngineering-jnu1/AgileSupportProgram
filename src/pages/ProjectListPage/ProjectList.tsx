@@ -1,20 +1,23 @@
 import styled from "styled-components";
 import ProjectItem from "@components/ProjectList/ProjectItem";
 
-const ProjectList = () => {
+interface ProjectResponse {
+  projectiId: number;
+  totalEpics: number;
+  completedEpics: number;
+  projectName: string;
+}
+
+interface ProjectListProps {
+  projectList: ProjectResponse[];
+}
+
+const ProjectList = ({ projectList }: ProjectListProps) => {
   return (
     <ProjectContainer>
-      <ProjectItem />
-      <ProjectItem />
-      <ProjectItem />
-      <ProjectItem />
-      <ProjectItem />
-      <ProjectItem />
-      <ProjectItem />
-      <ProjectItem />
-      <ProjectItem />
-      <ProjectItem />
-      <ProjectItem />
+      {projectList.map((project) => (
+        <ProjectItem key={project.projectiId} project={project} />
+      ))}
     </ProjectContainer>
   );
 };
@@ -22,9 +25,9 @@ const ProjectList = () => {
 export default ProjectList;
 
 const ProjectContainer = styled.div`
+  width: 95%;
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
-  align-items: space-evenly;
   justify-content: flex-start;
 `;
