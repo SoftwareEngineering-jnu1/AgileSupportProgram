@@ -1,18 +1,32 @@
+import { RouterPath } from "@routes/path";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { useState } from "react";
-import { FaRegStar, FaStar } from "react-icons/fa";
+import { useProject } from "@context/ProjectContext";
 
-const ProjectItem = () => {
-  const [isFavorited, setIsFavorited] = useState(false);
-  // const [progress, setProgress] = useState(30); // (0 ~ 100)
-  const progress = 30;
+interface ProjectResponse {
+  projectId: number;
+  totalEpics: number;
+  completedEpics: number;
+  projectName: string;
+}
 
-  const toggleFavorite = () => {
-    setIsFavorited((prev) => !prev);
+interface ProjectItemProps {
+  project: ProjectResponse;
+}
+
+const ProjectItem = ({ project }: ProjectItemProps) => {
+  const { setProjectId } = useProject();
+
+  const handleClick = () => {
+    setProjectId(project.projectId);
   };
 
+  const progress = Math.round(
+    (project.completedEpics / project.totalEpics) * 100 || 0
+  );
+
   return (
-    <ProjectWrapper>
+    <ProjectWrapper to={RouterPath.boardPage} onClick={handleClick}>
       <div
         style={{
           width: "100%",
@@ -20,16 +34,8 @@ const ProjectItem = () => {
           justifyContent: "space-between",
         }}
       >
-        <Title>프로젝트 이름</Title>
-        <div onClick={toggleFavorite} style={{ cursor: "pointer" }}>
-          {isFavorited ? (
-            <FaStar color="#7895B2" />
-          ) : (
-            <FaRegStar color="#7895B2" />
-          )}
-        </div>
+        <Title>{project.projectName}</Title>
       </div>
-      <Des>애자일 방법론을 도와주는 도구 생성</Des>
       <ProgressContainer>
         <Label>작업율</Label>
         <ProgressBar>
@@ -42,24 +48,22 @@ const ProjectItem = () => {
 
 export default ProjectItem;
 
-const ProjectWrapper = styled.div`
+const ProjectWrapper = styled(Link)`
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   width: 200px;
   height: 150px;
   background-color: #f5efe6;
   border-radius: 20px;
   padding: 15px;
+  color: #000;
+  text-decoration: none;
 `;
 
 const Title = styled.span`
   font-weight: bold;
-`;
-
-const Des = styled.p`
-  color: #333;
-  font-size: 12px;
-  text-align: start;
+  font-size: 24px;
 `;
 
 const ProgressContainer = styled.div`

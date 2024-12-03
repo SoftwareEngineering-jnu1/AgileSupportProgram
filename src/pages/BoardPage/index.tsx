@@ -9,7 +9,11 @@ import Modal from "@components/common/Modal";
 import { MdOutlineTitle } from "react-icons/md";
 import ModalIssueItem from "@components/Board/ModalIssueItem";
 
+import { useProject } from "@context/ProjectContext";
+
 const BoardPage = () => {
+  const { projectId } = useProject();
+  console.log(projectId);
   const [hasSprint, setHasSprint] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedIssue, setSelectedIssue] = useState<string | null>(null);

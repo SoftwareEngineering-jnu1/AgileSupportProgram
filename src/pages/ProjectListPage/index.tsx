@@ -14,30 +14,91 @@ import ProjectList from "./ProjectList";
 import EmptyProject from "./EmptyProject";
 import Modal from "@components/common/Modal";
 import { fetchInstance } from "@api/instance";
+import Cookies from "js-cookie";
 
 interface ProjectResponse {
-  projectiId: number;
+  projectId: number;
   totalEpics: number;
   completedEpics: number;
+  projectName: string;
+}
+
+interface APIResponse {
+  status: string;
+  data: Record<string, ProjectResponse>;
 }
 
 const ProjectListPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [projects, setProjects] = useState<ProjectResponse[]>([]);
+
+  const [projectName, setProjectName] = useState("");
+  const [membersEmailId, setMembersEmailId] = useState<string[]>([]);
+  const [emailInput, setEmailInput] = useState(""); // 이메일 입력 상태
+
+  const handleProjectNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setProjectName(e.target.value);
+  };
+
+  const handleEmailInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailInput(e.target.value);
+  };
+
+  const handleAddEmail = () => {
+    if (emailInput.trim()) {
+      setMembersEmailId((prev) => [...prev, emailInput.trim()]);
+      setEmailInput("");
+    }
+  };
+
   const toggleModal = () => {
+    if (isModalOpen) {
+      setProjectName("");
+      setMembersEmailId([]);
+      setEmailInput("");
+    }
     setIsModalOpen(!isModalOpen);
   };
 
-  useEffect(() => {
+  const fetchProjects = () => {
+    const memberId = Cookies.get("memberId");
     fetchInstance
-      .get<ProjectResponse[]>(`/projects/1`)
+      .get<APIResponse>(`/projects/${memberId}`)
       .then((response) => {
-        console.log("프로젝트 목록 호출 성공");
-        console.log("프로젝트 목록", response.data);
+        const projectList: ProjectResponse[] = Object.entries(
+          response.data.data
+        ).map(([projectName, projectDetails]) => ({
+          ...projectDetails,
+          projectName,
+        }));
+        setProjects(projectList); // 프로젝트 리스트 업데이트
+        console.log("프로젝트 목록 호출 성공", projectList);
       })
       .catch((error) => {
-        console.log("호출 실패");
+        console.log("프로젝트 목록 호출 실패", error);
       });
-  });
+  };
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const handleSubmit = () => {
+    const payload = {
+      projectName,
+      membersEmailId,
+    };
+    fetchInstance
+      .post("/project/new", payload)
+      .then((response) => {
+        console.log("프로젝트 생성 성공:", response.data);
+        toggleModal();
+        fetchProjects();
+      })
+      .catch((error) => {
+        console.error("프로젝트 생성 실패:", error);
+      });
+  };
 
   return (
     <Wrapper>
@@ -72,8 +133,11 @@ const ProjectListPage = () => {
         </div>
         <Divider />
       </MiddleContainer>
-      <ProjectList />
-      <EmptyProject />
+      {projects.length > 0 ? (
+        <ProjectList projectList={projects} />
+      ) : (
+        <EmptyProject />
+      )}
       {isModalOpen && (
         <Modal isOpen={isModalOpen} onClose={toggleModal}>
           <h2>새 프로젝트를 생성하시겠습니까?</h2>
@@ -81,14 +145,28 @@ const ProjectListPage = () => {
             <span>프로젝트 이름</span>
             <ProjectTitleWrapper>
               <ProjectTitleIcon />
-              <ProjectTitleInput placeholder="프로젝트 이름을 입력해주세요" />
+              <ProjectTitleInput
+                placeholder="프로젝트 이름을 입력해주세요"
+                value={projectName}
+                onChange={handleProjectNameChange}
+              />
             </ProjectTitleWrapper>
+
             <span>팀원 이메일</span>
             <TeamEmailInputWrapper>
               <TeamEmailIcon />
-              <TeamEmailInput placeholder="팀원의 이메일을 입력해주세요" />
-              <TeamEmailSubmit />
+              <TeamEmailInput
+                placeholder="팀원의 이메일을 입력해주세요"
+                value={emailInput}
+                onChange={handleEmailInputChange}
+              />
+              <TeamEmailSubmit onClick={handleAddEmail} />
             </TeamEmailInputWrapper>
+            <ul>
+              {membersEmailId.map((email, index) => (
+                <li key={index}>{email}</li>
+              ))}
+            </ul>
           </Content>
           <ButtonBox>
             <Button
@@ -96,6 +174,7 @@ const ProjectListPage = () => {
               bgColor="#7895B2"
               fontSize="16px"
               style={{ fontWeight: "bold" }}
+              onClick={handleSubmit}
             >
               생성
             </Button>
