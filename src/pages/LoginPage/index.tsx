@@ -28,6 +28,7 @@ const LoginPage: React.FC = () => {
       [e.target.name]: e.target.value,
     });
   };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     fetchInstance
@@ -39,7 +40,7 @@ const LoginPage: React.FC = () => {
         console.log("Form Data:", form);
         console.log("로그인 성공", response.data);
         Cookies.set("memberId", response.data.data);
-        navigate("/boardpage");
+        navigate("/project");
       })
       .catch((error) => {
         alert("계정이 존재하지 않거나 비밀번호가 일치하지 않습니다.");
