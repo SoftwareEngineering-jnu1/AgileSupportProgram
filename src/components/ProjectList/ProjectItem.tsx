@@ -1,7 +1,10 @@
+import { RouterPath } from "@routes/path";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { useProject } from "@context/ProjectContext";
 
 interface ProjectResponse {
-  projectiId: number;
+  projectId: number;
   totalEpics: number;
   completedEpics: number;
   projectName: string;
@@ -12,12 +15,18 @@ interface ProjectItemProps {
 }
 
 const ProjectItem = ({ project }: ProjectItemProps) => {
+  const { setProjectId } = useProject();
+
+  const handleClick = () => {
+    setProjectId(project.projectId);
+  };
+
   const progress = Math.round(
     (project.completedEpics / project.totalEpics) * 100 || 0
   );
 
   return (
-    <ProjectWrapper>
+    <ProjectWrapper to={RouterPath.boardPage} onClick={handleClick}>
       <div
         style={{
           width: "100%",
@@ -25,7 +34,7 @@ const ProjectItem = ({ project }: ProjectItemProps) => {
           justifyContent: "space-between",
         }}
       >
-        <Title>{project.projectName}</Title> {/* 프로젝트 이름 표시 */}
+        <Title>{project.projectName}</Title>
       </div>
       <ProgressContainer>
         <Label>작업율</Label>
@@ -39,7 +48,7 @@ const ProjectItem = ({ project }: ProjectItemProps) => {
 
 export default ProjectItem;
 
-const ProjectWrapper = styled.div`
+const ProjectWrapper = styled(Link)`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -48,6 +57,8 @@ const ProjectWrapper = styled.div`
   background-color: #f5efe6;
   border-radius: 20px;
   padding: 15px;
+  color: #000;
+  text-decoration: none;
 `;
 
 const Title = styled.span`

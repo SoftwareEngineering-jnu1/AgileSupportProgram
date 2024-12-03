@@ -17,7 +17,7 @@ import { fetchInstance } from "@api/instance";
 import Cookies from "js-cookie";
 
 interface ProjectResponse {
-  projectiId: number;
+  projectId: number;
   totalEpics: number;
   completedEpics: number;
   projectName: string;

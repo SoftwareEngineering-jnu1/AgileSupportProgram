@@ -2,7 +2,7 @@ import styled from "styled-components";
 import ProjectItem from "@components/ProjectList/ProjectItem";
 
 interface ProjectResponse {
-  projectiId: number;
+  projectId: number;
   totalEpics: number;
   completedEpics: number;
   projectName: string;
@@ -16,7 +16,7 @@ const ProjectList = ({ projectList }: ProjectListProps) => {
   return (
     <ProjectContainer>
       {projectList.map((project) => (
-        <ProjectItem key={project.projectiId} project={project} />
+        <ProjectItem key={project.projectId} project={project} />
       ))}
     </ProjectContainer>
   );
