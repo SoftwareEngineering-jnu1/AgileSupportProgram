@@ -2,15 +2,17 @@ import styled from "styled-components";
 import { FaUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { RouterPath } from "@routes/path";
+import { useProject } from "@context/ProjectContext";
 
 export const HEADER_HEIGHT = "100px";
 const Header = () => {
+  const { projectName } = useProject();
   return (
     <HeaderCantainer>
       <Link to={RouterPath.projectList}>
         <Logo src="/images/로고.png"></Logo>
       </Link>
-      <ProjectTitle>프로젝트 이름</ProjectTitle>
+      <ProjectTitle>{projectName}</ProjectTitle>
       <Link to={RouterPath.myPage} style={{ color: "#000" }}>
         <FaUserCircle size={40} />
       </Link>

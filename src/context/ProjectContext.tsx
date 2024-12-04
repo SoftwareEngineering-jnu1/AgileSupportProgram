@@ -3,7 +3,9 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 // Context 타입 정의
 interface ProjectContextType {
   projectId: number | null;
+  projectName: string | null;
   setProjectId: React.Dispatch<React.SetStateAction<number | null>>;
+  setProjectName: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 // Context 생성
@@ -17,9 +19,12 @@ interface ProjectProviderProps {
 // Provider 컴포넌트
 export const ProjectProvider = ({ children }: ProjectProviderProps) => {
   const [projectId, setProjectId] = useState<number | null>(null);
+  const [projectName, setProjectName] = useState<string | null>(null);
 
   return (
-    <ProjectContext.Provider value={{ projectId, setProjectId }}>
+    <ProjectContext.Provider
+      value={{ projectId, projectName, setProjectId, setProjectName }}
+    >
       {children}
     </ProjectContext.Provider>
   );
