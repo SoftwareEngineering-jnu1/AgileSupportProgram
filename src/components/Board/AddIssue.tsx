@@ -1,9 +1,13 @@
 import { FaPlus } from "react-icons/fa6";
 
-const AddIssue = () => {
+interface AddIssueProps {
+  toggle: () => void;
+}
+
+const AddIssue = ({ toggle }: AddIssueProps) => {
   return (
     <div
-      onClick={() => alert("Add Issue")}
+      onClick={toggle}
       style={{
         width: "100%",
         display: "flex",

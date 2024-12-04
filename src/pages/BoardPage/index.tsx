@@ -16,7 +16,7 @@ import Cookies from "js-cookie";
 interface DtoDataType {
   issueId: number;
   issueTitle: string;
-  mainMemberNameAndcolor: Record<string, string>;
+  mainMemberNameAndColor: Record<string, string>;
   progressStatus: string;
 }
 
@@ -74,23 +74,25 @@ const BoardPage = () => {
       });
   };
 
-  useEffect(() => {
+  const fetchSprintData = async () => {
     const epicId = Cookies.get(`project_${projectId}_epicId`);
     if (epicId) {
-      setHasSprint(true);
-      fetchInstance
-        .get(`/project/${projectId}/kanbanboard/${epicId}`)
-        .then((response) => {
-          setSprintData(response.data.data);
-          console.log("프로젝트 스프린트:", response.data.data);
-        })
-        .catch((error) => {
-          console.error("프로젝트 스프린트 조회 실패:", error);
-        });
-    } else {
-      setHasSprint(false);
+      try {
+        const response = await fetchInstance.get(
+          `/project/${projectId}/kanbanboard/${epicId}`
+        );
+        setSprintData(response.data.data);
+        setHasSprint(true);
+      } catch (error) {
+        console.error("스프린트 데이터 로드 실패:", error);
+        setHasSprint(false);
+      }
     }
-  }, [isModalOpen]);
+  };
+
+  useEffect(() => {
+    fetchSprintData();
+  }, []);
 
   return (
     <Wrapper>
@@ -118,6 +120,7 @@ const BoardPage = () => {
             name={sprintData.sprintName}
             endDate={sprintData.sprintEndDate}
             data={sprintData.kanbanboardIssueDTO}
+            reloadData={fetchSprintData}
           />
         ) : (
           <NonSprintPage />
