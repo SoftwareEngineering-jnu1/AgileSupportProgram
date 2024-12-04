@@ -9,7 +9,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import { GrPowerCycle } from "react-icons/gr";
 
 import AddIssue from "./AddIssue";
-import { boardData } from "./data";
+// import { boardData } from "./data";
 import Button from "@components/common/Button";
 import Modal from "@components/common/Modal";
 
@@ -20,20 +20,26 @@ import InputWithDropdown from "@components/Board/InputWithDropdown";
 
 type Issue = {
   issueId: number;
-  issuetitle: string;
+  issueTitle: string;
   mainMemberNameAndcolor: Record<string, string>;
   progressStatus: string;
 };
+
+interface SprintProps {
+  name: string;
+  endDate: string;
+  data: Issue[];
+}
 
 type GroupedIssues = {
   [key: string]: Issue[];
 };
 
-const SprintPage = () => {
+const SprintPage = ({ name, endDate, data }: SprintProps) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   // const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
-  const { sprintName, sprintEndData, kanbanboardIssueDTO } = boardData;
-  const cleanedIssues = kanbanboardIssueDTO.map((issue) => ({
+  // const { sprintName, sprintEndData, kanbanboardIssueDTO } = data;
+  const cleanedIssues = data.map((issue) => ({
     ...issue,
     mainMemberNameAndcolor: Object.fromEntries(
       Object.entries(issue.mainMemberNameAndcolor).map(([key, value]) => [
@@ -87,15 +93,10 @@ const SprintPage = () => {
 
   return (
     <>
-      <TopBox>
-        <Button padding="5px 15px" style={{ fontWeight: "bold" }}>
-          스프린트 시작
-        </Button>
-      </TopBox>
       <Container>
         <Top>
-          <Title>{sprintName}</Title>
-          <Date>~ {sprintEndData}</Date>
+          <Title>{name}</Title>
+          <Date>~ {endDate}</Date>
         </Top>
         <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
           <BoardContents>
@@ -135,7 +136,7 @@ const SprintPage = () => {
                             status={issue.progressStatus}
                           >
                             <IssueItem
-                              title={issue.issuetitle}
+                              title={issue.issueTitle}
                               person={person}
                               color={color}
                             />
@@ -154,17 +155,6 @@ const SprintPage = () => {
           </BoardContents>
         </DndContext>
       </Container>
-      <BottomContainer>
-        <Button
-          padding="5px 15px"
-          style={{ fontWeight: "bold" }}
-          onClick={() => {
-            toggleModal();
-          }}
-        >
-          스프린트 만들기
-        </Button>
-      </BottomContainer>
       {isModalOpen && (
         <Modal isOpen={isModalOpen} onClose={toggleModal}>
           <ReviewBox>
@@ -345,13 +335,6 @@ const Droppable = ({
 //   justify-content: flex-end;
 // `;
 
-// 스타일 정의
-const TopBox = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-`;
-
 const Container = styled.div`
   width: 100%;
   padding: 20px;
@@ -436,13 +419,6 @@ const StatusContainer = styled.div`
   padding: 16px;
   border-radius: 8px;
   background-color: #f8f8f8;
-`;
-
-const BottomContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
 `;
 
 const ReviewBox = styled.div`

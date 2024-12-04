@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 import Button from "@components/common/Button";
 import NonSprintPage from "@components/Board/NonSprintPage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SprintPage from "@components/Board/SprintPage";
 import Modal from "@components/common/Modal";
 
@@ -10,26 +10,96 @@ import { MdOutlineTitle } from "react-icons/md";
 import ModalIssueItem from "@components/Board/ModalIssueItem";
 
 import { useProject } from "@context/ProjectContext";
+import { fetchInstance } from "@api/instance";
+import Cookies from "js-cookie";
+
+interface DtoDataType {
+  issueId: number;
+  issueTitle: string;
+  mainMemberNameAndcolor: Record<string, string>;
+  progressStatus: string;
+}
+
+interface SprintDataType {
+  sprintName: string;
+  sprintEndDate: string;
+  projectName: string;
+  kanbanboardIssueDTO: DtoDataType[];
+}
 
 const BoardPage = () => {
   const { projectId } = useProject();
-  console.log(projectId);
   const [hasSprint, setHasSprint] = useState<boolean>(false);
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
+  const [sprintName, setSprintName] = useState<string>("");
+  const [epicList, setEpicList] = useState<string[]>([""]);
+  const [epicTitle, setEpicTitle] = useState<string | null>(null);
+
+  const [sprintData, setSprintData] = useState<SprintDataType>();
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
+    fetchInstance
+      .get(`/project/${projectId}/kanbanboard/newsprint`)
+      .then((response) => {
+        setEpicList(response.data.data);
+      })
+      .catch((error) => {
+        console.log("스프린트 생성 모달 열기:", error);
+      });
+  };
+
+  const handleSprintNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSprintName(e.target.value);
   };
 
   const handleIssueSelect = (label: string) => {
-    setSelectedIssue(label === selectedIssue ? null : label); // 동일한 아이템 선택 시 해제
+    setEpicTitle(label === epicTitle ? null : label);
   };
+
+  const createSprint = () => {
+    const payload = {
+      sprintName,
+      epicTitle,
+    };
+    fetchInstance
+      .post(`/project/${projectId}/kanbanboard/newsprint`, payload)
+      .then((response) => {
+        Cookies.set(`project_${projectId}_epicId`, response.data.data.epicId);
+        setIsModalOpen(!isModalOpen);
+      })
+      .catch((error) => {
+        console.error("스프린트 생성 실패:", error);
+      });
+  };
+
+  useEffect(() => {
+    const epicId = Cookies.get(`project_${projectId}_epicId`);
+    if (epicId) {
+      setHasSprint(true);
+      fetchInstance
+        .get(`/project/${projectId}/kanbanboard/${epicId}`)
+        .then((response) => {
+          setSprintData(response.data.data);
+          console.log("프로젝트 스프린트:", response.data.data);
+        })
+        .catch((error) => {
+          console.error("프로젝트 스프린트 조회 실패:", error);
+        });
+    } else {
+      setHasSprint(false);
+    }
+  });
 
   return (
     <Wrapper>
       <TopContainer>
-        {hasSprint ? null : (
+        {hasSprint ? (
+          <Button padding="5px 15px" style={{ fontWeight: "bold" }}>
+            스프린트 리뷰
+          </Button>
+        ) : (
           <Button
             padding="5px 15px"
             style={{ fontWeight: "bold" }}
@@ -43,7 +113,15 @@ const BoardPage = () => {
         )}
       </TopContainer>
       <MiddleContainer>
-        {hasSprint ? <SprintPage /> : <NonSprintPage />}
+        {hasSprint && sprintData ? (
+          <SprintPage
+            name={sprintData.sprintName}
+            endDate={sprintData.sprintEndDate}
+            data={sprintData.kanbanboardIssueDTO}
+          />
+        ) : (
+          <NonSprintPage />
+        )}
       </MiddleContainer>
       {isModalOpen && (
         <Modal isOpen={isModalOpen} onClose={toggleModal}>
@@ -52,25 +130,22 @@ const BoardPage = () => {
             <span>스프린트 이름</span>
             <SprintTitleWrapper>
               <SprintTitleIcon />
-              <SprintTitleInput placeholder="프로젝트 이름을 입력해주세요" />
+              <SprintTitleInput
+                placeholder="프로젝트 이름을 입력해주세요"
+                onChange={handleSprintNameChange}
+              />
             </SprintTitleWrapper>
             <span>스프린트에 추가할 에픽 선택</span>
             <SelectIssueWrapper>
-              <ModalIssueItem
-                label="발표 자료 제작"
-                isChecked={selectedIssue === "발표 자료 제작"}
-                onCheck={() => handleIssueSelect("발표 자료 제작")}
-              />
-              <ModalIssueItem
-                label="개발 환경 설정"
-                isChecked={selectedIssue === "개발 환경 설정"}
-                onCheck={() => handleIssueSelect("개발 환경 설정")}
-              />
-              <ModalIssueItem
-                label="기능 기획"
-                isChecked={selectedIssue === "기능 기획"}
-                onCheck={() => handleIssueSelect("기능 기획")}
-              />
+              {epicList.map((epic) => {
+                return (
+                  <ModalIssueItem
+                    label={epic}
+                    isChecked={epicTitle === `${epic}`}
+                    onCheck={() => handleIssueSelect(`${epic}`)}
+                  />
+                );
+              })}
             </SelectIssueWrapper>
           </Content>
           <ButtonBox>
@@ -79,6 +154,7 @@ const BoardPage = () => {
               bgColor="#7895B2"
               fontSize="16px"
               style={{ fontWeight: "bold" }}
+              onClick={() => createSprint()}
             >
               생성
             </Button>
