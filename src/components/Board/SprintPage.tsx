@@ -12,9 +12,6 @@ import AddIssue from "./AddIssue";
 import Button from "@components/common/Button";
 import Modal from "@components/common/Modal";
 
-import ReviewContentBox from "@components/Board/ReviewContentBox";
-import InputWithDropdown from "@components/Board/InputWithDropdown";
-
 import {
   Content,
   TitleWrapper,
@@ -52,13 +49,8 @@ type GroupedIssues = {
 const SprintPage = ({ name, endDate, data, reloadData }: SprintProps) => {
   const { projectId } = useProject();
   const epicId = Cookies.get(`project_${projectId}_epicId`);
-  const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
   const [isIssueModalOpen, setIsIssueModalOpen] = useState<boolean>(false);
   const [issues, setIssues] = React.useState<Issue[]>([]);
-
-  const toggleModal = () => {
-    setIsReviewModalOpen(!isReviewModalOpen);
-  };
 
   const toggleIssueModal = () => {
     if (isIssueModalOpen) {
@@ -123,6 +115,7 @@ const SprintPage = ({ name, endDate, data, reloadData }: SprintProps) => {
   const [newIssueTitle, setNewIssueTitle] = useState("");
   const [mainMemberName, setMainMemberName] = useState("");
   const [progressStatus, setProgressStatus] = useState("To Do");
+
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setProgressStatus(e.target.value as IssueStatus);
   };
@@ -215,26 +208,6 @@ const SprintPage = ({ name, endDate, data, reloadData }: SprintProps) => {
           </BoardContents>
         </DndContext>
       </Container>
-      {isReviewModalOpen && (
-        <Modal isOpen={isReviewModalOpen} onClose={toggleModal}>
-          <ReviewBox>
-            <ReviewContentBox category="Stop" />
-            <ReviewContentBox category="Start" />
-            <ReviewContentBox category="Continue" />
-          </ReviewBox>
-          <BottomBox>
-            <InputWithDropdown />
-            <Button
-              padding="3px 30px"
-              bgColor="#AEBDCA"
-              fontSize="16px"
-              style={{ fontWeight: "bold" }}
-            >
-              스프린트 리뷰
-            </Button>
-          </BottomBox>
-        </Modal>
-      )}
       {isIssueModalOpen && (
         <Modal isOpen={isIssueModalOpen} onClose={toggleIssueModal}>
           <h2>이슈 만들기</h2>
@@ -451,17 +424,4 @@ const StatusContainer = styled.div`
   padding: 16px;
   border-radius: 8px;
   background-color: #f8f8f8;
-`;
-
-const ReviewBox = styled.div`
-  display: flex;
-  gap: 10px;
-  align-items: center;
-`;
-
-const BottomBox = styled.div`
-  width: 100%;
-  height: 30px;
-  display: flex;
-  justify-content: space-between;
 `;

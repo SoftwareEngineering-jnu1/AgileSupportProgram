@@ -8,6 +8,8 @@ import Modal from "@components/common/Modal";
 
 import { MdOutlineTitle } from "react-icons/md";
 import ModalIssueItem from "@components/Board/ModalIssueItem";
+import ReviewContentBox from "@components/Board/ReviewContentBox";
+import InputWithDropdown from "@components/Board/InputWithDropdown";
 
 import { useProject } from "@context/ProjectContext";
 import { fetchInstance } from "@api/instance";
@@ -30,7 +32,7 @@ interface SprintDataType {
 const BoardPage = () => {
   const { projectId } = useProject();
   const [hasSprint, setHasSprint] = useState<boolean>(false);
-
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [sprintName, setSprintName] = useState<string>("");
   const [epicList, setEpicList] = useState<string[]>([""]);
@@ -48,6 +50,10 @@ const BoardPage = () => {
       .catch((error) => {
         console.log("스프린트 생성 모달 열기:", error);
       });
+  };
+
+  const toggleReviewModal = () => {
+    setIsReviewModalOpen(!isReviewModalOpen);
   };
 
   const handleSprintNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,7 +104,11 @@ const BoardPage = () => {
     <Wrapper>
       <TopContainer>
         {hasSprint ? (
-          <Button padding="5px 15px" style={{ fontWeight: "bold" }}>
+          <Button
+            padding="5px 15px"
+            style={{ fontWeight: "bold" }}
+            onClick={() => toggleReviewModal()}
+          >
             스프린트 리뷰
           </Button>
         ) : (
@@ -162,6 +172,26 @@ const BoardPage = () => {
               생성
             </Button>
           </ButtonBox>
+        </Modal>
+      )}
+      {isReviewModalOpen && (
+        <Modal isOpen={isReviewModalOpen} onClose={toggleReviewModal}>
+          <ReviewBox>
+            <ReviewContentBox category="Stop" />
+            <ReviewContentBox category="Start" />
+            <ReviewContentBox category="Continue" />
+          </ReviewBox>
+          <BottomBox>
+            <InputWithDropdown />
+            <Button
+              padding="3px 30px"
+              bgColor="#AEBDCA"
+              fontSize="16px"
+              style={{ fontWeight: "bold" }}
+            >
+              스프린트 리뷰
+            </Button>
+          </BottomBox>
         </Modal>
       )}
     </Wrapper>
@@ -240,4 +270,17 @@ const SelectIssueWrapper = styled.div`
 const ButtonBox = styled.div`
   display: flex;
   justify-content: flex-end;
+`;
+
+const ReviewBox = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+`;
+
+const BottomBox = styled.div`
+  width: 100%;
+  height: 30px;
+  display: flex;
+  justify-content: space-between;
 `;
