@@ -90,7 +90,7 @@ const BoardPage = () => {
     } else {
       setHasSprint(false);
     }
-  });
+  }, [isModalOpen]);
 
   return (
     <Wrapper>
