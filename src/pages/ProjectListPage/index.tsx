@@ -162,11 +162,11 @@ const ProjectListPage = () => {
               />
               <TeamEmailSubmit onClick={handleAddEmail} />
             </TeamEmailInputWrapper>
-            <ul>
-              {membersEmailId.map((email, index) => (
-                <li key={index}>{email}</li>
+            <EmailList>
+              {membersEmailId.map((email) => (
+                <StyledLi>{email}</StyledLi>
               ))}
-            </ul>
+            </EmailList>
           </Content>
           <ButtonBox>
             <Button
@@ -272,7 +272,7 @@ const TeamEmailInput = styled.input`
   width: 100%;
   padding: 10px 15px 10px 35px;
   border: none;
-  border-radius: 5px;
+  border-radius: 5px 0;
   outline: none;
   font-size: 14px;
   color: #7e7e7e;
@@ -281,4 +281,21 @@ const TeamEmailInput = styled.input`
 const ButtonBox = styled.div`
   display: flex;
   justify-content: flex-end;
+`;
+
+const EmailList = styled.ul`
+  padding: 0;
+  margin: 0 0 7px;
+`;
+
+const StyledLi = styled.li`
+  width: fit-content;
+  list-style: none;
+  border: 1px solid #7e7e7e;
+  border-radius: 20px;
+  padding: 5px 15px;
+  margin-bottom: 3px;
+  font-size: 12px;
+  background-color: #fff;
+  color: #7e7e7e;
 `;
