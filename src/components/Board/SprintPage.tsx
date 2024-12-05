@@ -91,8 +91,9 @@ const SprintPage = ({ name, endDate, data, reloadData }: SprintProps) => {
     console.log(draggedItem);
   };
 
-  const handleDragEnd = ({ active, over }: any) => {
+  const handleDragEnd = async ({ active, over }: any) => {
     setDraggedItem(null);
+
     if (!over) return;
 
     const sourceStatus = active.data.current.status;
@@ -100,12 +101,34 @@ const SprintPage = ({ name, endDate, data, reloadData }: SprintProps) => {
 
     if (sourceStatus === destinationStatus) return;
 
+    // 상태 변경 로직
     const updatedIssues = issues.map((issue) =>
       issue.issueId === active.id
         ? { ...issue, progressStatus: destinationStatus }
         : issue
     );
+
     setIssues(updatedIssues);
+
+    // 서버에 상태 변경 요청
+    try {
+      const payload = {
+        issueId: active.id,
+        progressStatus: destinationStatus,
+      };
+
+      await fetchInstance.post(
+        `/project/${projectId}/kanbanboard/${epicId}/${active.id}`,
+        payload
+      );
+
+      console.log("이슈 상태 업데이트 성공:", payload);
+    } catch (error) {
+      console.error("이슈 상태 업데이트 실패:", error);
+
+      // 실패 시 이전 상태로 롤백
+      setIssues(issues);
+    }
   };
 
   //여기부터 이슈 만들기 관련
