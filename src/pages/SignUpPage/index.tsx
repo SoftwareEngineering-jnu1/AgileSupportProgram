@@ -75,7 +75,7 @@ const SignUpPage: React.FC = () => {
         value={form.email}
         onChange={handleChange}
         className={style.input}
-        placeholder="이메일 또는 아이디"
+        placeholder="이메일"
         required/>
     </div>
     <div className={style.div}>

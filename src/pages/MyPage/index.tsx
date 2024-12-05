@@ -4,6 +4,7 @@ import ProfileForm from '../../components/ProfileInputForm/ProfileForm';
 import Projectlist from '../../components/ProjectlistForm/Projectlist';
 import style from './MyPage.module.css';
 import Sprintreviewlist from '../../components/SprintreviewlistForm/Sprintreviewlist';
+import LogoutButton from '@components/LogoutButton/LogoutButton';
 
 const MyPage: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const MyPage: React.FC = () => {
         <div className={style.usercircle}><FaUserCircle size={200}/></div>
         <span className={style.name}>이름</span> {/*로그인 정보를 바탕으로 이름 정보 가져오기*/}
         <div className={style.profilediv}><ProfileForm/></div>
+        <div className={style.logoutbutton}><LogoutButton/></div>
       </div>
       
       <div className={style.containerlist}>

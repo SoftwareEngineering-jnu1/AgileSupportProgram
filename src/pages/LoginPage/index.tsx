@@ -64,7 +64,7 @@ const LoginPage: React.FC = () => {
           value={form.username}
           onChange={handleChange}
           className={styles.input}
-          placeholder="이메일 또는 아이디"
+          placeholder="이메일"
         />
       </div>
       <div className={styles.div}>
