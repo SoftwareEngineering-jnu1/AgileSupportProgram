@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 import IssueItem from "./IssueItem";
@@ -9,52 +9,75 @@ import { FaCheckCircle } from "react-icons/fa";
 import { GrPowerCycle } from "react-icons/gr";
 
 import AddIssue from "./AddIssue";
-import { boardData } from "./data";
 import Button from "@components/common/Button";
 import Modal from "@components/common/Modal";
 
-// import { MdOutlineTitle } from "react-icons/md";
-import ReviewContentBox from "@components/Board/ReviewContentBox";
-import InputWithDropdown from "@components/Board/InputWithDropdown";
-// import ModalIssueItem from "@components/Board/ModalIssueItem";
+import {
+  Content,
+  TitleWrapper,
+  TitleIcon,
+  TitleInput,
+  ButtonBox,
+  SelectWrapper,
+  SelectStatus,
+  DateWrapper,
+  DateInput,
+  AssignIcon,
+} from "@pages/TimelinePage/style";
+import { fetchInstance } from "@api/instance";
+import Cookies from "js-cookie";
+import { useProject } from "@context/ProjectContext";
 
 type Issue = {
   issueId: number;
-  issuetitle: string;
-  mainMemberNameAndcolor: Record<string, string>;
+  issueTitle: string;
+  mainMemberNameAndColor: Record<string, string>;
   progressStatus: string;
 };
+
+interface SprintProps {
+  name: string;
+  endDate: string;
+  data: Issue[];
+  reloadData: () => void;
+}
 
 type GroupedIssues = {
   [key: string]: Issue[];
 };
 
-const SprintPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  // const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
-  const { sprintName, sprintEndData, kanbanboardIssueDTO } = boardData;
-  const cleanedIssues = kanbanboardIssueDTO.map((issue) => ({
-    ...issue,
-    mainMemberNameAndcolor: Object.fromEntries(
-      Object.entries(issue.mainMemberNameAndcolor).map(([key, value]) => [
-        key,
-        value || "#000000",
-      ])
-    ),
-  }));
+const SprintPage = ({ name, endDate, data, reloadData }: SprintProps) => {
+  const { projectId } = useProject();
+  const epicId = Cookies.get(`project_${projectId}_epicId`);
+  const [isIssueModalOpen, setIsIssueModalOpen] = useState<boolean>(false);
+  const [issues, setIssues] = React.useState<Issue[]>([]);
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
+  const toggleIssueModal = () => {
+    if (isIssueModalOpen) {
+      setNewIssueTitle("");
+      setIssueStartDate("");
+      setIssueEndDate("");
+      setMainMemberName("");
+      setProgressStatus("To Do");
+    }
+    setIsIssueModalOpen(!isIssueModalOpen);
   };
 
-  // const handleIssueSelect = (label: string) => {
-  //   setSelectedIssue(label === selectedIssue ? null : label); // 동일한 아이템 선택 시 해제
-  // };
+  useEffect(() => {
+    setIssues(data);
+  }, [data]);
 
-  const [issues, setIssues] = React.useState<Issue[]>(cleanedIssues);
   const [draggedItem, setDraggedItem] = React.useState<number | null>(null);
 
   const groupedIssues: GroupedIssues = React.useMemo(() => {
+    if (!issues || issues.length === 0) {
+      return {
+        "To Do": [],
+        "In Progress": [],
+        Done: [],
+        Hold: [],
+      };
+    }
     return issues.reduce((acc: GroupedIssues, issue) => {
       acc[issue.progressStatus] = acc[issue.progressStatus] || [];
       acc[issue.progressStatus].push(issue);
@@ -68,8 +91,9 @@ const SprintPage = () => {
     console.log(draggedItem);
   };
 
-  const handleDragEnd = ({ active, over }: any) => {
+  const handleDragEnd = async ({ active, over }: any) => {
     setDraggedItem(null);
+
     if (!over) return;
 
     const sourceStatus = active.data.current.status;
@@ -77,25 +101,78 @@ const SprintPage = () => {
 
     if (sourceStatus === destinationStatus) return;
 
+    // 상태 변경 로직
     const updatedIssues = issues.map((issue) =>
       issue.issueId === active.id
         ? { ...issue, progressStatus: destinationStatus }
         : issue
     );
+
     setIssues(updatedIssues);
+
+    // 서버에 상태 변경 요청
+    try {
+      const payload = {
+        issueId: active.id,
+        progressStatus: destinationStatus,
+      };
+
+      await fetchInstance.post(
+        `/project/${projectId}/kanbanboard/${epicId}/${active.id}`,
+        payload
+      );
+
+      console.log("이슈 상태 업데이트 성공:", payload);
+    } catch (error) {
+      console.error("이슈 상태 업데이트 실패:", error);
+
+      // 실패 시 이전 상태로 롤백
+      setIssues(issues);
+    }
+  };
+
+  //여기부터 이슈 만들기 관련
+  type IssueStatus = "To Do" | "In Progress" | "Done" | "Hold";
+  const [issueStartDate, setIssueStartDate] = useState("");
+  const [issueEndDate, setIssueEndDate] = useState("");
+  const [newIssueTitle, setNewIssueTitle] = useState("");
+  const [mainMemberName, setMainMemberName] = useState("");
+  const [progressStatus, setProgressStatus] = useState("To Do");
+
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setProgressStatus(e.target.value as IssueStatus);
+  };
+  const handleIssueMember = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMainMemberName(e.target.value);
+  };
+
+  const addIssue = () => {
+    const payload = {
+      title: newIssueTitle,
+      startDate: issueStartDate,
+      endDate: issueEndDate,
+      mainMemberName,
+      progressStatus,
+    };
+
+    fetchInstance
+      .post(`/project/${projectId}/${epicId}/addissue`, payload)
+      .then(() => {
+        console.log("이슈 생성 성공");
+        toggleIssueModal();
+        reloadData();
+      })
+      .catch((error) => {
+        console.error("이슈 생성 실패:", error);
+      });
   };
 
   return (
     <>
-      <TopBox>
-        <Button padding="5px 15px" style={{ fontWeight: "bold" }}>
-          스프린트 시작
-        </Button>
-      </TopBox>
       <Container>
         <Top>
-          <Title>{sprintName}</Title>
-          <Date>~ {sprintEndData}</Date>
+          <Title>{name}</Title>
+          <Date>~ {endDate}</Date>
         </Top>
         <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
           <BoardContents>
@@ -126,7 +203,7 @@ const SprintPage = () => {
                     <div>
                       {groupedIssues[status]?.map((issue) => {
                         const [person, color] = Object.entries(
-                          issue.mainMemberNameAndcolor
+                          issue.mainMemberNameAndColor || { Unknown: "#000000" }
                         )[0];
                         return (
                           <Draggable
@@ -135,7 +212,7 @@ const SprintPage = () => {
                             status={issue.progressStatus}
                           >
                             <IssueItem
-                              title={issue.issuetitle}
+                              title={issue.issueTitle}
                               person={person}
                               color={color}
                             />
@@ -146,7 +223,7 @@ const SprintPage = () => {
                         <div style={{ border: "2px solid #ffd700" }}></div>
                       )}
                     </div>
-                    <AddIssue />
+                    <AddIssue toggle={toggleIssueModal} />
                   </>
                 )}
               </Droppable>
@@ -154,74 +231,65 @@ const SprintPage = () => {
           </BoardContents>
         </DndContext>
       </Container>
-      <BottomContainer>
-        <Button
-          padding="5px 15px"
-          style={{ fontWeight: "bold" }}
-          onClick={() => {
-            toggleModal();
-          }}
-        >
-          스프린트 만들기
-        </Button>
-      </BottomContainer>
-      {isModalOpen && (
-        <Modal isOpen={isModalOpen} onClose={toggleModal}>
-          <ReviewBox>
-            <ReviewContentBox category="Stop" />
-            <ReviewContentBox category="Start" />
-            <ReviewContentBox category="Continue" />
-          </ReviewBox>
-          <BottomBox>
-            <InputWithDropdown />
+      {isIssueModalOpen && (
+        <Modal isOpen={isIssueModalOpen} onClose={toggleIssueModal}>
+          <h2>이슈 만들기</h2>
+          <Content>
+            <span>할 일</span>
+            <TitleWrapper>
+              <TitleIcon />
+              <TitleInput
+                placeholder="무엇을 완료해야 하나요?"
+                value={newIssueTitle}
+                onChange={(e) => setNewIssueTitle(e.target.value)}
+              />
+            </TitleWrapper>
+            <span>시작일 ~ 종료일</span>
+            <DateWrapper>
+              <DateInput
+                type="date"
+                value={issueStartDate}
+                onChange={(e) => setIssueStartDate(e.target.value)}
+              />
+              <span> ~ </span>
+              <DateInput
+                type="date"
+                value={issueEndDate}
+                onChange={(e) => setIssueEndDate(e.target.value)}
+              />
+            </DateWrapper>
+
+            <span>담당자</span>
+            <TitleWrapper>
+              <AssignIcon />
+              <TitleInput
+                placeholder="담당자를 입력하세요"
+                onChange={handleIssueMember}
+              />
+            </TitleWrapper>
+
+            <span>진행 상태</span>
+            <SelectWrapper>
+              <SelectStatus value={progressStatus} onChange={handleChange}>
+                <option value="To Do">To Do</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Done">Done</option>
+                <option value="Hold">Hold</option>
+              </SelectStatus>
+            </SelectWrapper>
+          </Content>
+          <ButtonBox>
             <Button
-              padding="3px 30px"
-              bgColor="#AEBDCA"
+              padding="6px 6px"
+              bgColor="#7895B2"
               fontSize="16px"
               style={{ fontWeight: "bold" }}
+              onClick={addIssue}
             >
-              스프린트 리뷰
+              생성
             </Button>
-          </BottomBox>
+          </ButtonBox>
         </Modal>
-        // <Modal isOpen={isModalOpen} onClose={toggleModal}>
-        //   <h3>새 스프린트를 생성하시겠습니까?</h3>
-        //   <Content>
-        //     <span>스프린트 이름</span>
-        //     <SprintTitleWrapper>
-        //       <SprintTitleIcon />
-        //       <SprintTitleInput placeholder="프로젝트 이름을 입력해주세요" />
-        //     </SprintTitleWrapper>
-        //     <span>스프린트에 추가할 에픽 선택</span>
-        //     <SelectIssueWrapper>
-        //       <ModalIssueItem
-        //         label="발표 자료 제작"
-        //         isChecked={selectedIssue === "발표 자료 제작"}
-        //         onCheck={() => handleIssueSelect("발표 자료 제작")}
-        //       />
-        //       <ModalIssueItem
-        //         label="개발 환경 설정"
-        //         isChecked={selectedIssue === "개발 환경 설정"}
-        //         onCheck={() => handleIssueSelect("개발 환경 설정")}
-        //       />
-        //       <ModalIssueItem
-        //         label="기능 기획"
-        //         isChecked={selectedIssue === "기능 기획"}
-        //         onCheck={() => handleIssueSelect("기능 기획")}
-        //       />
-        //     </SelectIssueWrapper>
-        //   </Content>
-        //   <ButtonBox>
-        //     <Button
-        //       padding="6px 6px"
-        //       bgColor="#7895B2"
-        //       fontSize="16px"
-        //       style={{ fontWeight: "bold" }}
-        //     >
-        //       생성
-        //     </Button>
-        //   </ButtonBox>
-        // </Modal>
       )}
     </>
   );
@@ -294,63 +362,6 @@ const Droppable = ({
     </StatusContainer>
   );
 };
-
-//모달 스타일
-// const Content = styled.form`
-//   display: flex;
-//   flex-direction: column;
-//   text-align: start;
-// `;
-
-// const SprintTitleWrapper = styled.div`
-//   position: relative;
-//   width: 350px;
-//   margin: 5px 0 10px;
-// `;
-
-// const SprintTitleIcon = styled(MdOutlineTitle)`
-//   position: absolute;
-//   top: 50%;
-//   left: 10px;
-//   transform: translateY(-50%);
-//   color: #7e7e7e;
-// `;
-
-// const SprintTitleInput = styled.input`
-//   width: 100%;
-//   padding: 10px 15px 10px 35px;
-//   border: none;
-//   border-radius: 5px;
-//   outline: none;
-//   font-size: 14px;
-//   color: #7e7e7e;
-// `;
-
-// const SelectIssueWrapper = styled.div`
-//   width: 350px;
-//   margin: 5px 0;
-//   padding: 0 10px;
-//   background-color: #fff;
-//   border-radius: 5px;
-//   max-height: 150px;
-//   overflow-y: auto;
-
-//   &::-webkit-scrollbar {
-//     display: none;
-//   }
-// `;
-
-// const ButtonBox = styled.div`
-//   display: flex;
-//   justify-content: flex-end;
-// `;
-
-// 스타일 정의
-const TopBox = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-`;
 
 const Container = styled.div`
   width: 100%;
@@ -436,24 +447,4 @@ const StatusContainer = styled.div`
   padding: 16px;
   border-radius: 8px;
   background-color: #f8f8f8;
-`;
-
-const BottomContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
-`;
-
-const ReviewBox = styled.div`
-  display: flex;
-  gap: 10px;
-  align-items: center;
-`;
-
-const BottomBox = styled.div`
-  width: 100%;
-  height: 30px;
-  display: flex;
-  justify-content: space-between;
 `;
