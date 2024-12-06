@@ -15,10 +15,11 @@ interface ProjectItemProps {
 }
 
 const ProjectItem = ({ project }: ProjectItemProps) => {
-  const { setProjectId } = useProject();
+  const { setProjectId, setProjectName } = useProject();
 
   const handleClick = () => {
     setProjectId(project.projectId);
+    setProjectName(project.projectName);
   };
 
   const progress = Math.round(
@@ -63,7 +64,8 @@ const ProjectWrapper = styled(Link)`
 
 const Title = styled.span`
   font-weight: bold;
-  font-size: 24px;
+  text-align: start;
+  font-size: 18px;
 `;
 
 const ProgressContainer = styled.div`

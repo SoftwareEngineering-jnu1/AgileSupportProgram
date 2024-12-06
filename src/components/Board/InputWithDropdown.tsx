@@ -1,9 +1,14 @@
+//import { fetchInstance } from "@api/instance";
 import { useState } from "react";
 import styled from "styled-components";
 
-const InputWithDropdown = () => {
+interface InputWithDropdownProps {
+  onSubmit: (category: string, comment: string) => void;
+}
+
+const InputWithDropdown = ({ onSubmit }: InputWithDropdownProps) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("Select");
+  const [selectedOption, setSelectedOption] = useState("Stop");
   const [inputValue, setInputValue] = useState("");
 
   const toggleDropdown = () => setDropdownVisible(!isDropdownVisible);
@@ -13,6 +18,13 @@ const InputWithDropdown = () => {
     setDropdownVisible(false);
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && inputValue.trim() !== "") {
+      onSubmit(selectedOption, inputValue.trim());
+      setInputValue(""); // 입력 필드 초기화
+    }
+  };
+
   return (
     <Wrapper>
       <Input
@@ -20,9 +32,10 @@ const InputWithDropdown = () => {
         placeholder="의견 추가.."
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
+        onKeyDown={handleKeyPress}
       />
-      <DropdownWrapper>
-        <DropdownButton onClick={toggleDropdown}>
+      <DropdownWrapper onClick={toggleDropdown}>
+        <DropdownButton isVisible={isDropdownVisible}>
           {selectedOption}
         </DropdownButton>
         <DropdownMenu isVisible={isDropdownVisible}>
@@ -61,9 +74,10 @@ const Input = styled.input`
 
 const DropdownWrapper = styled.div`
   position: relative;
+  cursor: pointer;
 `;
 
-const DropdownButton = styled.button`
+const DropdownButton = styled.button<{ isVisible: boolean }>`
   background: none;
   border: none;
   cursor: pointer;
@@ -76,6 +90,9 @@ const DropdownButton = styled.button`
     content: "▼";
     font-size: 12px;
     margin-left: 5px;
+    transform: ${(props) =>
+      props.isVisible ? "rotate(180deg)" : "rotate(0deg)"};
+    transition: transform 0.3s ease; /* 부드러운 회전 애니메이션 */
   }
 
   &:hover {

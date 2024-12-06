@@ -2,34 +2,162 @@ import styled from "styled-components";
 
 import Button from "@components/common/Button";
 import NonSprintPage from "@components/Board/NonSprintPage";
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import SprintPage from "@components/Board/SprintPage";
 import Modal from "@components/common/Modal";
 
 import { MdOutlineTitle } from "react-icons/md";
 import ModalIssueItem from "@components/Board/ModalIssueItem";
+import ReviewContentBox from "@components/Board/ReviewContentBox";
+import InputWithDropdown from "@components/Board/InputWithDropdown";
 
 import { useProject } from "@context/ProjectContext";
+import { fetchInstance } from "@api/instance";
+import Cookies from "js-cookie";
+
+interface DtoDataType {
+  issueId: number;
+  issueTitle: string;
+  mainMemberNameAndColor: Record<string, string>;
+  progressStatus: string;
+}
+
+interface SprintDataType {
+  sprintName: string;
+  sprintEndDate: string;
+  projectName: string;
+  kanbanboardIssueDTO: DtoDataType[];
+}
 
 const BoardPage = () => {
   const { projectId } = useProject();
-  console.log(projectId);
+  const epicId = Cookies.get(`project_${projectId}_epicId`);
   const [hasSprint, setHasSprint] = useState<boolean>(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
+  const [sprintName, setSprintName] = useState<string>("");
+  const [epicList, setEpicList] = useState<string[]>([""]);
+  const [epicTitle, setEpicTitle] = useState<string | null>(null);
+
+  const [sprintData, setSprintData] = useState<SprintDataType>();
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
+    fetchInstance
+      .get(`/project/${projectId}/kanbanboard/newsprint`)
+      .then((response) => {
+        setEpicList(response.data.data);
+      })
+      .catch((error) => {
+        console.log("스프린트 생성 모달 열기:", error);
+      });
+  };
+
+  const toggleReviewModal = () => {
+    setIsReviewModalOpen(!isReviewModalOpen);
+  };
+
+  const handleSprintNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSprintName(e.target.value);
   };
 
   const handleIssueSelect = (label: string) => {
-    setSelectedIssue(label === selectedIssue ? null : label); // 동일한 아이템 선택 시 해제
+    setEpicTitle(label === epicTitle ? null : label);
+  };
+
+  const createSprint = () => {
+    const payload = {
+      sprintName,
+      epicTitle,
+    };
+    fetchInstance
+      .post(`/project/${projectId}/kanbanboard/newsprint`, payload)
+      .then((response) => {
+        Cookies.set(`project_${projectId}_epicId`, response.data.data.epicId);
+        setIsModalOpen(!isModalOpen);
+        fetchSprintData();
+      })
+      .catch((error) => {
+        console.error("스프린트 생성 실패:", error);
+      });
+  };
+
+  const createReview = () => {
+    const payload = {
+      stop: reviewComments["Stop"].join(", "), // 배열을 문자열로 변환
+      start: reviewComments["Start"].join(", "),
+      continueAction: reviewComments["Continue"].join(", "),
+    };
+
+    // const payloadString = JSON.stringify(payload);
+    // console.log("리뷰: ", payloadString);
+
+    fetchInstance
+      .post(`/project/${projectId}/kanbanboard/${epicId}/review`, payload)
+      .then((response) => {
+        console.log("리뷰 제출 완료: ", response);
+        if (
+          response.data.data.completeMemberCount ===
+          response.data.data.totalMemberCount
+        ) {
+          Cookies.remove(`project_${projectId}_epicId`);
+          setHasSprint(!hasSprint);
+        }
+        setIsReviewModalOpen(false);
+      })
+      .catch((error) => {
+        console.error("스프린트 리뷰 제출 실패:", error);
+      });
+  };
+
+  const fetchSprintData = useCallback(async () => {
+    const epicId = Cookies.get(`project_${projectId}_epicId`);
+    if (epicId) {
+      try {
+        const response = await fetchInstance.get(
+          `/project/${projectId}/kanbanboard/${epicId}`
+        );
+        setSprintData(response.data.data);
+        setHasSprint(true);
+      } catch (error) {
+        console.error("스프린트 데이터 로드 실패:", error);
+        setHasSprint(false);
+      }
+    }
+  }, [projectId]);
+
+  useEffect(() => {
+    fetchSprintData();
+  }, [fetchSprintData]);
+
+  const [reviewComments, setReviewComments] = useState<
+    Record<string, string[]>
+  >({
+    Stop: [],
+    Start: [],
+    Continue: [],
+  });
+
+  const handleAddComment = async (category: string, comment: string) => {
+    setReviewComments((prevComments) => ({
+      ...prevComments,
+      [category]: [...prevComments[category], comment],
+    }));
+    console.log(reviewComments);
   };
 
   return (
     <Wrapper>
       <TopContainer>
-        {hasSprint ? null : (
+        {hasSprint ? (
+          <Button
+            padding="5px 15px"
+            style={{ fontWeight: "bold" }}
+            onClick={() => toggleReviewModal()}
+          >
+            스프린트 리뷰
+          </Button>
+        ) : (
           <Button
             padding="5px 15px"
             style={{ fontWeight: "bold" }}
@@ -43,7 +171,16 @@ const BoardPage = () => {
         )}
       </TopContainer>
       <MiddleContainer>
-        {hasSprint ? <SprintPage /> : <NonSprintPage />}
+        {hasSprint && sprintData ? (
+          <SprintPage
+            name={sprintData.sprintName}
+            endDate={sprintData.sprintEndDate}
+            data={sprintData.kanbanboardIssueDTO}
+            reloadData={fetchSprintData}
+          />
+        ) : (
+          <NonSprintPage />
+        )}
       </MiddleContainer>
       {isModalOpen && (
         <Modal isOpen={isModalOpen} onClose={toggleModal}>
@@ -52,25 +189,22 @@ const BoardPage = () => {
             <span>스프린트 이름</span>
             <SprintTitleWrapper>
               <SprintTitleIcon />
-              <SprintTitleInput placeholder="프로젝트 이름을 입력해주세요" />
+              <SprintTitleInput
+                placeholder="프로젝트 이름을 입력해주세요"
+                onChange={handleSprintNameChange}
+              />
             </SprintTitleWrapper>
             <span>스프린트에 추가할 에픽 선택</span>
             <SelectIssueWrapper>
-              <ModalIssueItem
-                label="발표 자료 제작"
-                isChecked={selectedIssue === "발표 자료 제작"}
-                onCheck={() => handleIssueSelect("발표 자료 제작")}
-              />
-              <ModalIssueItem
-                label="개발 환경 설정"
-                isChecked={selectedIssue === "개발 환경 설정"}
-                onCheck={() => handleIssueSelect("개발 환경 설정")}
-              />
-              <ModalIssueItem
-                label="기능 기획"
-                isChecked={selectedIssue === "기능 기획"}
-                onCheck={() => handleIssueSelect("기능 기획")}
-              />
+              {epicList.map((epic) => {
+                return (
+                  <ModalIssueItem
+                    label={epic}
+                    isChecked={epicTitle === `${epic}`}
+                    onCheck={() => handleIssueSelect(`${epic}`)}
+                  />
+                );
+              })}
             </SelectIssueWrapper>
           </Content>
           <ButtonBox>
@@ -79,10 +213,35 @@ const BoardPage = () => {
               bgColor="#7895B2"
               fontSize="16px"
               style={{ fontWeight: "bold" }}
+              onClick={() => createSprint()}
             >
               생성
             </Button>
           </ButtonBox>
+        </Modal>
+      )}
+      {isReviewModalOpen && (
+        <Modal isOpen={isReviewModalOpen} onClose={toggleReviewModal}>
+          <ReviewBox>
+            {["Stop", "Start", "Continue"].map((category) => (
+              <ReviewContentBox
+                category={category}
+                comments={reviewComments[category]}
+              />
+            ))}
+          </ReviewBox>
+          <BottomBox>
+            <InputWithDropdown onSubmit={handleAddComment} />
+            <Button
+              padding="3px 30px"
+              bgColor="#AEBDCA"
+              fontSize="16px"
+              style={{ fontWeight: "bold" }}
+              onClick={() => createReview()}
+            >
+              스프린트 리뷰
+            </Button>
+          </BottomBox>
         </Modal>
       )}
     </Wrapper>
@@ -161,4 +320,17 @@ const SelectIssueWrapper = styled.div`
 const ButtonBox = styled.div`
   display: flex;
   justify-content: flex-end;
+`;
+
+const ReviewBox = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+`;
+
+const BottomBox = styled.div`
+  width: 100%;
+  height: 30px;
+  display: flex;
+  justify-content: space-between;
 `;
