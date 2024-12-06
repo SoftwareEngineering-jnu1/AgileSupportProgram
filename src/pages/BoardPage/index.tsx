@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 import Button from "@components/common/Button";
 import NonSprintPage from "@components/Board/NonSprintPage";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import SprintPage from "@components/Board/SprintPage";
 import Modal from "@components/common/Modal";
 
@@ -110,7 +110,7 @@ const BoardPage = () => {
       });
   };
 
-  const fetchSprintData = async () => {
+  const fetchSprintData = useCallback(async () => {
     const epicId = Cookies.get(`project_${projectId}_epicId`);
     if (epicId) {
       try {
@@ -124,11 +124,11 @@ const BoardPage = () => {
         setHasSprint(false);
       }
     }
-  };
+  }, [projectId]);
 
   useEffect(() => {
     fetchSprintData();
-  }, []);
+  }, [fetchSprintData]);
 
   const [reviewComments, setReviewComments] = useState<
     Record<string, string[]>
