@@ -31,6 +31,7 @@ interface SprintDataType {
 
 const BoardPage = () => {
   const { projectId } = useProject();
+  const epicId = Cookies.get(`project_${projectId}_epicId`);
   const [hasSprint, setHasSprint] = useState<boolean>(false);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -74,9 +75,38 @@ const BoardPage = () => {
       .then((response) => {
         Cookies.set(`project_${projectId}_epicId`, response.data.data.epicId);
         setIsModalOpen(!isModalOpen);
+        fetchSprintData();
       })
       .catch((error) => {
         console.error("스프린트 생성 실패:", error);
+      });
+  };
+
+  const createReview = () => {
+    const payload = {
+      stop: reviewComments["Stop"].join(", "), // 배열을 문자열로 변환
+      start: reviewComments["Start"].join(", "),
+      continueAction: reviewComments["Continue"].join(", "),
+    };
+
+    // const payloadString = JSON.stringify(payload);
+    // console.log("리뷰: ", payloadString);
+
+    fetchInstance
+      .post(`/project/${projectId}/kanbanboard/${epicId}/review`, payload)
+      .then((response) => {
+        console.log("리뷰 제출 완료: ", response);
+        if (
+          response.data.data.completeMemberCount ===
+          response.data.data.totalMemberCount
+        ) {
+          Cookies.remove(`project_${projectId}_epicId`);
+          setHasSprint(!hasSprint);
+        }
+        setIsReviewModalOpen(false);
+      })
+      .catch((error) => {
+        console.error("스프린트 리뷰 제출 실패:", error);
       });
   };
 
@@ -99,6 +129,22 @@ const BoardPage = () => {
   useEffect(() => {
     fetchSprintData();
   }, []);
+
+  const [reviewComments, setReviewComments] = useState<
+    Record<string, string[]>
+  >({
+    Stop: [],
+    Start: [],
+    Continue: [],
+  });
+
+  const handleAddComment = async (category: string, comment: string) => {
+    setReviewComments((prevComments) => ({
+      ...prevComments,
+      [category]: [...prevComments[category], comment],
+    }));
+    console.log(reviewComments);
+  };
 
   return (
     <Wrapper>
@@ -177,17 +223,21 @@ const BoardPage = () => {
       {isReviewModalOpen && (
         <Modal isOpen={isReviewModalOpen} onClose={toggleReviewModal}>
           <ReviewBox>
-            <ReviewContentBox category="Stop" />
-            <ReviewContentBox category="Start" />
-            <ReviewContentBox category="Continue" />
+            {["Stop", "Start", "Continue"].map((category) => (
+              <ReviewContentBox
+                category={category}
+                comments={reviewComments[category]}
+              />
+            ))}
           </ReviewBox>
           <BottomBox>
-            <InputWithDropdown />
+            <InputWithDropdown onSubmit={handleAddComment} />
             <Button
               padding="3px 30px"
               bgColor="#AEBDCA"
               fontSize="16px"
               style={{ fontWeight: "bold" }}
+              onClick={() => createReview()}
             >
               스프린트 리뷰
             </Button>
