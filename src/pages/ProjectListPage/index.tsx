@@ -29,6 +29,7 @@ interface APIResponse {
 }
 
 const ProjectListPage = () => {
+  const emailId = Cookies.get("emailId")!;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [projects, setProjects] = useState<ProjectResponse[]>([]);
 
@@ -86,7 +87,7 @@ const ProjectListPage = () => {
   const handleSubmit = () => {
     const payload = {
       projectName,
-      membersEmailId,
+      membersEmailId: [...membersEmailId, emailId],
     };
     fetchInstance
       .post("/project/new", payload)
