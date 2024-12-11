@@ -23,7 +23,6 @@ import './Timeline.css';
 
 const Timeline = () => {
   const [epics, setEpics] = useState<Epic[]>([]);
-  const [issues, setIssues] = useState<Issue[]>([]);
   const [newEpic, setNewEpic] = useState('');
   const [newIssue, setNewIssue] = useState('');
   const [mainMember, setMainMember] = useState('');
@@ -326,7 +325,7 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
         .catch((error) => {
           console.log("이슈 상세보기 실패", error);
         });
-    }, [projectId, epicId, id]);
+    }, [epicId, id]);
 
     const handleEdit = () => {
       setEditTitle(true);
@@ -384,12 +383,12 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
   }
  
   const [dependency, setDependency] = useState<{ [key: number]: string }>(() => {
-    const storedDependency = localStorage.getItem("dependency");
+    const storedDependency = sessionStorage.getItem("dependency");
     return storedDependency ? JSON.parse(storedDependency) : {};
   });
   const updateDependency = (newDependency: { [key: number]: string }) => {
     setDependency(newDependency);
-    localStorage.setItem("dependency", JSON.stringify(newDependency));
+    sessionStorage.setItem("dependency", JSON.stringify(newDependency));
   };
   
   const visualizeDependencies = (dependency: { [key: number]: string }) => {
@@ -513,7 +512,7 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
         .catch((error) => {
           console.log("에픽 상세보기 실패", error);
         });
-    }, [projectId, epicId]);
+    }, [isFetched, epicId]);
     
 
     const handleEdit = () => {
@@ -756,10 +755,6 @@ useEffect(() => {
 }, [timeline, dependency]);
 
  useEffect(() => {
-  console.log("타임라인 DOM 요소 확인:");
-  document.querySelectorAll("[id^='timeline-item-']").forEach((element) => {
-    console.log("DOM 요소:", element.id);
-  });
   if (timeline) {
     fetchEpics(); // 타임라인이 준비되었으면 에픽 데이터 호출
   }
