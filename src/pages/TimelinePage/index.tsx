@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { DataSet, DataItem, DataGroup, TimelineTimeAxisScaleType, Timeline as VisTimeline } from 'vis-timeline/standalone';
 
 import Button from '@components/common/Button';
@@ -544,6 +544,13 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
       return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
     };
 
+     // 이슈 개수와 완료된 이슈 개수 계산
+     const totalIssues = epic.issues ? epic.issues.length : 0;  // 이슈 개수
+     const completedIssues = epic.issues
+    ? epic.issues.filter((issue) => issue.progressStatus === "Done").length
+    : 0;
+
+
     return (
       <EpicDetailContainer>
         <IoIosClose className="close" onClick={onClose} />
@@ -580,8 +587,8 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
   
         <div style={{ margin: "0 10px", padding: "8px" }}>
           <Progress
-            total={progress.totalIssues}
-            completed={progress.completedIssues}
+            total={totalIssues}
+            completed={completedIssues}
             height="20px"
             borderRadius="10px"
           />
@@ -712,47 +719,43 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
   setStatus(e.target.value as IssueStatus);
 }
 
-const fetchEpics = () => {
+const fetchEpics = useCallback(() => {
   fetchInstance
-    .get<EpicResponse>(`/project/${projectId}/timeline`) 
+    .get<EpicResponse>(`/project/${projectId}/timeline`)
     .then((response) => {
-      console.log("응답 데이터", response.data); 
-      const data = response.data.data; 
+      const data = response.data.data;
       const epicsList: Epic[] = Object.values(data).flat();
 
-      setEpics(epicsList); 
-      console.log("에픽 목록 호출 성공", epicsList);
-      
+      setEpics(epicsList);
+
       if (timeline && itemsRef.current && groupsRef.current) {
-        itemsRef.current.clear(); 
+        itemsRef.current.clear();
 
         epicsList.forEach((epic) => {
           groupsRef.current.add({
-            id: epic.epicId,  
-            content: epic.epicTitle,  
+            id: epic.epicId,
+            content: epic.epicTitle,
           });
           addTimelineItem(epic, epic.epicId);
 
           epic.issues.forEach((issue) => {
-            addIssueTimelineItem(issue, epic.epicId);  
+            addIssueTimelineItem(issue, epic.epicId);
           });
         });
 
-        timeline.setGroups(groupsRef.current);  
-        timeline.setItems(itemsRef.current);  
-        timeline.fit(); 
+        timeline.setGroups(groupsRef.current);
+        timeline.setItems(itemsRef.current);
+        timeline.fit();
       }
     })
-    .catch((error) => {
-      console.log("에픽 목록 호출 실패", error);
-    });
-};
+    .catch((error) => console.error("에픽 목록 호출 실패:", error));
+}, [projectId, timeline, itemsRef, groupsRef]); // 필요한 의존성 추가
 
  useEffect(() => {
   if (timeline) {
     fetchEpics(); // 타임라인이 준비되었으면 에픽 데이터 호출
   }
-}, [projectId, timeline]);
+}, [timeline]);
 
 
   // 전체 타임라인 페이지
