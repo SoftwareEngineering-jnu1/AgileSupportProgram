@@ -587,8 +587,8 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
   
         <div style={{ margin: "0 10px", padding: "8px" }}>
           <Progress
-            total={totalIssues}
-            completed={completedIssues}
+            total={progress.totalIssues}
+            completed={progress.completedIssues}
             height="20px"
             borderRadius="10px"
           />
@@ -755,7 +755,7 @@ const fetchEpics = useCallback(() => {
   if (timeline) {
     fetchEpics(); // 타임라인이 준비되었으면 에픽 데이터 호출
   }
-}, [timeline]);
+}, [timeline, fetchEpics]);
 
 
   // 전체 타임라인 페이지
