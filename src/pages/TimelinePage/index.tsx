@@ -544,13 +544,7 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
       return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
     };
 
-     // 이슈 개수와 완료된 이슈 개수 계산
-     const totalIssues = epic.issues ? epic.issues.length : 0;  // 이슈 개수
-     const completedIssues = epic.issues
-    ? epic.issues.filter((issue) => issue.progressStatus === "Done").length
-    : 0;
-
-
+    
     return (
       <EpicDetailContainer>
         <IoIosClose className="close" onClick={onClose} />
