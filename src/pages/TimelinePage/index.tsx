@@ -931,10 +931,10 @@ const fetchEpics = () => {
             <span>진행 상태</span>
             <SelectWrapper>
               <SelectStatus value={status} onChange={handleChange}>
-                <option value="to do">To Do</option>
-                <option value="in progress">In Progress</option>
-                <option value="done">Done</option>
-                <option value="hold">Hold</option>
+                <option value="To Do">To Do</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Done">Done</option>
+                <option value="Hold">Hold</option>
               </SelectStatus>
             </SelectWrapper>
             
