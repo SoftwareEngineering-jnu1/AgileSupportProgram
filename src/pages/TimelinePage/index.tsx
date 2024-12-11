@@ -742,17 +742,6 @@ const fetchEpics = () => {
       console.log("에픽 목록 호출 실패", error);
     });
 };
-useEffect(() => {
-  if (timeline && dependency) {
-    // 타임라인 렌더링 완료 후 의존 관계 시각화
-    const timeoutId = setTimeout(() => {
-      console.log("의존 관계 시각화 호출");
-      visualizeDependencies(dependency);
-    }, 100); // 렌더링 대기 시간 조정
-
-    return () => clearTimeout(timeoutId);
-  }
-}, [timeline, dependency]);
 
  useEffect(() => {
   if (timeline) {
@@ -792,7 +781,6 @@ useEffect(() => {
             
             <div className='sideEpic'>
               {/* 에픽 제목, 진척도 사이드바에 추가 */}
-              
               {epics.length > 0 ? (
               epics.map((epic, index) => {
                 const epicTitle = epic.epicTitle;
