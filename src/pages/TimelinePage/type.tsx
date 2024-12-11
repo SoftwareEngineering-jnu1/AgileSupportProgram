@@ -16,16 +16,6 @@ export type Epic = {
 export interface EpicResponse {
     [projectName: string]: Epic[]; 
   }
-
-  // Item 타입 정의
-export type Item = {
-    id: string;
-    content: string;
-    start: Date;
-    end: Date;
-    group: number;
-    assign: string;
-};
   
 export type EpicDetailProps={
     epic: Epic;
@@ -34,21 +24,32 @@ export type EpicDetailProps={
     onAddIssue: (epicId:number)=> void;
 };
 
-export type IssueStatus = 'to do' | 'in progress' | 'done' | 'hold';
+export type IssueStatus = 'To Do' | 'In Progress' | 'Done' | 'Hold';
+
+export type TimelineIssue = {
+    issueId: number;
+    issueTitle: string;
+    issueStartDate: string;
+    issueEndDate: string;
+    hasDependency: boolean;
+  };
 
 export type Issue = {
-    issueId:number;
+    id: number; // 매핑 후 사용할 필드
     epicId:number;
-    issueTitle: string;
+    title: string;
     mainMemberName: string;
     progressStatus: IssueStatus;
     issueStartDate: string;
     issueEndDate: string;
+    hasDependency: boolean;
+    timelineX?: number; // 선택적 속성
+    timelineY?: number; // 선택적 속성
 } 
 
 export type IssueDetailProps = {
     issue: Issue;
     epicId:number;
-    issueId:number;
+    id:number;
     onClose: () => void;
 }
