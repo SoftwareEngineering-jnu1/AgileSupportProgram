@@ -391,6 +391,7 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
     sessionStorage.setItem("dependency", JSON.stringify(newDependency));
   };
   
+  /*
   const visualizeDependencies = (dependency: { [key: number]: string }) => {
     const svgContainer = document.getElementById("dependency-svg");
     if (!svgContainer) return;
@@ -423,7 +424,7 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
   
     svgContainer.appendChild(line);
   };
-  
+  */
 
 
   const EpicDetail = ({ epic, onClose, epicId }: EpicDetailProps) => {
