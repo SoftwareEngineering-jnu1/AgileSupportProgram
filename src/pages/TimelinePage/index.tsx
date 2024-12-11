@@ -135,7 +135,7 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
   // 타임라인 아이템 생성
   const newIssueItem = {
     id: issue.id, // 타임라인 라이브러리의 고유 ID
-    content: `<div id="timeline-item-${issue.id}">${issue.title}</div>`, // DOM 요소에 ID 추가
+    content: issue.title, // DOM 요소에 ID 추가
     start: startDate,
     end: endDate,
     group: epicId,
@@ -499,10 +499,20 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
           const issues = response.data.data.subIssues ;  
           console.log("subIssue:", issues);
 
-          const { epicProgressStatus = { totalIssues: 0, completedIssues: 0 } } = response.data;
+          const { epicProgressStatus = { totalIssues: 0, completedIssues: 0 }, subIssues } = response.data;
+
+          // totalIssues는 그대로 사용
+          const totalIssues = subIssues ? subIssues.length : epicProgressStatus.totalIssues;
+
+          // completedIssues는 progressStatus가 "done"인 이슈의 개수로 재계산
+          const completedIssues = subIssues
+            ? subIssues.filter((issue:Issue) => issue.progressStatus.toLowerCase() === "done").length
+            : epicProgressStatus.completedIssues;
+
+          // 상태 업데이트
           setProgress({
-            totalIssues: epicProgressStatus.totalIssues,
-            completedIssues: epicProgressStatus.completedIssues,
+            totalIssues,
+            completedIssues,
           });
            
           setSubIssues(issues);  
@@ -712,12 +722,6 @@ const fetchEpics = () => {
 
       setEpics(epicsList); 
       console.log("에픽 목록 호출 성공", epicsList);
-      epicsList.forEach((epic) => {
-        if (dependency) {
-          setDependency(dependency); // 의존 관계 상태 설정
-        }
-      });
-  
       
       if (timeline && itemsRef.current && groupsRef.current) {
         itemsRef.current.clear(); 
@@ -748,7 +752,7 @@ const fetchEpics = () => {
   if (timeline) {
     fetchEpics(); // 타임라인이 준비되었으면 에픽 데이터 호출
   }
-}, [timeline]);
+}, [projectId, timeline]);
 
 
   // 전체 타임라인 페이지
