@@ -143,16 +143,6 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
   console.log("타임라인 아이템 추가:", newIssueItem);
   itemsRef.current.add(newIssueItem);
 
-  
-  /* // 렌더링이 완료된 후 DOM 확인
-  setTimeout(() => {
-    const element = document.getElementById(`timeline-item-${issue.issueId}`);
-    if (element) {
-      console.log("타임라인 DOM 요소 생성됨:", element.id);
-    } else {
-      console.error("타임라인 DOM 요소 생성 실패:", `timeline-item-${issue.id}`);
-    }
-  }, 100); // 렌더링 완료 대기*/
 };
 
   // 에픽 추가
@@ -390,48 +380,6 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
     )
   }
  
-  /*
-  const [dependency, setDependency] = useState<{ [key: number]: string }>(() => {
-    const storedDependency = sessionStorage.getItem("dependency");
-    return storedDependency ? JSON.parse(storedDependency) : {};
-  });
-  const updateDependency = (newDependency: { [key: number]: string }) => {
-    setDependency(newDependency);
-    sessionStorage.setItem("dependency", JSON.stringify(newDependency));
-  };
-  
-  const visualizeDependencies = (dependency: { [key: number]: string }) => {
-    const svgContainer = document.getElementById("dependency-svg");
-    if (!svgContainer) return;
-  
-    svgContainer.innerHTML = ""; // 기존 선 초기화
-  
-    const startElement = document.getElementById(`timeline-item-${dependency[0]}`);
-    const endElement = document.getElementById(`timeline-item-${dependency[1]}`);
-  
-    if (!startElement || !endElement) {
-      console.error("의존 관계에 필요한 DOM 요소가 없습니다:", dependency);
-      return;
-    }
-  
-    const startRect = startElement.getBoundingClientRect();
-    const endRect = endElement.getBoundingClientRect();
-  
-    const startX = startRect.left + startRect.width / 2;
-    const startY = startRect.top + startRect.height / 2;
-    const endX = endRect.left + endRect.width / 2;
-    const endY = endRect.top + endRect.height / 2;
-  
-    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    line.setAttribute("x1", startX.toString());
-    line.setAttribute("y1", startY.toString());
-    line.setAttribute("x2", endX.toString());
-    line.setAttribute("y2", endY.toString());
-    line.setAttribute("stroke", "red");
-    line.setAttribute("stroke-width", "2");
-  
-    svgContainer.appendChild(line);
-  };*/
   
   const EpicDetail = ({ epic, onClose, epicId }: EpicDetailProps) => {
     const [editTitle, setEditTitle] = useState(false);
@@ -439,60 +387,6 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
     const [isFetched, setIsFetched] = useState(false);
     const [subIssues, setSubIssues] = useState<Issue[]>([]); 
     const [progress, setProgress] = useState({ totalIssues: 0, completedIssues: 0 }); 
-
- {/*
-    const handleSelectIssue = (issue: string) => {
-      if (!selectedIssueD.includes(issue)) {
-        setSelectedIssueD((prevSelected) => [...prevSelected, issue]);
-      }
-    };
-  
-    
-  // 의존도 설정 함수
-  const handleDependency = () => {
-    if (selectedIssueD.length === 2) {
-      const [firstIssue, secondIssue] = selectedIssueD;
-  
-      const newDependency = {
-        0: firstIssue,
-        1: secondIssue,
-      };
-  
-      const updatedEpicData = {
-        id: epic.epicId,
-        title: epic.epicTitle,
-        startDate: epic.epicStartDate,
-        endDate: epic.epicEndDate,
-        epicProgressStatus: epic.epicProgressStatus,
-        subIssue: [...subIssues],
-        dependency: newDependency, 
-      };
-  
-      updateDependency(newDependency);
-      setSelectedIssueD([]); 
-  
-      fetchInstance
-        .post(`/project/${projectId}/${epicId}/edit`, updatedEpicData)
-        .then((response) => {
-          console.log("응답 데이터:", response.data);
-
-          
-          setSubIssues((prevSubIssues) => {
-            const updatedSubIssues = response.data.subIssues?.length
-              ? response.data.subIssues
-              : prevSubIssues;
-            console.log("유지된 subIssues:", updatedSubIssues);
-            return updatedSubIssues;
-          });
-        })
-        .catch((error) => {
-          console.error("요청 실패:", error);
-        });
-
-          }
-        };
-    
-        */}
 
     useEffect(() => {
       if (isFetched) return;
@@ -590,23 +484,6 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
               <div onClick={() => showDetailIssue(issue, epic.epicId)} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span>{issue.title}</span>
                 </div>
-          {/*   {Object.keys(dependency).length === 0 && ( // 의존도가 없는 경우에만 버튼 렌더링
-                <Button
-                  padding="5px 5px"
-                  radius="20px"
-                  color="#fff"
-                  fontSize="10px"
-                  onClick={() => handleSelectIssue(issue.issueTitle)} // 의존 관계가 없는 이슈만 선택
-                  style={{
-                    backgroundColor: selectedIssueD.includes(issue.issueTitle) ? '#4caf50' : '#f0f0f0', // 선택된 이슈는 초록색 배경
-                    color: selectedIssueD.includes(issue.issueTitle) ? 'white' : 'black', // 선택된 이슈는 흰색 텍스트
-                  }}
-                >
-                  {selectedIssueD.includes(issue.issueTitle) ? '선택됨' : '의존도 설정'}
-                </Button>
-              )}
-              */}
-
                 <span
                   className={`issueStatus ${issue.progressStatus.toLowerCase().replace(' ', '-')}`}
                 >
@@ -626,17 +503,7 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
             <div style={{ fontSize: "15px", marginTop: "2px" }}>이슈 만들기</div>
           </div> 
           </div>
-        {/* 
-      {selectedIssueD.length === 2 && (
-        <div className='issueStatus'>
-        <Button padding="5px 5px"
-               radius="20px"
-                color="#fff"
-                fontSize="10px" 
-                onClick={handleDependency} 
-                style={{ margin:'3px' , fontWeight:'bold'}}>이슈 간 의존 관계 설정</Button>
-        </div> 
-      )}*/}
+      
       </EpicDetailContainer>
     );
   };
