@@ -439,8 +439,7 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
     const [isFetched, setIsFetched] = useState(false);
     const [subIssues, setSubIssues] = useState<Issue[]>([]); 
     const [progress, setProgress] = useState({ totalIssues: 0, completedIssues: 0 }); 
-    const [selectedIssueD, setSelectedIssueD] = useState<string[]>([]);
-    
+
  {/*
     const handleSelectIssue = (issue: string) => {
       if (!selectedIssueD.includes(issue)) {
@@ -497,29 +496,23 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
 
     useEffect(() => {
       if (isFetched) return;
-    
       fetchInstance
         .get(`/project/${projectId}/${epicId}/edit`)
         .then((response) => {
-          console.log("에픽 상세보기 성공", response.data);
-
           const issues = response.data.data.subIssues ;
-  
           const updatedSubIssues = issues.map((issue: Issue) => ({
             ...issue,
             iscompleted: issue.progressStatus.toLowerCase() === "done", 
           }));
-
           const totalIssues = updatedSubIssues.length;
           const completedIssues = updatedSubIssues.filter((issue: Issue) => issue.iscompleted).length;
-
           setProgress({
             totalIssues,
             completedIssues,
           });
-           
           setSubIssues(updatedSubIssues);
           setIsFetched(true);  
+          console.log("에픽 상세보기 성공", response.data);
         })
         .catch((error) => {
           console.log("에픽 상세보기 실패", error);
@@ -585,7 +578,6 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
             borderRadius="10px"
           />
         </div>
-  
         {/* 하위 이슈 목록 */}
         <div className="epic-title2" style={{ fontSize: "15px", fontWeight: "normal" }}>
           하위 이슈
