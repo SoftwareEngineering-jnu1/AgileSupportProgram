@@ -39,7 +39,6 @@ const LoginPage: React.FC = () => {
       .then((response) => {
         console.log("Form Data:", form);
         console.log("로그인 성공", response.data);
-        Cookies.set("token", response.data.status);
         Cookies.set("memberId", response.data.data);
         navigate("/project");
       })

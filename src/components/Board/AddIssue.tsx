@@ -1,13 +1,14 @@
 import { FaPlus } from "react-icons/fa6";
 
 interface AddIssueProps {
-  toggle: () => void;
+  status: string;
+  toggle: (status: string) => void;
 }
 
-const AddIssue = ({ toggle }: AddIssueProps) => {
+const AddIssue = ({ status, toggle }: AddIssueProps) => {
   return (
     <div
-      onClick={toggle}
+      onClick={() => toggle(status)}
       style={{
         width: "100%",
         display: "flex",

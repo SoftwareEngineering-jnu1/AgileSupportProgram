@@ -21,6 +21,7 @@ interface ProjectResponse {
   totalEpics: number;
   completedEpics: number;
   projectName: string;
+  totalMember: number;
 }
 
 interface APIResponse {
@@ -29,6 +30,7 @@ interface APIResponse {
 }
 
 const ProjectListPage = () => {
+  const emailId = Cookies.get("emailId")!;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [projects, setProjects] = useState<ProjectResponse[]>([]);
 
@@ -86,7 +88,7 @@ const ProjectListPage = () => {
   const handleSubmit = () => {
     const payload = {
       projectName,
-      membersEmailId,
+      membersEmailId: [...membersEmailId, emailId],
     };
     fetchInstance
       .post("/project/new", payload)
@@ -96,7 +98,7 @@ const ProjectListPage = () => {
         fetchProjects();
       })
       .catch((error) => {
-        console.error("프로젝트 생성 실패:", error);
+        alert(error.response.data.data);
       });
   };
 

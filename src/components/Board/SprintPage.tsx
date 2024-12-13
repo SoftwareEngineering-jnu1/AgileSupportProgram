@@ -52,13 +52,15 @@ const SprintPage = ({ name, endDate, data, reloadData }: SprintProps) => {
   const [isIssueModalOpen, setIsIssueModalOpen] = useState<boolean>(false);
   const [issues, setIssues] = React.useState<Issue[]>([]);
 
-  const toggleIssueModal = () => {
+  const toggleIssueModal = (status: string | null) => {
+    if (status !== null) {
+      setProgressStatus(status); // 상태를 설정
+    }
     if (isIssueModalOpen) {
       setNewIssueTitle("");
       setIssueStartDate("");
       setIssueEndDate("");
       setMainMemberName("");
-      setProgressStatus("To Do");
     }
     setIsIssueModalOpen(!isIssueModalOpen);
   };
@@ -137,7 +139,7 @@ const SprintPage = ({ name, endDate, data, reloadData }: SprintProps) => {
   const [issueEndDate, setIssueEndDate] = useState("");
   const [newIssueTitle, setNewIssueTitle] = useState("");
   const [mainMemberName, setMainMemberName] = useState("");
-  const [progressStatus, setProgressStatus] = useState("To Do");
+  const [progressStatus, setProgressStatus] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setProgressStatus(e.target.value as IssueStatus);
@@ -159,7 +161,7 @@ const SprintPage = ({ name, endDate, data, reloadData }: SprintProps) => {
       .post(`/project/${projectId}/${epicId}/addissue`, payload)
       .then(() => {
         console.log("이슈 생성 성공");
-        toggleIssueModal();
+        toggleIssueModal(null);
         reloadData();
       })
       .catch((error) => {
@@ -223,7 +225,10 @@ const SprintPage = ({ name, endDate, data, reloadData }: SprintProps) => {
                         <div style={{ border: "2px solid #ffd700" }}></div>
                       )}
                     </div>
-                    <AddIssue toggle={toggleIssueModal} />
+                    <AddIssue
+                      status={status}
+                      toggle={() => toggleIssueModal(status)}
+                    />
                   </>
                 )}
               </Droppable>
@@ -232,7 +237,7 @@ const SprintPage = ({ name, endDate, data, reloadData }: SprintProps) => {
         </DndContext>
       </Container>
       {isIssueModalOpen && (
-        <Modal isOpen={isIssueModalOpen} onClose={toggleIssueModal}>
+        <Modal isOpen={isIssueModalOpen} onClose={() => toggleIssueModal}>
           <h2>이슈 만들기</h2>
           <Content>
             <span>할 일</span>
