@@ -98,8 +98,7 @@ const ProjectListPage = () => {
         fetchProjects();
       })
       .catch((error) => {
-        alert(error.data.data);
-        console.error("프로젝트 생성 실패:", error);
+        alert(error.response.data.data);
       });
   };
 
