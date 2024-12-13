@@ -33,7 +33,7 @@ export type Issue = {
     issueTitle: string;
     title:string;
     mainMemberName: string;
-    progressStatus: IssueStatus;
+    progressStatus: string;
     issueStartDate: string;
     issueEndDate: string;
     hasDependency: boolean;

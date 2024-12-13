@@ -16,7 +16,7 @@ import type { Epic, EpicResponse, Issue, EpicDetailProps, IssueDetailProps, Issu
 import { Content, TitleWrapper, TitleIcon, TitleInput, ButtonBox, SelectWrapper, SelectStatus } from './style';
 import { DateWrapper, DateInput, AssignIcon } from './style';
 import { ButtonContainer, ButtonPart, Divider, EpicDetailContainer, IssueDetailContainer, EditingContainer } from './style';
-
+import Cookies from 'js-cookie';
 
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 import './Timeline.css';
@@ -42,8 +42,6 @@ const Timeline = () => {
 
   const itemsRef = useRef<DataSet<DataItem>>(new DataSet<DataItem>()); // 초기화
   const groupsRef = useRef<DataSet<DataGroup>>(new DataSet<DataGroup>()); // 초기화
-
-  const users = ["User1", "User2", "User3", "User4"];
 
   const { projectId } = useProject();
 
@@ -247,30 +245,28 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
           issueStartDate: startDate,
           issueEndDate: endDate,
           hasDependency: false,
+          iscompleted: response.data.iscompleted,
         };
         console.log("이슈 추가", response.data);
-    
-        setEpics((prevEpics) =>
-          prevEpics.map((currentEpic) => {
+
+          setEpics((prevEpics) => {
+          return prevEpics.map((currentEpic) => {
             if (currentEpic.epicId === epicId) {
               const updatedIssues = [...currentEpic.issues, newIssueData];
-
               const totalIssues = updatedIssues.length;
-              const completedIssues = updatedIssues.filter(
-                (issue) =>
-                  issue.progressStatus?.toLowerCase() === "done"
-              ).length;
+              const completedIssues = updatedIssues.filter((issue) => issue.iscompleted).length;
 
               return {
                 ...currentEpic,
                 issues: updatedIssues,
                 totalIssues,
-                completedIssues,
+                completedIssues, // 진행도 업데이트
               };
             }
             return currentEpic;
-          })
-        );
+          });
+        });
+
 
         // 타임라인에 이슈 추가
         if (timeline && itemsRef.current && groupsRef.current) {
@@ -286,6 +282,7 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
           setNewIssue("");
           setIssueStartDate("");
           setIssueEndDate("");
+          setMainMember("");
       })
       .catch((error) => {
         console.error("이슈 생성 실패:", error);
@@ -393,25 +390,24 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
       fetchInstance
         .get(`/project/${projectId}/${epicId}/edit`)
         .then((response) => {
-          const issues = response.data.data.subIssues ;
-          const updatedSubIssues = issues.map((issue: Issue) => ({
-            ...issue,
-            iscompleted: issue.progressStatus.toLowerCase() === "done", 
-          }));
-          const totalIssues = updatedSubIssues.length;
-          const completedIssues = updatedSubIssues.filter((issue: Issue) => issue.iscompleted).length;
+          const data = response.data.data;
+          const issues = data.subIssues ;
+          const { totalIssues, completedIssues } = data.epicProgressStatus; 
+
           setProgress({
             totalIssues,
             completedIssues,
           });
-          setSubIssues(updatedSubIssues);
+
+          setSubIssues(issues);
           setIsFetched(true);  
-          console.log("에픽 상세보기 성공", response.data);
+
         })
         .catch((error) => {
           console.log("에픽 상세보기 실패", error);
         });
     }, [isFetched, epicId]);
+
     const handleEdit = () => {
       setEditTitle(true);
     };
@@ -576,23 +572,7 @@ const fetchEpics = useCallback(() => {
       const epicsList: Epic[] = Object.values(data).flat();
 
       console.log(epicsList);
-      
-      const updatedEpics = epicsList.map((epic) => {
-        const completedIssues = epic.issues
-          ? epic.issues.filter((issue) => issue.progressStatus?.toLowerCase() === "done").length
-          : 0;
-          const totalIssues = epic.issues.length;
-          
-        return {
-          ...epic,
-          completedIssues,
-          totalIssues
-        };
-      });
-
-
-      setEpics(updatedEpics);
-      console.log(updatedEpics);
+      setEpics(epicsList);
 
       if (timeline && itemsRef.current && groupsRef.current) {
         itemsRef.current.clear();
@@ -623,20 +603,25 @@ const fetchEpics = useCallback(() => {
   }
 }, [timeline, fetchEpics]);
 
+const totalMember = Cookies.get("totalMember"); // 쿠키에서 가져온 값은 문자열
 
-  // 전체 타임라인 페이지
+  // 쿠키 값이 없거나 숫자 형식으로 변환할 수 없을 경우 기본값 0 설정
+  const totalMemberCount = totalMember ? parseInt(totalMember, 10) : 0;
+
   return (
-      <div className='timeline-all'>
-        <div className='topbar'>
-          {/*사용자 그룹 */}
-          <div className='userGrop'>
-            {users.slice(0, 3).map((user, index) => (
+    <div className='timeline-all'>
+      <div className='topbar'>
+        {/* 사용자 그룹 */}
+        <div className='userGrop'>
+          {[...Array(Math.min(totalMemberCount, 3))].map((_, index) => (
             <FaUserCircle
               className='userIcon'
               key={index} 
               size={35} />
-            ))}
-           {users.length > 3 && <div className='userShow'>+{users.length - 3}</div>}
+          ))}
+          
+          {/* 나머지 인원 표시 */}
+          {totalMemberCount > 3 && <div className='userShow'>+{totalMemberCount - 3}</div>}
           </div>
 
           <ButtonContainer>
@@ -696,17 +681,7 @@ const fetchEpics = useCallback(() => {
 
           <div className='timeline-area'>
             <div id='timeline' className='timeline' ref={timelineRef} />
-            <svg
-                id="dependency-svg"
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  pointerEvents: "none",
-                }}
-              ></svg>
+          
           </div>
 
           {selectedEpic && (
@@ -753,7 +728,10 @@ const fetchEpics = useCallback(() => {
               bgColor="#7895B2"
               fontSize="16px"
               style={{ fontWeight: "bold" }}
-              onClick={addEpic}
+              onClick={() => {
+                addEpic();  // addIssue 함수 호출
+                toggleEpicModal();  // toggleIssueModal 함수 호출
+              }}
             >
               생성
             </Button>
@@ -816,7 +794,10 @@ const fetchEpics = useCallback(() => {
               bgColor="#7895B2"
               fontSize="16px"
               style={{ fontWeight: "bold" }}
-              onClick={() => addIssue(selectedEpic.epicId)}
+              onClick={() => {
+                addIssue(selectedEpic.epicId);  // addIssue 함수 호출
+                toggleIssueModal();  // toggleIssueModal 함수 호출
+              }}
             >
               생성
             </Button> 
