@@ -8,7 +8,6 @@ import { PiNoteLight } from "react-icons/pi"; /*메모페이지 배경 아이콘
 
 import { useProject } from "@context/ProjectContext";
 import { fetchInstance } from "@api/instance";
-import Cookies from "js-cookie";
 
 interface ModalData {
   title: string;
@@ -78,6 +77,8 @@ const MemoPage: React.FC = () => {
             id: Date.now(),
             timestamp: Date.now(),
           };
+          const response = await fetchInstance
+          .post <ModalData>(`/project/${projectId}/memo/newmemo`, newModal);
           setSaveModals([newModal, ...savedModals]);
           }
           handleCloseModal();

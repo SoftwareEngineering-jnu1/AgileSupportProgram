@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import style from './ProfileForm.module.css';  // CSS 파일 임포트
 import { fetchInstance } from "@api/instance";
 import Cookies from "js-cookie";
-import { PositionedOverlay } from '@dnd-kit/core/dist/components/DragOverlay/components';
 
 interface User {
   position: string;
