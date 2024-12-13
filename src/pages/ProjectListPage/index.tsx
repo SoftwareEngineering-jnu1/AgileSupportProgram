@@ -99,6 +99,7 @@ const ProjectListPage = () => {
       })
       .catch((error) => {
         alert(error.response.data.data);
+        toggleModal();
       });
   };
 
