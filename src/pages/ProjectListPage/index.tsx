@@ -21,6 +21,7 @@ interface ProjectResponse {
   totalEpics: number;
   completedEpics: number;
   projectName: string;
+  totalMember: number;
 }
 
 interface APIResponse {
@@ -97,7 +98,7 @@ const ProjectListPage = () => {
         fetchProjects();
       })
       .catch((error) => {
-        console.error("프로젝트 생성 실패:", error);
+        alert(error.response.data.data);
       });
   };
 
