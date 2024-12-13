@@ -336,7 +336,7 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
       <IssueDetailContainer>
         <IoIosClose className="close" onClick={onClose} />
         <div className="sprint-title">{(issue as any).epicTitle}</div>
-          <div className="epic-title2">
+          <div className="epic-title2">{issue.title}
             {editTitle ? (
               <EditingContainer>
                 <div
@@ -689,7 +689,7 @@ const totalMember = Cookies.get("totalMember"); // 쿠키에서 가져온 값은
         )}
 
           {selectedIssue && (
-          <IssueDetail issue={selectedIssue} onClose={() => setSelectedIssue(null)} epicId={selectedIssue.epicId} id={selectedIssue.issueId} />
+          <IssueDetail issue={selectedIssue} onClose={() => setSelectedIssue(null)} epicId={selectedIssue.epicId} id={selectedIssue.id} />
         )}
         </div>
 
