@@ -78,6 +78,10 @@ const BoardPage = () => {
         fetchSprintData();
       })
       .catch((error) => {
+        if (epicTitle === null) {
+          alert("에픽을 선택해주세요.");
+          return;
+        }
         console.error("스프린트 생성 실패:", error);
       });
   };
@@ -196,15 +200,24 @@ const BoardPage = () => {
             </SprintTitleWrapper>
             <span>스프린트에 추가할 에픽 선택</span>
             <SelectIssueWrapper>
-              {epicList.map((epic) => {
-                return (
+              {epicList.length === 0 ? (
+                <>
+                  <p style={{ marginBottom: "2px" }}>
+                    ⚠️생성된 에픽이 없습니다.
+                  </p>
+                  <span style={{ fontSize: "14px", color: "#aaa" }}>
+                    타임라인 페이지에서 에픽을 생성해주세요.
+                  </span>
+                </>
+              ) : (
+                epicList.map((epic) => (
                   <ModalIssueItem
                     label={epic}
                     isChecked={epicTitle === `${epic}`}
                     onCheck={() => handleIssueSelect(`${epic}`)}
                   />
-                );
-              })}
+                ))
+              )}
             </SelectIssueWrapper>
           </Content>
           <ButtonBox>
