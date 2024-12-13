@@ -6,6 +6,7 @@ interface ProjectResponse {
   totalEpics: number;
   completedEpics: number;
   projectName: string;
+  totalMember: number;
 }
 
 interface ProjectListProps {

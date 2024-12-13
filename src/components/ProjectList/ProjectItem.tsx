@@ -2,12 +2,14 @@ import { RouterPath } from "@routes/path";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useProject } from "@context/ProjectContext";
+import Cookies from "js-cookie";
 
 interface ProjectResponse {
   projectId: number;
   totalEpics: number;
   completedEpics: number;
   projectName: string;
+  totalMember: number;
 }
 
 interface ProjectItemProps {
@@ -20,6 +22,7 @@ const ProjectItem = ({ project }: ProjectItemProps) => {
   const handleClick = () => {
     setProjectId(project.projectId);
     setProjectName(project.projectName);
+    Cookies.set("totalMember", String(project.totalMember));
   };
 
   const progress = Math.round(
