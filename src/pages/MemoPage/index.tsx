@@ -7,7 +7,7 @@ import { IoIosArrowRoundDown } from "react-icons/io"; /*down 정렬 아이콘*/
 import { PiNoteLight } from "react-icons/pi"; /*메모페이지 배경 아이콘*/
 
 import { useProject } from "@context/ProjectContext";
-import { fetchInstance } from "@api/instance";
+
 
 interface ModalData {
   title: string;
