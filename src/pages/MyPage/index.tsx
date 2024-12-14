@@ -69,24 +69,21 @@ const MyPage: React.FC = () => {
     fetchUserData();
   }, []);
       
-  const fetchReviewData = async (epicId: number) => {
+  const fetchReviewData = async (number: number) => {
     const memberId = Cookies.get("memberId")
     try {
       const token = Cookies.get("token");
       const response = await fetchInstance.get(
-      `/members/${memberId}/${epicId}`, {
+      `/members/${memberId}/${number}`, {
         headers: { Authorization: `Bearer ${token}`}
       }
     ); 
       const review = response.data.data; 
       console.log("리뷰데이터 불러오기 성공", review);
-      console.log(reviewData);
-      console.log(reviewData[2]);
-      console.log(reviewData[3]);
 
       setReviewData((prevData) => ({ 
         ...prevData,
-        [epicId]: review     
+        [number]: review     
       }));
     } catch (error) {
       const axiosError = error as AxiosError;
