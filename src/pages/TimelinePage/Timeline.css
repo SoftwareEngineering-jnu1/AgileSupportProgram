@@ -217,21 +217,22 @@
   }
   
   .issueStatus.to-do {
-    background-color: #d3d3d3; /* 회색 */
-    color: #000; /* 검정색 */
+    background-color: #E8E8E8; 
+    color: #000; 
   }
   
   .issueStatus.in-progress {
-    background-color: #4a90e2; /* 파란색 */
+    background-color: #C8E9FF; 
+    color: #000;
   }
   
   .issueStatus.done {
-    background-color: #a8e6a2; /* 연한 초록색 */
-    color: #000; /* 검정색 */
+    background-color: #CAF0B9; 
+    color: #000; 
   }
   
   .issueStatus.hold {
-    background-color: #f5a623; /* 주황색 */
-    color: #000; /* 검정색 */
+    background-color: #DBA4EF; 
+    color: #000;
   }
   
