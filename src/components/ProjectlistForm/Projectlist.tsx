@@ -66,11 +66,6 @@ const Projectlist: React.FC = () => {
       projects.forEach(project => fetchIssues(project.projectId));
     }, [projects]);
 
-    const handleProjectClick = (projectId: number) => {
-      navigate(`/boardPage/`);
-      console.log({projectId});
-    }
-
   return (
     <div className={style.div}>
       <div className={style.textcontainer}>

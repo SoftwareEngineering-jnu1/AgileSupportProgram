@@ -25,20 +25,7 @@ const MemoPage: React.FC = () => {
   const [sortedNewst, setsortedNewst] = useState(true);
   const {projectId} = useProject();
  
-  {/*useEffect(() => {
-    console.log('projectId: ', projectId);
-    fetchInstance.get(`project/${projectId}/memo`)
-      .then(response => {
-        if (Array.isArray(response.data)) {
-          setSaveModals(response.data);
-        } else {
-          console.error('응답 데이터가 배열형식이 아닙니다.', response.data)
-        }
-      })
-      .catch(error => {
-        console.error('메모 불러오기 실패', error);
-      });
-  }, [projectId]);*/}
+
   useEffect(() => {
     if(projectId) {
       const savedData = localStorage.getItem(`memos_${projectId}`);
@@ -77,9 +64,9 @@ const MemoPage: React.FC = () => {
             id: Date.now(),
             timestamp: Date.now(),
           };
-          const response = await fetchInstance
-          .post <ModalData>(`/project/${projectId}/memo/newmemo`, newModal);
+
           setSaveModals([newModal, ...savedModals]);
+          setIsModalOpen(false);
           }
           handleCloseModal();
       } else {
