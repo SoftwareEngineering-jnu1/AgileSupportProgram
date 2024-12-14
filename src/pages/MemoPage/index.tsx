@@ -73,7 +73,6 @@ const MemoPage: React.FC = () => {
         console.error('projectId가 존재하지 않습니다.');
       }
     } catch (error) {
-      console.log({projectId});
       console.error('메모 저장 실패', error);
     }
   };
@@ -81,7 +80,6 @@ const MemoPage: React.FC = () => {
     if(window.confirm('정말로 이 메모를 삭제하시겠습니까?')) {
       const updatedModals = savedModals.filter(modal => modal.id !==id);
       setSaveModals(updatedModals);
-      localStorage.setItem(`memos_${projectId}`, JSON.stringify(updatedModals));
     }
   };
   const editNote = (modal: ModalData) => {
