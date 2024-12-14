@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { DataSet, DataItem, DataGroup, TimelineTimeAxisScaleType, Timeline as VisTimeline } from 'vis-timeline/standalone';
+import { DataSet, DataItem, DataGroup, TimelineTimeAxisScaleType, TimelineOptions, Timeline as VisTimeline } from 'vis-timeline/standalone';
 
 import Button from '@components/common/Button';
 import Modal from '@components/common/Modal';
@@ -9,13 +9,12 @@ import { fetchInstance } from "@api/instance";
 
 import { IoIosAdd, IoIosClose } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
-import { IoPencil } from "react-icons/io5";
 
 
 import type { Epic, EpicResponse, Issue, EpicDetailProps, IssueDetailProps, IssueStatus } from './type';
 import { Content, TitleWrapper, TitleIcon, TitleInput, ButtonBox, SelectWrapper, SelectStatus } from './style';
 import { DateWrapper, DateInput, AssignIcon } from './style';
-import { ButtonContainer, ButtonPart, Divider, EpicDetailContainer, IssueDetailContainer, EditingContainer } from './style';
+import { ButtonContainer, ButtonPart, Divider, EpicDetailContainer, IssueDetailContainer } from './style';
 import Cookies from 'js-cookie';
 
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
@@ -64,11 +63,12 @@ const Timeline = () => {
       const minDate = new Date(today.getFullYear(), today.getMonth() -1, today.getDate());
       const maxDate = new Date(today.getFullYear(), today.getMonth() +6, today.getDate());
 
-      const options = {
+      const options:TimelineOptions = {
         min: startDate,
         max: endDate,
 
         moveable: true,
+        
         editable: {
           remove: false,
         },
@@ -79,7 +79,8 @@ const Timeline = () => {
           scale: 'month' as TimelineTimeAxisScaleType,
           step: 1,
         },
-
+        
+        align:'left',
       };
       const createtimeline = new VisTimeline(timelineRef.current, items, groups, options);
       setTimeline(createtimeline);
@@ -113,7 +114,7 @@ const addTimelineItem = (epic: Epic, index: number) => {
 
   const newItem = {
     id: epic.epicId,
-    content: epic.epicTitle,
+     content: epic.epicTitle,
     start: startDate,
     end: endDate,
     group: index,
@@ -306,11 +307,7 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
   
   // 이슈 상세보기 창
   const IssueDetail = ({issue, onClose, epicId, id}: IssueDetailProps) =>{
-    const [editTitle, setEditTitle] = useState(false);
-    const [editedTitle, setEditedTitle] = useState(issue.issueTitle);
-
     useEffect(() => {
-      
       fetchInstance
         .get(`/project/${projectId}/${epicId}/${id}/edit`)
         .then((response) => {
@@ -322,49 +319,10 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
         });
     }, [epicId, id]);
 
-    const handleEdit = () => {
-      setEditTitle(true);
-    };
-
-    const handleSave = () => {
-      if (!editedTitle) return;
-      issue.issueTitle = editedTitle;
-      setEditTitle(false);
-    };
-
     return (
       <IssueDetailContainer>
         <IoIosClose className="close" onClick={onClose} />
-        <div className="sprint-title">{(issue as any).epicTitle}</div>
-          <div className="epic-title2">{issue.title}
-            {editTitle ? (
-              <EditingContainer>
-                <div
-                  contentEditable={true}
-                  suppressContentEditableWarning={true}
-                  onInput={(e) => setEditedTitle(e.currentTarget.textContent || "")}
-                  ref={(el) => el && el.focus()}
-                >
-                  {editedTitle}
-                </div>
-                <Button
-                  bgColor="#000"
-                  padding="2px 8px"
-                  radius="10px"
-                  color="#fff"
-                  fontSize="10px"
-                  onClick={handleSave}
-                >
-                  완료
-                </Button>
-              </EditingContainer>
-          ) : (
-            <>
-              {editedTitle || issue.issueTitle}
-              <IoPencil className='edit-title' onClick={handleEdit} />
-          </>
-        )}
-            </div>
+          <div className="epic-title2">{issue.title}</div>
 
             <div className='epic-title2' style={{fontSize: '15px', fontWeight: 'normal'}}>담당자</div>
             <div className='issueContainer'>
@@ -379,8 +337,6 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
  
   
   const EpicDetail = ({ epic, onClose, epicId }: EpicDetailProps) => {
-    const [editTitle, setEditTitle] = useState(false);
-    const [editedTitle, setEditedTitle] = useState(epic.epicTitle);  
     const [isFetched, setIsFetched] = useState(false);
     const [subIssues, setSubIssues] = useState<Issue[]>([]); 
     const [progress, setProgress] = useState({ totalIssues: 0, completedIssues: 0 }); 
@@ -408,18 +364,6 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
         });
     }, [isFetched, epicId]);
 
-    const handleEdit = () => {
-      setEditTitle(true);
-    };
-  
-    const handleSave = () => {
-      const updatedEpics = epics.map((e) =>
-        e === epic ? { ...e, title: editedTitle } : e
-      );
-      setEpics(updatedEpics);
-      epic.epicTitle = editedTitle;
-      setEditTitle(false);
-    };
   
     const capitalize = (text: string) => {
       if (!text) return '';
@@ -431,33 +375,7 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
         <IoIosClose className="close" onClick={onClose} />
         <div className="sprint-title"></div>
         <div className="epic-title2">
-          {editTitle ? (
-            <EditingContainer>
-              <div
-                contentEditable={true}
-                suppressContentEditableWarning={true}
-                onInput={(e) => setEditedTitle(e.currentTarget.textContent || "")}
-                ref={(el) => el && el.focus()}
-              >
-                {epic.epicTitle}
-              </div>
-              <Button
-                bgColor="#000"
-                padding="2px 8px"
-                radius="10px"
-                color="#fff"
-                fontSize="10px"
-                onClick={handleSave}
-              >
-                완료
-              </Button>
-            </EditingContainer>
-          ) : (
-            <>
-              {editedTitle || epic.epicTitle}
-              <IoPencil className="edit-title" onClick={handleEdit} />
-            </>
-          )}
+          {epic.epicTitle}
         </div>
   
         <div style={{ margin: "0 10px", padding: "8px" }}>
