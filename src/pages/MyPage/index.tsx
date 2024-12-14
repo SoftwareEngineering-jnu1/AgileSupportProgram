@@ -98,7 +98,7 @@ const MyPage: React.FC = () => {
     sprintRetrospectives.forEach(sprinted => {
         fetchReviewData(sprinted.number);
     });
-  }, [sprintRetrospectives]);
+  }, [sprintRetrospectives, fetchReviewData]);
      
 
   return (
