@@ -102,7 +102,7 @@ const Projectlist: React.FC = () => {
             ))}
           </div>
         ): (
-          <p>프로젝트 없음</p>
+          <p>생성한 프로젝트가 존재하지 않습니다.</p>
         )} 
     </div>
     
