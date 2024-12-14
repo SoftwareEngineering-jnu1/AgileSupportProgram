@@ -11,15 +11,11 @@ import { fetchInstance } from "@api/instance";
 import Cookies from "js-cookie";
 import { AxiosError } from 'axios';
 
-interface ProjectResponse {
-  projectId: number;
-  totalEpics: number;
-  projectName: string;
+interface SprintRetrospective {
+  number: number;
+  value: string | null;
 }
 interface ReviewData {
-  epicId: number;
-  Id: number;
-  sprintName: string;
   stop: string[];
   start: string[];
   continueAction: string[];
@@ -31,14 +27,14 @@ interface User {
 }
 
 const MyPage: React.FC = () => {
-  const [projects, setProjects] = useState<ProjectResponse[]>([]);
-  const [reviewData, setReviewData] = useState< ReviewData[]>([]);
+  const [sprintRetrospectives, setSprintRetrospectives] = useState<SprintRetrospective[]>([]);
+  const [reviewData, setReviewData] = useState<{ [epicId: number]: ReviewData}>({});
   const [user, setUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedReview, setSelectedReview] = useState<ReviewData | null>(null);
 
-  const openModal = (epicId: number) => {
-    const projectReview = reviewData[epicId];
+  const openModal = (number: number) => {
+    const projectReview = reviewData[number];
     if (projectReview) { 
       setSelectedReview(projectReview); 
       setIsModalOpen(true); 
@@ -58,50 +54,39 @@ const MyPage: React.FC = () => {
         });
         setUser(response.data.data); 
         console.log("이름 가져오기 성공", response.data)
+
+        const sprintRetrospective = response.data.data.sprintRetrospective;
+        const sprintRetrospectiveArray = Object.entries(sprintRetrospective).map(([key, value]) => ({
+            number: Number(key),
+            value: value as string | null
+        }));
+        setSprintRetrospectives(sprintRetrospectiveArray);
+        console.log("스프린트 회고 가져오기 성공", sprintRetrospectiveArray);
       } catch (error) {
         console.error("유저 정보 가져오기 실패", error);
       }
     };
     fetchUserData();
   }, []);
-
-  const fetchProjects = () => {
-      const memberId = Cookies.get("memberId");
-      fetchInstance
-        .get<{status: String; data: Record<string, ProjectResponse> }>(`/projects/${memberId}`)
-        .then((response) => {
-          console.log("프로젝트 정보 호출 성공", response.data);
-          const projectList = Object.entries(response.data.data).map(([projectName, projectDetails]) => ({
-            ...projectDetails,
-            projectName,
-          }));
-          setProjects(projectList);
-        })
-        .catch((error) => {
-          console.log("프로젝트 정보 호출 실패", error);
-        });
-    }
-    useEffect(() => {
-      fetchProjects();
-    }, []);
-
-
       
-  const fetchReviewData = async (projectId: number) => {
-    const epicId = Cookies.get(`project_${projectId}_epicId`);
+  const fetchReviewData = async (epicId: number) => {
+    const memberId = Cookies.get("memberId")
     try {
       const token = Cookies.get("token");
-      const response = await fetchInstance.post(
-      `/project/${projectId}/kanbanboard/${epicId}/review`, {}, {
+      const response = await fetchInstance.get(
+      `/members/${memberId}/${epicId}`, {
         headers: { Authorization: `Bearer ${token}`}
       }
     ); 
       const review = response.data.data; 
       console.log("리뷰데이터 불러오기 성공", review);
+      console.log(reviewData);
+      console.log(reviewData[2]);
+      console.log(reviewData[3]);
 
       setReviewData((prevData) => ({ 
         ...prevData,
-        [projectId]: review     
+        [epicId]: review     
       }));
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -110,16 +95,10 @@ const MyPage: React.FC = () => {
     }
   } 
   useEffect(() => {
-    const epicIdSet = new Set<number>();
-
-    projects.forEach(project => {
-      const epicId = Number(Cookies.get(`project_${project.projectId}_epicId`));
-      if (!epicIdSet.has(epicId)) {
-        fetchReviewData(project.projectId);
-        epicIdSet.add(epicId);
-      }
+    sprintRetrospectives.forEach(sprint => {
+        fetchReviewData(sprint.number);
     });
-  }, [projects]);
+  }, [sprintRetrospectives]);
      
 
   return (
@@ -142,12 +121,15 @@ const MyPage: React.FC = () => {
               
             <div className={style.sprintrivewlistdiv}>
               {Object.keys(reviewData).length > 0 ? (
-                Object.entries(reviewData).map(([epicId, review]) => (
+                sprintRetrospectives
+                .filter(sprint => reviewData[sprint.number])
+                .map((sprint) => (
                   <div className={style.reviewdiv } 
-                       onClick={() => openModal(Number(epicId))} 
-                       key={epicId}
+                       onClick={() => openModal(sprint.number)} 
+                       key={sprint.number}
                       >
-                    <p className={style.sprintname}>{review.sprintName}</p>
+                    <p className={style.sprintname}>
+                      {sprint.value}</p>
                   </div>
                 ))
               ) : (
