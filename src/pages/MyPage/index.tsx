@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import { FaUserCircle } from "react-icons/fa";
 import ProfileForm from '../../components/ProfileInputForm/ProfileForm';
 import Projectlist from '../../components/ProjectlistForm/Projectlist';
@@ -69,12 +69,12 @@ const MyPage: React.FC = () => {
     fetchUserData();
   }, []);
       
-  const fetchReviewData = async (number: number) => {
+  const fetchReviewData = useCallback(async (epicId: number) => {
     const memberId = Cookies.get("memberId")
     try {
       const token = Cookies.get("token");
       const response = await fetchInstance.get(
-      `/members/${memberId}/${number}`, {
+      `/members/${memberId}/${epicId}`, {
         headers: { Authorization: `Bearer ${token}`}
       }
     ); 
@@ -83,14 +83,14 @@ const MyPage: React.FC = () => {
 
       setReviewData((prevData) => ({ 
         ...prevData,
-        [number]: review     
+        [epicId]: review     
       }));
     } catch (error) {
       const axiosError = error as AxiosError;
       console.error("리뷰데이터 불러오기 실패:", error);
       console.error("에러 상세:", axiosError.response ? axiosError.response.data : axiosError.message);
     }
-  } 
+  }, []); 
   useEffect(() => {
     sprintRetrospectives.forEach(sprinted => {
         fetchReviewData(sprinted.number);
