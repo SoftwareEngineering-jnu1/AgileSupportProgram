@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import style from './ProfileForm.module.css';  // CSS 파일 임포트
+import { fetchInstance } from "@api/instance";
+import Cookies from "js-cookie";
 
 interface User {
   position: string;
@@ -10,7 +12,20 @@ interface User {
 const ProfileForm: React.FC = () => {
   const [user, setUser] = useState<User>({ position: '', company: '', email: '' });
   const [isEditing, setIsEditing] = useState<boolean>(true);
-  const [savedUser, setSavedUser] = useState<User | null>(null);
+  const [savedUser, setSavedUser] = useState<User>();
+  const memberId = Cookies.get("memberId");
+
+  useEffect(() => {
+    if(memberId) {
+      const savedUserData = localStorage.getItem(`user_${memberId}`);
+      if (savedUserData) {
+        const parsedUser = JSON.parse(savedUserData);
+        setUser(parsedUser);
+        setSavedUser(parsedUser);
+        setIsEditing(false);
+      }
+    }
+  }, [memberId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser({
@@ -19,7 +34,25 @@ const ProfileForm: React.FC = () => {
     });
   };
 
-  const handleSave = () => {
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (memberId) {
+        const response = await fetchInstance
+        .post<User>(`/members/${memberId}/edit`, {
+          Position: user.position,
+          Company: user.company,
+          Email: user.email,
+        });
+        console.log('유저 정보 저장 성공', response.data);
+        console.log({memberId});
+        localStorage.setItem(`user_${memberId}`, JSON.stringify(user));
+      } else {
+        console.error('memberId가 존재하지 않습니다.');
+      }
+    } catch (error) {
+      console.error('저장 실패', error);
+    }
     setSavedUser(user);
     setIsEditing(false);
   };
@@ -53,7 +86,7 @@ const ProfileForm: React.FC = () => {
           onChange={handleChange} 
           placeholder="내 직장 또는 학교"
           className={style.input} 
-          required /> 
+          required></input>
        </div>
       <div className={style.textdiv}> 
       <img src="/images/연락처.png" alt="logo" className={style.logo}/>
@@ -89,7 +122,7 @@ const ProfileForm: React.FC = () => {
             <p>No user information saved.</p> 
         )} 
      </div> 
-    )} 
+    )}
   </div> 
  ); 
 };

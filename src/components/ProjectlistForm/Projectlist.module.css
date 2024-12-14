@@ -35,6 +35,7 @@
     border: 1px solid #bdbdbd;
     border-radius: 5px;
 }
+
 .epic{
     display: flex;
     height: 35px;
@@ -42,7 +43,9 @@
     border-radius: 5px;
     cursor: pointer;
     margin-left: 15px;
-    margin-top: 5px
+    margin-right: 15px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 .epic:hover{
     background-color: #f2f2f2;
