@@ -23,3 +23,98 @@
 .spacer {
     height: 100px;
 }
+
+.splistcontainer {
+    display: flex;
+    flex-direction: column;
+    width: 650px;
+    height:200px;
+    max-height: 200px;
+    align-items: left;
+    margin-top: 25px;
+}
+.title {
+    font-size: 20px;
+    text-align: left;
+}
+.sprintrivewlistdiv {
+    overflow-y: auto;
+}
+.reviewdiv {
+    display: flex;
+    height: 35px;
+    align-items: center;
+    border: 1px solid #bdbdbd;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px
+}
+.rivewdiv:hover {
+    background-color: #f2f2f2;
+}
+.sprintname{
+    margin-left: 10px;
+    font-size: 13px;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.modalContent{
+    position: relative;
+    width: 720px;
+    height: 410px;
+    border: 1px solid #ccc;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+}
+.modalBody {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+.modaltitle {
+    flex: 1;
+    text-align: center;
+    margin-right: 10px;
+    font-weight: bold;
+}
+.stopDiv, .startDiv, .continueDiv {
+    background: #ffe5e3;
+    flex: 1;
+    padding: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    text-align: left;
+    height: 310px;
+    font-size: 15px;
+}
+.stopDiv {
+    background: #ffe5e3;
+}
+.startDiv {
+    background: #C8E9FF;
+}
+.continueDiv {
+    background: #CAF0B9;
+}
+.Div {
+    margin-top: 5px;
+}
+
+.close {
+    position: absolute;
+    top: 1px;
+    right: 8px;
+    font-size: 25px;
+    cursor: pointer;
+  }

@@ -39,7 +39,6 @@ const LoginPage: React.FC = () => {
       .then((response) => {
         console.log("Form Data:", form);
         console.log("로그인 성공", response.data);
-        Cookies.set("emailId", form.username);
         Cookies.set("memberId", response.data.data);
         navigate("/project");
       })
@@ -65,7 +64,7 @@ const LoginPage: React.FC = () => {
           value={form.username}
           onChange={handleChange}
           className={styles.input}
-          placeholder="이메일 또는 아이디"
+          placeholder="이메일"
         />
       </div>
       <div className={styles.div}>

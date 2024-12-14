@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import style from './Memo.module.css';
 import {IoIosAdd} from "react-icons/io"; /*메모 추가 아이콘*/
 import { BsSortDown } from "react-icons/bs"; /*메모 정렬 아이콘*/
@@ -6,10 +6,13 @@ import { IoIosArrowRoundUp } from "react-icons/io"; /*up 정렬 아이콘*/
 import { IoIosArrowRoundDown } from "react-icons/io"; /*down 정렬 아이콘*/
 import { PiNoteLight } from "react-icons/pi"; /*메모페이지 배경 아이콘*/
 
+import { useProject } from "@context/ProjectContext";
+
+
 interface ModalData {
-  id: number;
   title: string;
   content: string;
+  id: number;
   timestamp: number;
 }
 
@@ -20,6 +23,21 @@ const MemoPage: React.FC = () => {
   const [noteTitle, setNoteTitle] = useState('');
   const [modalContent, setModalContent] = useState('');
   const [sortedNewst, setsortedNewst] = useState(true);
+  const {projectId} = useProject();
+ 
+
+  useEffect(() => {
+    if(projectId) {
+      const savedData = localStorage.getItem(`memos_${projectId}`);
+      if (savedData) {
+        setSaveModals(JSON.parse(savedData));
+      }
+    }
+  }, [projectId]);
+
+  useEffect(() => {
+    localStorage.setItem(`memos_${projectId}`, JSON.stringify(savedModals))
+  }, [savedModals, projectId]);
   
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -32,25 +50,38 @@ const MemoPage: React.FC = () => {
     setModalContent('');
   };
 
-  const handleSaveModal = () => {
-    if (currentNote) {
-      setSaveModals(savedModals.map(modal => modal.id === currentNote.id ? {...modal, title: noteTitle, content: modalContent} : modal));
-    }
-      else {
-      const newModal: ModalData = {
-        id: Date.now(),
-        title: noteTitle,
-        content: modalContent,
-        timestamp: Date.now(),
-      };
-      setSaveModals([newModal, ...savedModals]);
-      setIsModalOpen(false);
+  const handleSaveModal = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (projectId) {
+        if (currentNote) {
+          setSaveModals(savedModals.map(modal => modal.id === currentNote.id ? {...modal, title: noteTitle, content: modalContent} : modal));
+        }
+          else {
+          const newModal: ModalData = {
+            title: noteTitle,
+            content: modalContent,
+            id: Date.now(),
+            timestamp: Date.now(),
+          };
+
+          setSaveModals([newModal, ...savedModals]);
+          setIsModalOpen(false);
+          }
+          handleCloseModal();
+      } else {
+        console.error('projectId가 존재하지 않습니다.');
       }
-      handleCloseModal();
+    } catch (error) {
+      console.log({projectId});
+      console.error('메모 저장 실패', error);
+    }
   };
   const deletememo = (id: number) => {
     if(window.confirm('정말로 이 메모를 삭제하시겠습니까?')) {
-      setSaveModals(savedModals.filter(modal => modal.id !== id));
+      const updatedModals = savedModals.filter(modal => modal.id !==id);
+      setSaveModals(updatedModals);
+      localStorage.setItem(`memos_${projectId}`, JSON.stringify(updatedModals));
     }
   };
   const editNote = (modal: ModalData) => {
