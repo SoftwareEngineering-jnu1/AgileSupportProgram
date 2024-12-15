@@ -16,6 +16,7 @@ import { Content, TitleWrapper, TitleIcon, TitleInput, ButtonBox, SelectWrapper,
 import { DateWrapper, DateInput, AssignIcon } from './style';
 import { ButtonContainer, ButtonPart, Divider, EpicDetailContainer, IssueDetailContainer } from './style';
 import Cookies from 'js-cookie';
+import moment from 'moment-timezone';
 
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 import './Timeline.css';
@@ -60,23 +61,25 @@ const Timeline = () => {
       const endDate = new Date(today.getFullYear()+2, today.getMonth(), today.getDate());
 
       // 초기 표시할 4개월 범위 설정
-      const minDate = new Date(today.getFullYear(), today.getMonth() -1, today.getDate());
-      const maxDate = new Date(today.getFullYear(), today.getMonth() +6, today.getDate());
+      const minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate()-7);
+      const maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate()+14);
 
       const options:TimelineOptions = {
         min: startDate,
         max: endDate,
-
+        zoomable:false,
         moveable: true,
         
         editable: {
           remove: false,
+          updateGroup: false,
+          updateTime: false,
         },
         margin: { item: 10 },
         orientation: 'top',
 
         timeAxis: {
-          scale: 'month' as TimelineTimeAxisScaleType,
+          scale: 'day' as TimelineTimeAxisScaleType,
           step: 1,
         },
         
@@ -86,7 +89,6 @@ const Timeline = () => {
       setTimeline(createtimeline);
 
       createtimeline.setWindow(minDate, maxDate, {animation: false});
-      
 return () => {
   if (createtimeline) {
     createtimeline.destroy();
@@ -109,22 +111,22 @@ return () => {
 
 // 아이템 추가 함수
 const addTimelineItem = (epic: Epic, index: number) => {
-  const startDate = new Date(epic.epicStartDate);
-  const endDate = new Date(epic.epicEndDate);
 
   const newItem = {
     id: epic.epicId,
      content: epic.epicTitle,
-    start: startDate,
-    end: endDate,
+     start: epic.epicStartDate,
+    end: epic.epicEndDate,
     group: index,
     type: 'range',
     style: 'background-color: #495C78; border-color: #000000;',
   };
 
+  
   console.log("추가할 아이템", newItem); 
   itemsRef.current.add(newItem);
 };
+
 const addIssueTimelineItem = (issue: Issue, epicId: number) => {
   const startDate = new Date(issue.issueStartDate);
   const endDate = new Date(issue.issueEndDate);
@@ -136,7 +138,7 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
     end: endDate,
     group: epicId,
     type: 'range',
-    style: 'background-color: #AEBDCA; border-color: #000000;',
+    style: 'background-color: #AEBDCA; border-color: #000000; width: auto;',
   };
 
   console.log("타임라인 아이템 추가:", newIssueItem);
@@ -474,6 +476,7 @@ const addIssueTimelineItem = (issue: Issue, epicId: number) => {
     });
 
     timeline.setWindow(minDate, maxDate);
+
   };
 
  // 진행 상태 드롭다운
@@ -509,7 +512,7 @@ const fetchEpics = useCallback(() => {
 
         timeline.setGroups(groupsRef.current);
         timeline.setItems(itemsRef.current);
-        timeline.fit();
+        
       }
     })
     .catch((error) => console.error("에픽 목록 호출 실패:", error));
