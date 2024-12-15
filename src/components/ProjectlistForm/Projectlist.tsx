@@ -47,19 +47,27 @@ const Projectlist: React.FC = () => {
   
     const fetchIssues = async (projectId: number) => {
       try {
-        const token = Cookies.get("status");
+        const token = Cookies.get("token");
         const epicId = Cookies.get(`project_${projectId}_epicId`);
+        if (!epicId) {
+          throw new Error(`Epic ID for project ${projectId} not found.`);
+        }
         const response = await fetchInstance.get(
           `/project/${projectId}/kanbanboard/${epicId}`, {
             headers: { Authorization: `Bearer ${token}`}
           });
         console.log("이슈 불러오기 성공", response.data.data);
-        const issues = (response.data.data.kanbanboardIssueDTO || []).filter(
+        const issues = (response.data.data.kanbanboardIssueDTO || []);
+        if (issues.some((issue: Issue) => !issue.issueId)) {
+          throw new Error(`Some issues in project ${projectId} do not have an issue ID.`);
+        }
+        const inProgressIssues = issues.filter(
           (issue: Issue) => issue.progressStatus === "In Progress"
         );
-        setProjectIssues(prev => ({ ...prev, [projectId]: issues }));
+        setProjectIssues(prev => ({ ...prev, [projectId]: inProgressIssues }));
+        console.log(issues);
       } catch (error) {
-        console.error("이슈 불러오기 실패:", error);
+        console.error("이슈 불러오기 실패", error);
       }
     }
     useEffect(() => {
