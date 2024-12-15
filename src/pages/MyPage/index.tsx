@@ -9,7 +9,6 @@ import LogoutButton from '@components/LogoutButton/LogoutButton';
 
 import { fetchInstance } from "@api/instance"; 
 import Cookies from "js-cookie";
-import { AxiosError } from 'axios';
 
 interface SprintRetrospective {
   number: number;
@@ -53,7 +52,7 @@ const MyPage: React.FC = () => {
           headers: {Authrization: `Bearer ${token}`}
         });
         setUser(response.data.data); 
-        console.log("이름 가져오기 성공", response.data)
+        console.log("이름 가져오기 성공", response)
 
         const sprintRetrospective = response.data.data.sprintRetrospective;
         const sprintRetrospectiveArray = Object.entries(sprintRetrospective).map(([key, value]) => ({
@@ -86,9 +85,7 @@ const MyPage: React.FC = () => {
         [epicId]: review     
       }));
     } catch (error) {
-      const axiosError = error as AxiosError;
       console.error("리뷰데이터 불러오기 실패:", error);
-      console.error("에러 상세:", axiosError.response ? axiosError.response.data : axiosError.message);
     }
   }, []); 
   useEffect(() => {
