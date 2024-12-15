@@ -93,13 +93,9 @@ const BoardPage = () => {
       continueAction: reviewComments["Continue"].join(", "),
     };
 
-    // const payloadString = JSON.stringify(payload);
-    // console.log("리뷰: ", payloadString);
-
     fetchInstance
       .post(`/project/${projectId}/kanbanboard/${epicId}/review`, payload)
       .then((response) => {
-        console.log("리뷰 제출 완료: ", response);
         if (
           response.data.data.completeMemberCount ===
           response.data.data.totalMemberCount
@@ -147,7 +143,6 @@ const BoardPage = () => {
       ...prevComments,
       [category]: [...prevComments[category], comment],
     }));
-    console.log(reviewComments);
   };
 
   return (

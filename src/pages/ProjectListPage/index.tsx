@@ -74,7 +74,6 @@ const ProjectListPage = () => {
           projectName,
         }));
         setProjects(projectList); // 프로젝트 리스트 업데이트
-        console.log("프로젝트 목록 호출 성공", projectList);
       })
       .catch((error) => {
         console.log("프로젝트 목록 호출 실패", error);
@@ -93,7 +92,6 @@ const ProjectListPage = () => {
     fetchInstance
       .post("/project/new", payload)
       .then((response) => {
-        console.log("프로젝트 생성 성공:", response.data);
         toggleModal();
         fetchProjects();
       })

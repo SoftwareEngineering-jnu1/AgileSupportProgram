@@ -89,7 +89,6 @@ const SprintPage = ({ name, endDate, data, reloadData }: SprintProps) => {
 
   const handleDragStart = ({ active }: any) => {
     setDraggedItem(active.id);
-    console.log(active.id);
     console.log(draggedItem);
   };
 
@@ -123,8 +122,6 @@ const SprintPage = ({ name, endDate, data, reloadData }: SprintProps) => {
         `/project/${projectId}/kanbanboard/${epicId}/${active.id}`,
         payload
       );
-
-      console.log("이슈 상태 업데이트 성공:", payload);
     } catch (error) {
       console.error("이슈 상태 업데이트 실패:", error);
 
@@ -160,7 +157,6 @@ const SprintPage = ({ name, endDate, data, reloadData }: SprintProps) => {
     fetchInstance
       .post(`/project/${projectId}/${epicId}/addissue`, payload)
       .then(() => {
-        console.log("이슈 생성 성공");
         toggleIssueModal(null);
         reloadData();
       })

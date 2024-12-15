@@ -37,15 +37,12 @@ const LoginPage: React.FC = () => {
         password: form.password,
       })
       .then((response) => {
-        console.log("Form Data:", form);
-        console.log("로그인 성공", response.data);
         Cookies.set("emailId", form.username);
         Cookies.set("memberId", response.data.data);
         navigate("/project");
       })
       .catch((error) => {
         alert("계정이 존재하지 않거나 비밀번호가 일치하지 않습니다.");
-        console.log("로그인 실패");
       });
   };
 
